@@ -1,20 +1,32 @@
 <?php
 
-use app\controllers\ApiExampleController;
-use app\controllers\WelcomeController;
-use flight\Engine;
+use app\controllers\EnclosController;
+use app\controllers\TypePorcController;
 use flight\net\Router;
-//use Flight;
+use flight\Engine;
 
-/** 
- * @var Router $router 
+// use Flight;
+
+/**
+ * @var Router $router
  * @var Engine $app
  */
-/*$router->get('/', function() use ($app) {
-	$Welcome_Controller = new WelcomeController($app);
-	$app->render('welcome', [ 'message' => 'It works!!' ]);
-});*/
+$router->group('/typePorc', function () use ($router) {
+    $typePorcController = new TypePorcController();
+    $router->get('/', [$typePorcController, 'list']);
+    $router->get('/add', [$typePorcController, 'form']);
+    $router->post('/add', [$typePorcController, 'save']);
+    $router->get('/delete', [$typePorcController, 'delete']);
+    $router->get('/edit', [$typePorcController, 'form']);
+    $router->post('/edit', [$typePorcController, 'update']);
+});
 
-$Welcome_Controller = new WelcomeController();
-$router->get('/', [ $Welcome_Controller, 'home' ]); 
-$router->get('/truie', [ $Welcome_Controller, 'truie' ]);
+$router->group('/enclos', function () use ($router) {
+    $enclosController = new EnclosController();
+    $router->get('/', [$enclosController, 'list']);
+    $router->get('/add', [$enclosController, 'form']);
+    $router->post('/add', [$enclosController, 'save']);
+    $router->get('/delete', [$enclosController, 'delete']);
+    $router->get('/edit', [$enclosController, 'form']);
+    $router->post('/edit', [$enclosController, 'update']);
+});
