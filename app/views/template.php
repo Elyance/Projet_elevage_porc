@@ -90,7 +90,7 @@
                                 </a>
                                 <div class="drop-down animated fadeIn dropdown-menu">
                                     <div class="dropdown-content-heading d-flex justify-content-between">
-                                        <span class="">3 New </span>
+                                        <span class="">3 New Messages</span>
                                         <a href="javascript:void()" class="d-inline-block">
                                             <span class="badge badge-pill gradient-1">3</span>
                                         </a>
