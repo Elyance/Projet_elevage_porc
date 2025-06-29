@@ -1,88 +1,34 @@
 <?php
-
 namespace app\models;
 
 use Flight;
-use PDO;
 
 class EnclosModel
 {
-    private $db;
+    public int $id_enclos;
+    public ?int $enclos_type;
+    public ?int $stockage;
 
-    public function __construct($db)
+    public function __construct(int $id_enclos, ?int $enclos_type, ?int $stockage)
     {
-        $this->db = $db;
+        $this->id_enclos = $id_enclos;
+        $this->enclos_type = $enclos_type;
+        $this->stockage = $stockage;
     }
 
-    public function findAll()
-    {
-        $sql = 'SELECT * FROM bao_enclos';
-        try {
-            $pstmt = $this->db->prepare($sql);
-            $pstmt->execute();
-
-            $result_select = $pstmt->fetchAll();
-
-            return $result_select;
-        } catch (\Throwable $th) {
-            echo 'error: ' . $th->getMessage();
-        }
-        return null;
+    public static function getAll() {
+        $conn = Flight::db();
+        $stmt = $conn->query("SELECT * FROM bao_enclos");
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return array_map(fn($item) => EnclosModel::fromArray($item), $result);
     }
 
-    public function findById($id)
+    public static function fromArray(array $data): EnclosModel
     {
-        $sql = 'SELECT * FROM bao_enclos where id = :id';
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':id' => $id]);
-        $result = $stmt->fetch();
-
-        return $result;
-    }
-
-    public function create($nom, $type, $superficie, $capacite)
-    {
-        $sql = 'INSERT INTO  bao_enclos (nom, type , superficie , capacite) VALUES (:nom, :type , :superficie , :capacite)';
-        $stmt = $this->db->prepare($sql);
-
-        try {
-            $stmt->execute([
-                ':nom' => $nom,
-                ':type' => $type,
-                ':superficie' => $superficie,
-                ':capacite' => $capacite
-            ]);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
-    public function update($id, $nom, $type, $superficie, $capacite)
-    {
-        $sql = 'UPDATE bao_enclos SET nom = :nom , type = :type , superficie = :superficie , capacite = :capacite WHERE id = :id';
-        $stmt = $this->db->prepare($sql);
-        try {
-            $stmt->execute([
-                ':nom' => $nom,
-                ':type' => $type,
-                ':superficie' => $superficie,
-                ':capacite' => $capacite,
-                ':id' => $id
-            ]);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
-    public function delete($id)
-    {
-        $sql = 'DELETE FROM bao_enclos WHERE id = :id';
-        $stmt = $this->db->prepare($sql);
-        try {
-            $stmt->execute([':id' => $id]);
-            echo 'Suppression réussie !';
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        return new EnclosModel(
+            $data['id_enclos'] ?? 0,
+            $data['enclos_type'] ?? null,
+            $data['stockage'] ?? null
+        );
     }
 }
