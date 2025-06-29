@@ -9,19 +9,17 @@
     </tr>
     <?php foreach ($inseminations as $insem): ?>
     <tr>
-        <td><?= htmlspecialchars($insem['truie_poids']) ?> kg</td>
-        <td><?= htmlspecialchars($insem['date_insemination']) ?></td>
-        <td><?= htmlspecialchars($insem['resultat']) ?></td>
+        <td><?= htmlspecialchars($insem->truie_poids) ?> kg</td>
+        <td><?= htmlspecialchars($insem->date_insemination) ?></td>
+        <td><?= htmlspecialchars($insem->resultat) ?></td>
         <td>
-            <?php if ($insem['resultat'] === 'en cours'): ?>
-                <a href="/reproduction?action=success&id=<?= $insem['id_insemination'] ?>">Succès</a>
-                <a href="/reproduction?action=echec&id=<?= $insem['id_insemination'] ?>">Échec</a>
-            <?php else: ?>
-                N/A
+            <?php if ($insem->resultat === 'en cours'): ?>
+                <a href="/reproduction?action=success&id=<?= $insem->id_insemination ?>">Succès</a>
+                <a href="/reproduction?action=failure&id=<?= $insem->id_insemination ?>">Échec</a>
             <?php endif; ?>
         </td>
     </tr>
     <?php endforeach; ?>
 </table>
-<a href="/reproduction/inseminate">INSÉMINER</a>
-<a href="/cycle">VOIR CYCLES</a>
+<a href="/reproduction/inseminate">Ajouter Insémination</a>
+<a href="/cycle">Voir cycles</a>

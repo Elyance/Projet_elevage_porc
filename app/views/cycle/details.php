@@ -2,12 +2,12 @@
 <h1>Détails des Cycles</h1>
 
 
-<h2>Cycle Actuel (ID: <?= htmlspecialchars($currentCycle['id_cycle_reproduction']) ?>)</h2>
-<p>Truie: <?= htmlspecialchars($currentCycle['truie_poids']) ?> kg</p>
-<p>Date Début: <?= htmlspecialchars($currentCycle['date_debut_cycle']) ?></p>
-<p>Date Fin: <?= htmlspecialchars($currentCycle['date_fin_cycle']) ?></p>
-<p>Nombre Portée: <?= htmlspecialchars($currentCycle['nombre_portee']) ?></p>
-<p>État: <?= htmlspecialchars($currentCycle['etat']) ?></p>
+<h2>Cycle Actuel (ID: <?= htmlspecialchars($currentCycle->id_cycle_reproduction) ?>)</h2>
+<p>Truie: <?= htmlspecialchars($currentCycle->truie_poids) ?> kg</p>
+<p>Date Début: <?= htmlspecialchars($currentCycle->date_debut_cycle) ?></p>
+<p>Date Fin: <?= htmlspecialchars($currentCycle->date_fin_cycle) ?></p>
+<p>Nombre Portée: <?= htmlspecialchars($currentCycle->nombre_portee) ?></p>
+<p>État: <?= htmlspecialchars($currentCycle->etat) ?></p>
 
 <h2>Précédent Cycle</h2>
 <?php if ($precedentCycle): ?>
@@ -19,10 +19,10 @@
             <th>État</th>
         </tr>
         <tr>
-            <td><?= htmlspecialchars($precedentCycle['date_debut_cycle']) ?></td>
-            <td><?= htmlspecialchars($precedentCycle['date_fin_cycle']) ?></td>
-            <td><?= htmlspecialchars($precedentCycle['nombre_portee']) ?></td>
-            <td><?= htmlspecialchars($precedentCycle['etat']) ?></td>
+            <td><?= htmlspecialchars($precedentCycle->date_debut_cycle) ?></td>
+            <td><?= htmlspecialchars($precedentCycle->date_fin_cycle) ?></td>
+            <td><?= htmlspecialchars($precedentCycle->nombre_portee) ?></td>
+            <td><?= htmlspecialchars($precedentCycle->etat) ?></td>
         </tr>
     </table>
 <?php else: ?>
@@ -34,4 +34,4 @@
 <p>Nombre de Portées Moyen: <?= number_format($prevision['portee'], 2) ?></p>
 
 <h2>Action</h2>
-<a href="/naissance/add?cycle_id=<?= htmlspecialchars($currentCycle['id_cycle_reproduction']) ?>&truie_id=<?= htmlspecialchars($currentCycle['id_truie']) ?>">Naissance</a>
+<a href="/naissance/add?cycle_id=<?= htmlspecialchars($currentCycle->id_cycle_reproduction) ?>&truie_id=<?= htmlspecialchars($currentCycle->id_truie) ?>">Naissance</a>

@@ -10,9 +10,9 @@ use Flight;
 class NaissanceController {
     public function add()
     {
-        // $truies = TruieModel::getAll();
+        $truies = TruieModel::getAll();
         $cycles = CycleModel::getAll();
-        // $enclos = EnclosModel::getAll();
+        $enclos = EnclosModel::getAll();
 
         $cycle_id = $_GET['cycle_id'] ?? null;
         $truie_id = $_GET['truie_id'] ?? null;

@@ -10,11 +10,11 @@
     </tr>
     <?php foreach ($cycles as $cycle): ?>
     <tr>
-        <td><?= htmlspecialchars($cycle['truie_poids']) ?> kg</td>
-        <td><?= htmlspecialchars($cycle['date_debut_cycle']) ?></td>
-        <td><?= htmlspecialchars($cycle['date_fin_cycle']) ?></td>
-        <td><?= htmlspecialchars($cycle['nombre_portee']) ?></td>
-        <td><a href="/cycle/details/<?= $cycle['id_cycle_reproduction'] ?>">Détails</a></td>
+        <td><?= htmlspecialchars($cycle->truie_poids) ?> kg</td>
+        <td><?= htmlspecialchars($cycle->date_debut_cycle) ?></td>
+        <td><?= htmlspecialchars($cycle->date_fin_cycle) ?></td>
+        <td><?= htmlspecialchars($cycle->nombre_portee) ?></td>
+        <td><a href="/cycle/details/<?= $cycle->id_cycle_reproduction ?>">Détails</a></td>
     </tr>
     <?php endforeach; ?>
 </table>

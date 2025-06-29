@@ -30,8 +30,7 @@ class NaissanceModel
             $insertEnclosStmt = $conn->prepare("INSERT INTO bao_enclos_portee (id_enclos, id_portee, quantite_portee, poids_estimation, statut_vente) VALUES (:id_enclos, :id_portee, :quantite_portee, 0, 'non possible')");
             $insertEnclosStmt->execute([':id_enclos' => $id_enclos, ':id_portee' => $portee_id, ':quantite_portee' => $nombre_porcs]);
 
-            $cycleModel = new CycleModel();
-            $cycleModel->updateEtat($id_cycle_reproduction, 'terminée');
+            CycleModel::updateEtat($id_cycle_reproduction, 'terminée');
             $updateStmt = $conn->prepare("UPDATE bao_cycle_reproduction SET nombre_portee = :nombre_portee, date_fin_cycle = CURDATE() WHERE id_cycle_reproduction = :id_cycle_reproduction");
             $updateStmt->execute([':nombre_portee' => $nombre_porcs, ':id_cycle_reproduction' => $id_cycle_reproduction]);
         }

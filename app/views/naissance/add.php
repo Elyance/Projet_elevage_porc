@@ -11,7 +11,7 @@
     <label>Enclos: 
         <select name="enclos_id" required>
             <?php foreach ($enclos as $encl): ?>
-                <option value="<?= $encl['id_enclos'] ?>"><?= htmlspecialchars($encl['id_enclos']) ?> (Type: <?= htmlspecialchars($encl['enclos_type']) ?>)</option>
+                <option value="<?= $encl->id_enclos ?>"><?= htmlspecialchars($encl->id_enclos) ?> (Type: <?= htmlspecialchars($encl->enclos_type) ?>)</option>
             <?php endforeach; ?>
         </select>
     </label><br>
