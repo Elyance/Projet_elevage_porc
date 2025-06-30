@@ -73,7 +73,7 @@ return [
 		 'host' => 'localhost',
 		 'dbname' => 'gestion_porc',
 		 'user' => 'postgres',
-		 'password' => ' '
+		 'password' => 'rakoto'
 
 		// uncomment the following line for sqlite
 		// 'file_path' => __DIR__ . $ds . '..' . $ds . 'database.sqlite'
