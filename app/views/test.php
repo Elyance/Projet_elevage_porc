@@ -121,7 +121,7 @@
     <div>
         <ul>
             <li><a href="">Gestion maladie</a></li>
-            <li><a href="">Liste type evenement</a></li>
+            <li><a href="typeevenement">Liste type evenement</a></li>
             <li><a href="evenement/add">Ajouter evenement</a></li>
             <li><a href="">Gestion décès</a></li>
         </ul>
