@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendrier JavaScript</title>
+    <title>Calendrier Medical</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -118,7 +118,16 @@
 </head>
 
 <body>
+    <div>
+        <ul>
+            <li><a href="">Gestion maladie</a></li>
+            <li><a href="">Liste type evenement</a></li>
+            <li><a href="evenement/add">Ajouter evenement</a></li>
+            <li><a href="">Gestion décès</a></li>
+        </ul>
+    </div>
     <div class="calendar">
+        <h2>Calendrier</h2>
         <div class="calendar-header">
             <button id="prev-month">◀</button>
             <h2 id="month-year">Mois Année</h2>

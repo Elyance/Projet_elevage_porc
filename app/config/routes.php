@@ -20,4 +20,6 @@ $Welcome_Controller = new WelcomeController();
 $santeevenementController = new SanteEvenementController();
 $router->get('/', [ $santeevenementController, 'home' ]); 
 $router->get('/evenement', [$santeevenementController, 'findByDate']);
+$router->get('/evenement/add', [$santeevenementController, 'formAjouterEvenement']);
+$router->post('/evenement/add', [$santeevenementController, 'ajouterEvenement']);
 $router->get('/truie', [ $Welcome_Controller, 'truie' ]);

@@ -19,4 +19,16 @@ class SanteEvenement {
         $query = "SELECT * from bao_sante_evenement se join bao_sante_type_evenement ste on se.id_type_evenement = ste.id_type_evenement where date_evenement = ?";
         return $this->db->fetchAll($query, [$date]);
     }
+
+    public function ajouterEvenement($data)
+    {
+        $sql = "INSERT INTO bao_sante_evenement (id_type_evenement,id_enclos,date_evenement)
+                VALUES (?, ?, ?)";
+        $params = [
+            $data['id_type_evenement'],
+            $data['id_enclos'],
+            $data['date_evenement']
+        ];
+        return $this->db->runQuery($sql, $params);
+    }
 }
