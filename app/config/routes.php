@@ -2,6 +2,7 @@
 
 use app\controllers\ApiExampleController;
 use app\controllers\WelcomeController;
+use app\controllers\SanteEvenementController;
 use flight\Engine;
 use flight\net\Router;
 //use Flight;
@@ -16,5 +17,7 @@ use flight\net\Router;
 });*/
 
 $Welcome_Controller = new WelcomeController();
-$router->get('/', [ $Welcome_Controller, 'home' ]); 
+$santeevenementController = new SanteEvenementController();
+$router->get('/', [ $santeevenementController, 'home' ]); 
+$router->get('/evenement', [$santeevenementController, 'findByDate']);
 $router->get('/truie', [ $Welcome_Controller, 'truie' ]);

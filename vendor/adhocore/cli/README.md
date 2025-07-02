@@ -3,22 +3,21 @@
 Framework agnostic Command Line Interface utilities and helpers for PHP. Build Console App with ease, fun and love.
 
 [![Latest Version](https://img.shields.io/github/release/adhocore/php-cli.svg?style=flat-square)](https://github.com/adhocore/php-cli/releases)
-[![Build](https://github.com/adhocore/php-cli/actions/workflows/build.yml/badge.svg)](https://github.com/adhocore/php-cli/actions/workflows/build.yml)
+[![Travis Build](https://travis-ci.com/adhocore/php-cli.svg?branch=main)](https://travis-ci.com/adhocore/php-cli?branch=main)
 [![Scrutinizer CI](https://img.shields.io/scrutinizer/g/adhocore/php-cli.svg?style=flat-square)](https://scrutinizer-ci.com/g/adhocore/php-cli/?branch=main)
 [![Codecov branch](https://img.shields.io/codecov/c/github/adhocore/php-cli/main.svg?style=flat-square)](https://codecov.io/gh/adhocore/php-cli)
 [![StyleCI](https://styleci.io/repos/139012552/shield)](https://styleci.io/repos/139012552)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Framework+agnostic+Command+Line+Interface+utilities+and+helpers+for+PHP&url=https://github.com/adhocore/php-cli&hashtags=php,cli,cliapp,console)
-[![Support](https://img.shields.io/static/v1?label=Support&message=%E2%9D%A4&logo=GitHub)](https://github.com/sponsors/adhocore)
-<!-- [![Donate 15](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square&label=donate+15)](https://www.paypal.me/ji10/15usd)
+[![Donate 15](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square&label=donate+15)](https://www.paypal.me/ji10/15usd)
 [![Donate 25](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square&label=donate+25)](https://www.paypal.me/ji10/25usd)
-[![Donate 50](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square&label=donate+50)](https://www.paypal.me/ji10/50usd) -->
+[![Donate 50](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square&label=donate+50)](https://www.paypal.me/ji10/50usd)
+[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Framework+agnostic+Command+Line+Interface+utilities+and+helpers+for+PHP&url=https://github.com/adhocore/php-cli&hashtags=php,cli,cliapp,console)
 
 
 - Command line application made easy
 - Inspired by nodejs [commander](https://github.com/tj/commander.js) (thanks tj)
 - Zero dependency.
-- For PHP7, PHP8 and for good
+- For PHP7 and for good
 
 [![Screen Preview](https://i.imgur.com/qIYg9Zn.gif "Preview from adhocore/phalcon-ext which uses this cli package")](https://github.com/adhocore/phalcon-ext/tree/master/example/cli)
 
@@ -26,17 +25,13 @@ Framework agnostic Command Line Interface utilities and helpers for PHP. Build C
 
 **Core:** [Argv parser](#argv-parser) &middot; [Cli application](#console-app) &middot; [Shell](#shell)
 
-**IO:** [Colorizer](#color) &middot; [Cursor manipulator](#cursor) &middot; [Progress bar](#progress-bar) &middot; [Stream writer](#writer) &middot; [Stream reader](#reader)
+**IO:** [Colorizer](#color) &middot; [Cursor manipulator](#cursor) &middot; [Stream writer](#writer) &middot; [Stream reader](#reader)
 
 **Other:** [Autocompletion](#autocompletion)
 
 ## Installation
 ```bash
-# PHP8.0 and above v1.0.0
-composer require adhocore/cli:^v1.0.0
-
-# PHP 7.x
-composer require adhocore/cli:^v0.9.0
+composer require adhocore/cli
 ```
 
 ## Usage
@@ -185,7 +180,7 @@ class InitCommand extends Ahc\Cli\Input\Command
     }
 
     // This method is auto called before `self::execute()` and receives `Interactor $io` instance
-    public function interact(Ahc\Cli\IO\Interactor $io) : void
+    public function interact(Ahc\Cli\IO\Interactor $io)
     {
         // Collect missing opts/args
         if (!$this->apple) {
@@ -216,21 +211,7 @@ class InitCommand extends Ahc\Cli\Input\Command
 
 class OtherCommand extends Ahc\Cli\Input\Command
 {
-    public function __construct()
-    {
-        parent::__construct('other', 'Other something');
-    }
-
-    public function execute()
-    {
-        $io = $this->app()->io();
-
-        $io->write('Other command');
-
-        // more codes ...
-
-        // If you return integer from here, that will be taken as exit error code
-    }
+    // ...
 }
 
 // Init App with name and version
@@ -244,46 +225,6 @@ $app->add(new OtherCommand, 'o');
 $app->logo('Ascii art logo of your app');
 
 $app->handle($_SERVER['argv']); // if argv[1] is `i` or `init` it executes InitCommand
-```
-
-#### Grouping commands
-
-Grouped commands are listed together in commands list. Explicit grouping a command is optional.
-By default if a command name has a colon `:` then the part before it is taken as a group,
-else `*` is taken as a group.
-
-> Example: command name `app:env` has a default group `app`, command name `appenv` has group `*`.
-
-```php
-// Add grouped commands:
-$app->group('Configuration', function ($app) {
-    $app->add(new ConfigSetCommand);
-    $app->add(new ConfigListCommand);
-});
-
-// Alternatively, set group one by one in each commands:
-$app->add((new ConfigSetCommand)->inGroup('Config'));
-$app->add((new ConfigListCommand)->inGroup('Config'));
-...
-```
-
-#### Exception handler
-
-Set a custom exception handler as callback. The callback receives exception & exit code. The callback may rethrow exception or may exit the program or just log exception and do nothing else.
-
-```php
-$app = new Ahc\Cli\Application('App', 'v0.0.1');
-$app->add(...);
-$app->onException(function (Throwable $e, int $exitCode) {
-    // send to sentry
-    // write to logs
-
-    // optionally, exit with exit code:
-    exit($exitCode);
-
-    // or optionally rethrow, a rethrown exception is propagated to top layer caller.
-    throw $e;
-})->handle($argv);
 ```
 
 #### App help
@@ -470,67 +411,6 @@ echo  $cursor->up(1)
     . $cursor->moveTo(5, 8); // x, y
 ```
 
-### Progress Bar
-
-Easily add a progress bar to your output:
-
-```php
-$progress = new Ahc\Cli\Output\ProgressBar(100);
-for ($i = 0; $i <= 100; $i++) {
-    $progress->current($i);
-
-    // Simulate something happening
-    usleep(80000);
-}
-```
-
-You can also manually advance the bar:
-
-```php
-$progress = new Ahc\Cli\Output\ProgressBar(100);
-
-// Do something
-
-$progress->advance(); // Adds 1 to the current progress
-
-// Do something
-
-$progress->advance(10); // Adds 10 to the current progress
-
-// Do something
-
-$progress->advance(5, 'Still going.'); // Adds 5, displays a label
-```
-
-You can override the progress bar options to customize it to your liking:
-
-```php
-$progress = new Ahc\Cli\Output\ProgressBar(100);
-$progress->option('pointer', '>>');
-$progress->option('loader', '▩');
-
-// You can set the progress fluently
-$progress->option('pointer', '>>')->option('loader', '▩');
-
-// You can also use an associative array to set many options in one time
-$progress->option([
-    'pointer' => '>>',
-    'loader'  => '▩'
-]);
-
-// Available options
-+---------------+------------------------------------------------------+---------------+
-| Option        | Description                                          | Default value |
-+===============+======================================================+===============+
-| pointer       | The progress bar head symbol                         | >             |
-| loader        | The loader symbol                                    | =             |
-| color         | The color of progress bar                            | white         |
-| labelColor    | The text color of the label                          | white         |
-| labelPosition | The position of the label (top, bottom, left, right) | bottom        |
-+---------------+------------------------------------------------------+---------------+
-
-```
-
 ### Writer
 
 Write anything in style.
@@ -609,118 +489,11 @@ $writer->table([
     'head' => 'boldGreen', // For the table heading
     'odd'  => 'bold',      // For the odd rows (1st row is odd, then 3, 5 etc)
     'even' => 'comment',   // For the even rows (2nd row is even, then 4, 6 etc)
-    '1:1'  => 'red',       // For cell in row 1 col 1 (1 based count, 'apple' in this example)
-    '2:*'  => '',          // For all cells in row 2 (1 based count)
-    '*:2'  => '',          // For all cells in col 2 (1 based count)
-    'b-c'  => '',          // For all columns named 'b-c' (same as '*:2' in this example)
-    '*:*'  => 'blue',      // For all cells in table (Set all cells to blue)
 ]);
+
+// 'head', 'odd', 'even' are all the styles for now
+// In future we may support styling a column by its name!
 ```
-
-You can define the style of a cell dynamically using a callback. You could then apply one style or another depending on a value.
-
-```php
-$rows = [
-    ['name' => 'John Doe', 'age' => '30'],
-    ['name' => 'Jane Smith', 'age' => '25'],
-    ['name' => 'Bob Johnson', 'age' => '40'],
-];
-
-$styles = [
-    '*:2' => function ($val, $row) {
-        return $row['age'] >= 30 ? 'boldRed' : '';
-    },
-];
-
-$writer->table($rows, $styles);
-```
-
-The example above only processes the cells in the second column of the table. Yf you want to process any cell, you can use the `*:*` key. You could then customise each cell in the table
-
-```php
-$rows = [
-    ['name' => 'John Doe', 'age' => '30'],
-    ['name' => 'Jane Smith', 'age' => '25'],
-    ['name' => 'Alice Bob', 'age' => '10'],
-    ['name' => 'Big Johnson', 'age' => '40'],
-    ['name' => 'Jane X', 'age' => '50'],
-    ['name' => 'John Smith', 'age' => '20'],
-    ['name' => 'Bob John', 'age' => '28'],
-];
-
-$styles = [
-    '*:*' => function ($val, $row) {
-        if ($val === 'Jane X') {
-            return 'yellow';
-        }
-        if ($val == 10 || $val == 20) {
-            return 'boldPurple';
-        }
-        if (str_contains($val, 'Bob')) {
-            return 'blue';
-        }
-        return $row['age'] >= 30 ? 'boldRed' : '';
-    },
-];
-
-$writer->table($rows, $styles);
-```
-
-> **Note: Priority in increasing order:**
-> - `odd` or `even`
-> - `2:*` (row)
-> - `*:2` or `b-c <-> column name` (col)
-> - `*:*` any cell in table
-> - `1:1` (cell) = **highest priority**
-
-#### Justify content (Display setting)
-
-If you want to display certain configurations (from your .env file for example) a bit like Laravel does (via the `php artisan about` command) you can use the `justify` method.
-
-```php
-$writer->justify('Environment');
-$writer->justify('PHP Version', PHP_VERSION);
-$writer->justify('App Version', '1.0.0');
-$writer->justify('Locale', 'en');
-```
-
-Gives something like:
-
-```
-Environment ........................................
-PHP Version .................................. 8.1.4
-App Version .................................. 1.0.0
-Locale .......................................... en
-```
-
-You can use the `sep` parameter to define the separator to use.
-
-```php
-$writer->justify('Environment', '', ['sep' => '-']);
-$writer->justify('PHP Version', PHP_VERSION);
-```
-
-Gives something like:
-
-```
-Environment ----------------------------------------
-PHP Version .................................. 8.1.4
-```
-
-In addition, the text color, the background color and the thickness of the two texts can be defined via the 3rd argument of this method.
-
-```php
-$writer->justify('Cache Enable', 'true', [
-    'first' => ['fg' => Ahc\Cli\Output\Color::CYAN], // style of the key
-    'second' => ['fg' => Ahc\Cli\Output\Color::GREEN], // style of the value
-]);
-$writer->justify('Debug Mode', 'false', [
-    'first' => ['fg' => Ahc\Cli\Output\Color::CYAN], // style of the key
-    'second' => ['fg' => Ahc\Cli\Output\Color::RED], // style of the value
-]);
-```
-
-For more details regarding the different color options, see [Custom style](#custom-style)
 
 #### Reader
 

@@ -14,18 +14,6 @@ namespace Ahc\Cli\Input;
 use Ahc\Cli\Exception\InvalidParameterException;
 use Ahc\Cli\Exception\RuntimeException;
 use Ahc\Cli\Helper\Normalizer;
-use InvalidArgumentException;
-
-use function array_diff_key;
-use function array_filter;
-use function array_key_exists;
-use function array_merge;
-use function array_shift;
-use function count;
-use function in_array;
-use function reset;
-use function sprintf;
-use function substr;
 
 /**
  * Argv parser for the cli.
@@ -38,16 +26,19 @@ use function substr;
 abstract class Parser
 {
     /** @var string|null The last seen variadic option name */
-    protected ?string $_lastVariadic = null;
+    protected $_lastVariadic;
 
-    protected Normalizer $_normalizer;
+    /** @var Normalizer */
+    protected $_normalizer;
 
-    private array $_options = [];
+    /** @var Option[] Registered options */
+    private $_options = [];
 
-    private array $_arguments = [];
+    /** @var Argument[] Registered arguments */
+    private $_arguments = [];
 
     /** @var array Parsed values indexed by option name */
-    private array $_values = [];
+    private $_values = [];
 
     /**
      * Parse the argv input.
@@ -62,14 +53,14 @@ abstract class Parser
     {
         $this->_normalizer = new Normalizer;
 
-        array_shift($argv);
+        \array_shift($argv);
 
         $argv    = $this->_normalizer->normalizeArgs($argv);
-        $count   = count($argv);
+        $count   = \count($argv);
         $literal = false;
 
         for ($i = 0; $i < $count; $i++) {
-            [$arg, $nextArg] = [$argv[$i], $argv[$i + 1] ?? null];
+            list($arg, $nextArg) = [$argv[$i], $argv[$i + 1] ?? null];
 
             if ($arg === '--') {
                 $literal = true;
@@ -98,7 +89,7 @@ abstract class Parser
             return $this->set($this->_lastVariadic, $arg, true);
         }
 
-        if (!$argument = reset($this->_arguments)) {
+        if (!$argument = \reset($this->_arguments)) {
             return $this->set(null, $arg);
         }
 
@@ -106,7 +97,7 @@ abstract class Parser
 
         // Otherwise we will always collect same arguments again!
         if (!$argument->variadic()) {
-            array_shift($this->_arguments);
+            \array_shift($this->_arguments);
         }
     }
 
@@ -118,9 +109,9 @@ abstract class Parser
      *
      * @return bool Whether to eat next arg.
      */
-    protected function parseOptions(string $arg, ?string $nextArg = null): bool
+    protected function parseOptions(string $arg, string $nextArg = null): bool
     {
-        $value = substr($nextArg ?? '', 0, 1) === '-' ? null : $nextArg;
+        $value = \substr($nextArg ?? '', 0, 1) === '-' ? null : $nextArg;
 
         if (null === $option  = $this->optionFor($arg)) {
             return $this->handleUnknown($arg, $value);
@@ -133,8 +124,12 @@ abstract class Parser
 
     /**
      * Get matching option by arg (name) or null.
+     *
+     * @param string $arg
+     *
+     * @return Option|null
      */
-    protected function optionFor(string $arg): ?Option
+    protected function optionFor(string $arg)
     {
         foreach ($this->_options as $option) {
             if ($option->is($arg)) {
@@ -155,7 +150,7 @@ abstract class Parser
      *
      * @return mixed If true it will indicate that value has been eaten.
      */
-    abstract protected function handleUnknown(string $arg, ?string $value = null): mixed;
+    abstract protected function handleUnknown(string $arg, string $value = null);
 
     /**
      * Emit the event with value.
@@ -165,7 +160,7 @@ abstract class Parser
      *
      * @return mixed
      */
-    abstract protected function emit(string $event, $value = null): mixed;
+    abstract protected function emit(string $event, $value = null);
 
     /**
      * Sets value of an option.
@@ -175,7 +170,7 @@ abstract class Parser
      *
      * @return bool Indicating whether it has eaten adjoining arg to its right.
      */
-    protected function setValue(Parameter $parameter, ?string $value = null): bool
+    protected function setValue(Parameter $parameter, string $value = null): bool
     {
         $name  = $parameter->attributeName();
         $value = $this->_normalizer->normalizeValue($parameter, $value);
@@ -185,18 +180,24 @@ abstract class Parser
 
     /**
      * Set a raw value.
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @param bool  $variadic
+     *
+     * @return bool
      */
     protected function set($key, $value, bool $variadic = false): bool
     {
         if (null === $key) {
             $this->_values[] = $value;
         } elseif ($variadic) {
-            $this->_values[$key] = array_merge($this->_values[$key], (array) $value);
+            $this->_values[$key] = \array_merge($this->_values[$key], (array) $value);
         } else {
             $this->_values[$key] = $value;
         }
 
-        return !in_array($value, [true, false, null], true);
+        return !\in_array($value, [true, false, null], true);
     }
 
     /**
@@ -206,31 +207,34 @@ abstract class Parser
      *
      * @return void
      */
-    protected function validate(): void
+    protected function validate()
     {
         /** @var Parameter[] $missingItems */
-        /** @var Parameter $item */
-        $missingItems = array_filter(
-            $this->_options + $this->_arguments,
-            fn ($item) => $item->required() && in_array($this->_values[$item->attributeName()], [null, []])
-        );
+        $missingItems = \array_filter($this->_options + $this->_arguments, function ($item) {
+            /* @var Parameter $item */
+            return $item->required() && \in_array($this->_values[$item->attributeName()], [null, []]);
+        });
 
         foreach ($missingItems as $item) {
-            [$name, $label] = [$item->name(), 'Argument'];
+            list($name, $label) = [$item->name(), 'Argument'];
             if ($item instanceof Option) {
-                [$name, $label] = [$item->long(), 'Option'];
+                list($name, $label) = [$item->long(), 'Option'];
             }
 
             throw new RuntimeException(
-                sprintf('%s "%s" is required', $label, $name)
+                \sprintf('%s "%s" is required', $label, $name)
             );
         }
     }
 
     /**
      * Register a new argument/option.
+     *
+     * @param Parameter $param
+     *
+     * @return void
      */
-    protected function register(Parameter $param): void
+    protected function register(Parameter $param)
     {
         $this->ifAlreadyRegistered($param);
 
@@ -245,9 +249,11 @@ abstract class Parser
     }
 
     /**
-     * Unset a registered argument/option.
+     * unset a registered argument/option.
+     *
+     * @param string $name
      */
-    public function unset(string $name): self
+    public function unset($name)
     {
         unset($this->_values[$name], $this->_arguments[$name], $this->_options[$name]);
 
@@ -259,12 +265,12 @@ abstract class Parser
      *
      * @param Parameter $param
      *
-     * @throws InvalidArgumentException If given param name is already registered.
+     * @throws \InvalidArgumentException If given param name is already registered.
      */
-    protected function ifAlreadyRegistered(Parameter $param): void
+    protected function ifAlreadyRegistered(Parameter $param)
     {
         if ($this->registered($param->attributeName())) {
-            throw new InvalidParameterException(sprintf(
+            throw new InvalidParameterException(\sprintf(
                 'The parameter "%s" is already registered',
                 $param instanceof Option ? $param->long() : $param->name()
             ));
@@ -273,10 +279,14 @@ abstract class Parser
 
     /**
      * Check if either argument/option with given name is registered.
+     *
+     * @param string $attribute
+     *
+     * @return bool
      */
     public function registered($attribute): bool
     {
-        return array_key_exists($attribute, $this->_values);
+        return \array_key_exists($attribute, $this->_values);
     }
 
     /**
@@ -301,22 +311,32 @@ abstract class Parser
 
     /**
      * Magic getter for specific value by its key.
+     *
+     * @param string $key
+     *
+     * @return mixed
      */
-    public function __get(string $key): mixed
+    public function __get(string $key)
     {
         return $this->_values[$key] ?? null;
     }
 
     /**
      * Get the command arguments i.e which is not an option.
+     *
+     * @return array
      */
     public function args(): array
     {
-        return array_diff_key($this->_values, $this->_options);
+        return \array_diff_key($this->_values, $this->_options);
     }
 
     /**
      * Get values indexed by camelized attribute name.
+     *
+     * @param bool $withDefaults
+     *
+     * @return array
      */
     public function values(bool $withDefaults = true): array
     {

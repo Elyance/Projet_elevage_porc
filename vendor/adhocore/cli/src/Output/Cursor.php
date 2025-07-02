@@ -11,10 +11,6 @@
 
 namespace Ahc\Cli\Output;
 
-use function max;
-use function sprintf;
-use function str_repeat;
-
 /**
  * Cli Cursor.
  *
@@ -34,7 +30,7 @@ class Cursor
      */
     public function up(int $n = 1): string
     {
-        return sprintf("\e[%dA", max($n, 1));
+        return \sprintf("\e[%dA", \max($n, 1));
     }
 
     /**
@@ -46,7 +42,7 @@ class Cursor
      */
     public function down(int $n = 1): string
     {
-        return sprintf("\e[%dB", max($n, 1));
+        return \sprintf("\e[%dB", \max($n, 1));
     }
 
     /**
@@ -58,7 +54,7 @@ class Cursor
      */
     public function right(int $n = 1): string
     {
-        return sprintf("\e[%dC", max($n, 1));
+        return \sprintf("\e[%dC", \max($n, 1));
     }
 
     /**
@@ -70,7 +66,7 @@ class Cursor
      */
     public function left(int $n = 1): string
     {
-        return sprintf("\e[%dD", max($n, 1));
+        return \sprintf("\e[%dD", \max($n, 1));
     }
 
     /**
@@ -82,7 +78,7 @@ class Cursor
      */
     public function next(int $n = 1): string
     {
-        return str_repeat("\e[E", max($n, 1));
+        return \str_repeat("\e[E", \max($n, 1));
     }
 
     /**
@@ -94,11 +90,13 @@ class Cursor
      */
     public function prev(int $n = 1): string
     {
-        return str_repeat("\e[F", max($n, 1));
+        return \str_repeat("\e[F", \max($n, 1));
     }
 
     /**
      * Returns signal to erase current line.
+     *
+     * @return string
      */
     public function eraseLine(): string
     {
@@ -107,6 +105,8 @@ class Cursor
 
     /**
      * Returns signal to clear string.
+     *
+     * @return string
      */
     public function clear(): string
     {
@@ -115,6 +115,8 @@ class Cursor
 
     /**
      * Returns signal to erase lines upward.
+     *
+     * @return string
      */
     public function clearUp(): string
     {
@@ -123,6 +125,8 @@ class Cursor
 
     /**
      * Returns signal to erase lines downward.
+     *
+     * @return string
      */
     public function clearDown(): string
     {
@@ -131,9 +135,14 @@ class Cursor
 
     /**
      * Returns signal to move cursor to given x, y position.
+     *
+     * @param int $x
+     * @param int $y
+     *
+     * @return string
      */
     public function moveTo(int $x, int $y): string
     {
-        return sprintf("\e[%d;%dH", $y, $x);
+        return \sprintf("\e[%d;%dH", $y, $x);
     }
 }

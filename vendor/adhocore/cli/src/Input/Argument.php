@@ -11,11 +11,6 @@
 
 namespace Ahc\Cli\Input;
 
-use function explode;
-use function is_array;
-use function str_replace;
-use function strpos;
-
 /**
  * Cli Option.
  *
@@ -29,23 +24,23 @@ class Argument extends Parameter
     /**
      * {@inheritdoc}
      */
-    protected function parse(string $arg): void
+    protected function parse(string $arg)
     {
-        $this->name = $name = str_replace(['<', '>', '[', ']', '.'], '', $arg);
+        $this->name = $name = \str_replace(['<', '>', '[', ']', '.'], '', $arg);
 
         // Format is "name:default+value1,default+value2" ('+' => ' ')!
-        if (strpos($name, ':') !== false) {
-            $name                         = str_replace('+', ' ', $name);
-            [$this->name, $this->default] = explode(':', $name, 2);
+        if (\strpos($name, ':') !== false) {
+            $name                             = \str_replace('+', ' ', $name);
+            list($this->name, $this->default) = \explode(':', $name, 2);
         }
 
         $this->prepDefault();
     }
 
-    protected function prepDefault(): void
+    protected function prepDefault()
     {
-        if ($this->variadic && $this->default && !is_array($this->default)) {
-            $this->default = explode(',', $this->default, 2);
+        if ($this->variadic && $this->default && !\is_array($this->default)) {
+            $this->default = \explode(',', $this->default, 2);
         }
     }
 }
