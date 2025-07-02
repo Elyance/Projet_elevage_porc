@@ -8,7 +8,7 @@ use Flight;
 class WelcomeController {
     public function home() {
         Flight::render('welcome', [
-            'message' => 'It works!!',
+            'message' => 'It works!!!',
         ]);
     }
 
