@@ -13,7 +13,7 @@ CREATE TABLE aliments (
     stock_kg DECIMAL(10, 2) NOT NULL,
     apports_nutritionnels TEXT,
     contact_fournisseur VARCHAR(20),
-    conso_journaliere_kg_par_porc DECIMAL(5, 2)  -- Consommation moyenne par porc/jour
+    conso_journaliere_kg_par_porc DECIMAL(5, 2)
 );
 
 CREATE TABLE porcs (
