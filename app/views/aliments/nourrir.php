@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/partials/header.php'; ?>
+<?php require_once __DIR__ . '../app/views/aliments/partials/header.php'; ?>
 
 <div class="card">
     <div class="card-header bg-primary text-white">
@@ -80,4 +80,4 @@
     });
 </script>
 
-<?php require_once __DIR__ . '/partials/footer.php'; ?>
+<?php require_once __DIR__ . '../app/views/aliments/partials/footer.php'; ?>

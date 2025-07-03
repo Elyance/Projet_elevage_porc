@@ -1,10 +1,10 @@
-<?php require_once __DIR__ . '/partials/header.php'; ?>
+<?php require_once __DIR__ . '../app/views/aliments/partials/header.php'; ?>
 
 <div class="row">
     <div class="col-md-9">
         <!-- Contenu actuel de la table -->
     </div>
-    <?php require_once __DIR__ . '/partials/sidebar.php'; ?>
+    <?php require_once __DIR__ . '../app/views/aliments/partials/sidebar.php'; ?>
 </div>
 
 <h2>📦 Stock des Aliments</h2>
@@ -35,4 +35,4 @@
     </table>
 </div>
 
-<?php require_once __DIR__ . '/partials/footer.php'; ?>
+<?php require_once __DIR__ . '../app/views/aliments/partials/footer.php'; ?>
