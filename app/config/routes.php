@@ -23,8 +23,13 @@ $router->get('/', [ $Welcome_Controller, 'home' ]);
 $router->get('/truie', [ $Welcome_Controller, 'truie' ]);
 
 
+// Commandes
 $CommandeController = new CommandeController();
 $router->post('/commande/add', [$CommandeController, 'add']);
 $router->get('/commande/add',[$CommandeController, 'form']);
 $router->get('/commande/recette', [$CommandeController, 'recette']);
 $router->get('/commande/list', [$CommandeController, 'list']);	
+
+
+// Depenses
+$router->get('/depense/list', ['app\controllers\DepenseController', 'list']);

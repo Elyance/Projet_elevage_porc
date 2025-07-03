@@ -25,5 +25,35 @@ WHERE
 
 
 SELECT SUM(prix_total) AS total_recette
-FROM recette
+FROM bao_recette
 WHERE date_recette BETWEEN '2023-01-01' AND '2023-12-31';
+
+
+
+CREATE OR REPLACE VIEW depenses_totales AS
+SELECT 
+    'achat_aliment' AS type_depense,
+    sm.date_mouvement AS date_depense,
+    sm.quantite * (SELECT valeur FROM bao_regle_gestion WHERE nom_regle = 'prix_achat_aliment') AS montant
+FROM 
+    bao_stockage_mouvement sm
+WHERE 
+    sm.type_mouvement = 'ajout'
+UNION
+SELECT 
+    'salaire' AS type_depense,
+    s.date_salaire AS date_depense,
+    s.montant
+FROM 
+    bao_salaire s
+WHERE 
+    s.statut = 'paye'
+UNION
+SELECT 
+    'traitement' AS type_depense,
+    d.date_diagnostic AS date_depense,
+    d.prix_traitement AS montant
+FROM 
+    bao_diagnostic d
+WHERE 
+    d.prix_traitement IS NOT NULL;

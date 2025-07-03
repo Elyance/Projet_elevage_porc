@@ -12,7 +12,7 @@
     <a href="/commande/recette">Réinitialiser</a>
 </form>
 <table border="1">
-<p><strong>Recette totale : </strong><?= number_format($total_recette, 2) ?> €</p>
+<p><strong>Recette totale : </strong><?= number_format($total_recette, 2) ?> Ar</p>
 
     <tr>
         <th>ID Commande</th>
