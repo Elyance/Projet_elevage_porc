@@ -16,10 +16,6 @@ use flight\Engine;
  * @var Engine $app
  */
 
-$AlimentController = new AlimentController();
-$NourrirController= new NourrirController();
-$ReapproController = new ReapproController();
-
 $router->group('/typePorc', function () use ($router) {
     $typePorcController = new TypePorcController();
     $router->get('/', [$typePorcController, 'list']);
@@ -41,16 +37,19 @@ $router->group('/enclos', function () use ($router) {
 });
 
 
-Flight::route('/aliments', function() {
+$router->group('/aliments', function () use ($router) {
     // Aliments
+    $AlimentController = new AlimentController();
     $router->get('/', [$AlimentController, 'index']);
-    $router->post('/@id', [$AlimentController, 'show']);
+    $router->get('/@id:[0-9]+', [$AlimentController, 'show']);
 
     // Nourrir
-    $router->post('/nourrir', [$NourrirController, 'index']);
+    $NourrirController= new NourrirController();
+    $router->get('/nourrir', [$NourrirController, 'index']);
     $router->post('/nourrir/action', [$NourrirController, 'nourrir']);
 
     // Réapprovisionnement
+    $ReapproController = new ReapproController();
     $router->get('/reappro', [$ReapproController, 'index']);
     $router->post('/reappro/action', [$ReapproController, 'reapprovisionner']);
 

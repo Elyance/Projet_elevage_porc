@@ -1,11 +1,4 @@
-<?php require_once __DIR__ . '../app/views/aliments/partials/header.php'; ?>
-
-<div class="row">
-    <div class="col-md-9">
-        <!-- Contenu actuel de la table -->
-    </div>
-    <?php require_once __DIR__ . '../app/views/aliments/partials/sidebar.php'; ?>
-</div>
+<?php require_once __DIR__ . '/partials/header.php'; ?>
 
 <div class="card">
     <div class="card-header">
@@ -60,4 +53,4 @@
     </div>
 </div>
 
-<?php require_once __DIR__ . '../app/views/aliments/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/partials/footer.php'; ?>

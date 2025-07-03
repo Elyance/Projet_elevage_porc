@@ -1,5 +1,9 @@
 <?php
+
 namespace app\models;
+
+use Flight;
+use PDO;
 
 class RaceModel {
     private $db;

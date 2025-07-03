@@ -16,23 +16,26 @@ class ReapproController {
     }
 
     // Affiche le formulaire de réappro
-    public function index() {
+    public function index($message = null) {
         $aliments = $this->alimentModel->getAllAliments();
-        Flight::render('aliments/reappro', ['aliments' => $aliments]);
+        Flight::render('aliments/reappro', ['aliments' => $aliments, 'message' => $message]);
     }
 
     // Traite le formulaire de réappro
     public function reapprovisionner() {
         $id_aliment = Flight::request()->data->id_aliment;
         $quantite_kg = Flight::request()->data->quantite_kg;
-
+    
         try {
             $this->reapproModel->addReappro($id_aliment, $quantite_kg);
-            $this->alimentModel->updateStock($id_aliment, $quantite_kg); // Incrémente le stock
-            Flight::json(['success' => 'Réapprovisionnement enregistré !']);
+            $this->alimentModel->updateStock($id_aliment, $quantite_kg);
+            $message['text'] = 'Réapprovisionnement enregistré avec succès !';
+            $message['type'] = 'Success';
         } catch (Exception $e) {
-            Flight::json(['error' => $e->getMessage()], 400);
+            $message = 'Erreur: ' . $e->getMessage();
+            $message['type'] = 'Error';
         }
+        $this->index($message);
     }
 }
 ?>

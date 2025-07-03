@@ -23,10 +23,10 @@
                         <a class="nav-link" href="/aliments">📦 Aliments</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/nourrir">🍽️ Nourrir</a>
+                        <a class="nav-link" href="/aliments/nourrir">🍽️ Nourrir</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/reappro">🔄 Réapprovisionner</a>
+                        <a class="nav-link" href="/aliments/reappro">🔄 Réapprovisionner</a>
                     </li>
                 </ul>
             </div>

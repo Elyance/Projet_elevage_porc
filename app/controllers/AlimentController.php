@@ -14,16 +14,25 @@ class AlimentController {
 
     // Page 1 : Liste des aliments
     public function index() {
-        $aliments = $this->alimentModel->getAllAliments();
-        Flight::render('aliments/index', ['aliments' => $aliments]);
+        $alimentModel = new AlimentModel();
+        $aliments = $alimentModel->getAllAliments();
+        
+        Flight::render('aliments/index', [
+            'aliments' => $aliments,
+            'showSidebar' => true
+        ]);
     }
 
     // Page 2 : Détails d'un aliment
     public function show($id) {
         $aliment = $this->alimentModel->getAlimentById($id);
+        
         if (!$aliment) {
-            Flight::halt(404, "Aliment non trouvé");
+            Flight::flash()->error('Aliment non trouvé');
+            Flight::redirect('/aliments');
+            return;
         }
+    
         Flight::render('aliments/details', ['aliment' => $aliment]);
     }
 }

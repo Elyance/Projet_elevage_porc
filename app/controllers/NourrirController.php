@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
+use app\models\AlimentModel;
 use app\models\NourrirModel;
+use app\models\RaceModel;
 use Flight;
 
 class NourrirController {
@@ -15,10 +17,10 @@ class NourrirController {
     }
 
     // Affiche le formulaire de nourrissage
-    public function index() {
+    public function index($message = null) {
         $races = $this->raceModel->getAllRaces();
         $aliments = (new AlimentModel())->getAllAliments();
-        Flight::render('aliments/nourrir', ['races' => $races, 'aliments' => $aliments]);
+        Flight::render('aliments/nourrir', ['races' => $races, 'aliments' => $aliments, 'message' => $message]);
     }
 
     // Traite le formulaire de nourrissage
@@ -26,14 +28,17 @@ class NourrirController {
         $id_race = Flight::request()->data->id_race;
         $id_aliment = Flight::request()->data->id_aliment;
         $quantite_kg = Flight::request()->data->quantite_kg;
-
+    
         try {
             $this->nourrirModel->nourrirPorcs($id_race, $id_aliment, $quantite_kg);
-            (new AlimentModel())->updateStock($id_aliment, -$quantite_kg); // Décrémente le stock
-            Flight::json(['success' => 'Nourrissage enregistré !']);
+            (new AlimentModel())->updateStock($id_aliment, -$quantite_kg);
+            $message['text'] = 'Nourrissage enregistré avec succès !';
+            $message['type'] = 'Success';
         } catch (Exception $e) {
-            Flight::json(['error' => $e->getMessage()], 400);
+            $message = 'Erreur: ' . $e->getMessage();
+            $message['type'] = 'Error';
         }
+        $this->index($message);
     }
 }
 

@@ -1,11 +1,16 @@
-<?php require_once __DIR__ . '../app/views/aliments/partials/header.php'; ?>
+<?php require_once __DIR__ . '/partials/header.php'; ?>
 
 <div class="card">
     <div class="card-header bg-primary text-white">
         <h2>🍽️ Nourrir les Porcs</h2>
     </div>
+    <?php if (isset($message)): ?>
+        <div class="alert alert-<?= $message['type'] ?>">
+            <?= $message['text']; ?>
+        </div>
+    <?php endif; ?>
     <div class="card-body">
-        <form id="form-nourrir" action="/nourrir/action" method="POST">
+        <form id="form-nourrir" action="/aliments/nourrir/action" method="POST">
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="id_race" class="form-label">Race de porc</label>
@@ -80,4 +85,4 @@
     });
 </script>
 
-<?php require_once __DIR__ . '../app/views/aliments/partials/footer.php'; ?>
+<?php require_once __DIR__ . '/partials/footer.php'; ?>
