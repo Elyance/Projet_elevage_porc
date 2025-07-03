@@ -1,5 +1,5 @@
 <h2>Liste des commandes</h2>
-<table>
+<table border="1">
     <tr>
         <th>ID Commande</th>
         <th>Client</th>

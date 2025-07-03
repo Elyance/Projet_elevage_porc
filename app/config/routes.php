@@ -27,4 +27,4 @@ $CommandeController = new CommandeController();
 $router->post('/commande/add', [$CommandeController, 'add']);
 $router->get('/commande/add',[$CommandeController, 'form']);
 $router->get('/commande/recette', [$CommandeController, 'recette']);
-$router->get('/commande/list', [$CommandeController, 'list']);
+$router->get('/commande/list', [$CommandeController, 'list']);	
