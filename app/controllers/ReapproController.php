@@ -2,7 +2,8 @@
 
 namespace app\controllers;
 
-use app\models\NourrirModel;
+use app\models\AlimentModel;
+use app\models\ReapproModel;
 use Flight;
 
 class ReapproController {
@@ -17,7 +18,7 @@ class ReapproController {
     // Affiche le formulaire de réappro
     public function index() {
         $aliments = $this->alimentModel->getAllAliments();
-        Flight::render('reappro', ['aliments' => $aliments]);
+        Flight::render('aliments/reappro', ['aliments' => $aliments]);
     }
 
     // Traite le formulaire de réappro

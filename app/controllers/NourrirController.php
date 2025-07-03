@@ -18,7 +18,7 @@ class NourrirController {
     public function index() {
         $races = $this->raceModel->getAllRaces();
         $aliments = (new AlimentModel())->getAllAliments();
-        Flight::render('nourrir', ['races' => $races, 'aliments' => $aliments]);
+        Flight::render('aliments/nourrir', ['races' => $races, 'aliments' => $aliments]);
     }
 
     // Traite le formulaire de nourrissage

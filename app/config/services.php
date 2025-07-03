@@ -7,6 +7,9 @@ use Tracy\Debugger;
 
 
 use models\AlimentationModel;
+use models\NourrirModel;
+use models\ReapproModel;
+use models\RaceModel;
 
 /** 
  * @var array $config This comes from the returned array at the bottom of the config.php file
@@ -30,3 +33,18 @@ $app->register('db', $pdoClass, [$dsn, $config['database']['user'] ?? null, $con
 // Redis? This is where you'd set that up
 // $app->register('redis', Redis::class, [ $config['redis']['host'], $config['redis']['port'] ]);
 
+Flight::map('aliment', function() {
+    return new AlimentModel(Flight::db());
+});
+
+Flight::map('nourrir', function() {
+    return new NourrirModel(Flight::db());
+});
+
+Flight::map('reappro', function() {
+    return new ReapproModel(Flight::db());
+});
+
+Flight::map('race', function() {
+    return new RaceModel(Flight::db());
+});
