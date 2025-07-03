@@ -16,7 +16,7 @@
                             data-prix="<?= $aliment['prix_kg'] ?>"
                         >
                             <?= htmlspecialchars($aliment['nom_aliment']) ?> 
-                            (Prix: <?= number_format($aliment['prix_kg'], 2) ?> €/kg)
+                            (Prix: <?= number_format($aliment['prix_kg'], 2) ?> MGA/kg)
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -42,7 +42,7 @@
                     class="form-control" 
                     id="cout_total" 
                     readonly
-                    value="0.00 €"
+                    value="0.00 MGA"
                 >
             </div>
 
@@ -65,7 +65,7 @@
         const quantite = parseFloat(document.getElementById('quantite_kg').value) || 0;
         const coutTotal = (prixKg * quantite).toFixed(2);
 
-        document.getElementById('cout_total').value = coutTotal + ' €';
+        document.getElementById('cout_total').value = coutTotal + ' MGA';
     }
 </script>
 

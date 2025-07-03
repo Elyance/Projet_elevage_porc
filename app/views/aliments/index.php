@@ -15,7 +15,7 @@
                 <th>Nom</th>
                 <th>Stock (kg)</th>
                 <th>Consommation/jour (kg)</th>
-                <th>Prix/kg (€)</th>
+                <th>Prix/kg (MGA)</th>
                 <th>Actions</th>
             </tr>
         </thead>

@@ -19,7 +19,7 @@
                         <strong>Stock actuel :</strong> <?= number_format($aliment['stock_kg'], 2) ?> kg
                     </li>
                     <li class="list-group-item">
-                        <strong>Prix au kg :</strong> <?= number_format($aliment['prix_kg'], 2) ?> €
+                        <strong>Prix au kg :</strong> <?= number_format($aliment['prix_kg'], 2) ?> MGA
                     </li>
                     <li class="list-group-item">
                         <strong>Contact fournisseur :</strong> <?= htmlspecialchars($aliment['contact_fournisseur']) ?>
@@ -44,7 +44,7 @@
                 <tr>
                     <th>Date</th>
                     <th>Quantité (kg)</th>
-                    <th>Coût total (€)</th>
+                    <th>Coût total (MGA)</th>
                 </tr>
                 <tr>
                     <td><?= date('d/m/Y', strtotime($aliment['date_reappro'])) ?></td>
