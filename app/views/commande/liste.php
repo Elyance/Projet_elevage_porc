@@ -24,3 +24,4 @@
     <?php endforeach; ?>
 </table>
 <a href="/commande/add">Ajouter une nouvelle commande</a>
+<a href="/budget/index">Voir le budget</a>

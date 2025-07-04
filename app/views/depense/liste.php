@@ -12,6 +12,8 @@
     <a href="/depense/list">Réinitialiser</a>
 </form>
 <table border="1">
+<a href="/budget/index">Voir le budget</a>
+
 <p><strong>Dépense totale : </strong><?= number_format($total_depense, 2) ?> Ar</p>
 
     <tr>
