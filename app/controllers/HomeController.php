@@ -20,7 +20,7 @@ class HomeController
                 'Alimentation' => '/alimentation',
                 'Animaux' => '/animaux',
                 'Enclos' => '/enclos',
-                'Employés' => '/employes',
+                'Employés' => '/employe',
                 'Affichages' => '/affichages'
             ]
         ];

@@ -1,11 +1,15 @@
 <?php
-
 use app\controllers\EnclosController;
 use app\controllers\HomeController;
 use app\controllers\ReproductionController;
 use app\controllers\CycleController;
 use app\controllers\NaissanceController;
 use app\controllers\TypePorcController;
+use app\controllers\EmployeController;
+use app\controllers\SalaireController;
+use app\controllers\PresenceController;
+use app\controllers\TacheController;
+use app\controllers\AddEmployeController;
 use flight\net\Router;
 use flight\Engine;
 
@@ -15,43 +19,66 @@ use flight\Engine;
  */
 
 $Home_Controller = new HomeController();
-$router->get('/', [$Home_Controller, 'home']);
+$router->get("/", [$Home_Controller, "home"]);
 
-$router->get('/hello-world/@name', function($name) {
-    echo '<h1>Hello world! Oh hey ' . $name . '!</h1>';
+$router->get("/hello-world/@name", function($name) {
+    echo "<h1>Hello world! Oh hey " . $name . "!</h1>";
 });
 
 $Reproduction_Controller = new ReproductionController();
-$router->get('/reproduction', [$Reproduction_Controller, 'index']);
-$router->get('/reproduction/inseminate', [$Reproduction_Controller, 'inseminate']);
-$router->post('/reproduction/inseminate', [$Reproduction_Controller, 'inseminate']);
+$router->get("/reproduction", [$Reproduction_Controller, "index"]);
+$router->get("/reproduction/inseminate", [$Reproduction_Controller, "inseminate"]);
+$router->post("/reproduction/inseminate", [$Reproduction_Controller, "inseminate"]);
 
 $Cycle_Controller = new CycleController();
-$router->get('/cycle', [$Cycle_Controller, 'index']);
-$router->get('/cycle/add', [$Cycle_Controller, 'add']);
-$router->post('/cycle/add', [$Cycle_Controller, 'add']);
-$router->get('/cycle/details/@id', [$Cycle_Controller, 'details']);
+$router->get("/cycle", [$Cycle_Controller, "index"]);
+$router->get("/cycle/add", [$Cycle_Controller, "add"]);
+$router->post("/cycle/add", [$Cycle_Controller, "add"]);
+$router->get("/cycle/details/@id", [$Cycle_Controller, "details"]);
 
 $Naissance_Controller = new NaissanceController();
-$router->get('/naissance/add', [$Naissance_Controller, 'add']);
-$router->post('/naissance/add', [$Naissance_Controller, 'add']);
+$router->get("/naissance/add", [$Naissance_Controller, "add"]);
+$router->post("/naissance/add", [$Naissance_Controller, "add"]);
 
-$router->group('/typePorc', function () use ($router) {
+$router->group("/typePorc", function () use ($router) {
     $typePorcController = new TypePorcController();
-    $router->get('/', [$typePorcController, 'list']);
-    $router->get('/add', [$typePorcController, 'form']);
-    $router->post('/add', [$typePorcController, 'save']);
-    $router->get('/delete', [$typePorcController, 'delete']);
-    $router->get('/edit', [$typePorcController, 'form']);
-    $router->post('/edit', [$typePorcController, 'update']);
+    $router->get("/", [$typePorcController, "list"]);
+    $router->get("/add", [$typePorcController, "form"]);
+    $router->post("/add", [$typePorcController, "save"]);
+    $router->get("/delete", [$typePorcController, "delete"]);
+    $router->get("/edit", [$typePorcController, "form"]);
+    $router->post("/edit", [$typePorcController, "update"]);
 });
 
-$router->group('/enclos', function () use ($router) {
+$router->group("/enclos", function () use ($router) {
     $enclosController = new EnclosController();
-    $router->get('/', [$enclosController, 'list']);
-    $router->get('/add', [$enclosController, 'form']);
-    $router->post('/add', [$enclosController, 'save']);
-    $router->get('/delete', [$enclosController, 'delete']);
-    $router->get('/edit', [$enclosController, 'form']);
-    $router->post('/edit', [$enclosController, 'update']);
+    $router->get("/", [$enclosController, "list"]);
+    $router->get("/add", [$enclosController, "form"]);
+    $router->post("/add", [$enclosController, "save"]);
+    $router->get("/delete", [$enclosController, "delete"]);
+    $router->get("/edit", [$enclosController, "form"]);
+    $router->post("/edit", [$enclosController, "update"]);
 });
+
+// Employee Routes
+$Employe_Controller = new EmployeController();
+$router->get("/employe", [$Employe_Controller, "index"]);
+$router->get("/employe/congedier/@id", [$Employe_Controller, "congedier"]);
+
+$Salaire_Controller = new SalaireController();
+$router->get("/salaire", [$Salaire_Controller, "index"]);
+$router->get("/salaire/payer/@id", [$Salaire_Controller, "payer"]);
+$router->post("/salaire/payer/@id", [$Salaire_Controller, "payer"]);
+$router->get("/salaire/historique_paie", [$Salaire_Controller, "historiquePaie"]);
+
+$Presence_Controller = new PresenceController();
+$router->get("/presence", [$Presence_Controller, "index"]);
+$router->get("/presence/detail_jour/@date", [$Presence_Controller, "detailJour"]);
+$router->get("/presence/add_presence", [$Presence_Controller, "addPresence"]);
+$router->post("/presence/add_presence", [$Presence_Controller, "addPresence"]);
+
+$Tache_Controller = new TacheController();
+$router->get("/tache", [$Tache_Controller, "index"]);
+
+$AddEmploye_Controller = new AddEmployeController();
+$router->get("/add_employe", [$AddEmploye_Controller, "index"]);
