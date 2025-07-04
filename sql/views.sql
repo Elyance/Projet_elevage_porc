@@ -7,7 +7,7 @@ CREATE TABLE bao_regle_gestion (
 
 
 -- Table de recette prenant les valeurs venant de regle_gestion
-CREATE VIEW bao_recette AS
+CREATE VIEW bao_view_recette AS
 SELECT 
     c.id_commande,
     cl.nom_client,
@@ -25,12 +25,12 @@ WHERE
 
 
 SELECT SUM(prix_total) AS total_recette
-FROM bao_recette
+FROM bao_view_recette
 WHERE date_recette BETWEEN '2023-01-01' AND '2023-12-31';
 
 
 
-CREATE OR REPLACE VIEW depenses_totales AS
+CREATE OR REPLACE VIEW bao_view_depenses_totales AS
 SELECT 
     'achat_aliment' AS type_depense,
     sm.date_mouvement AS date_depense,
