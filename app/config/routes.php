@@ -1,10 +1,11 @@
 <?php
 
 use app\controllers\ApiExampleController;
+use app\controllers\BudgetController;
 use app\controllers\WelcomeController;
 
 use app\controllers\CommandeController;
-
+use app\controllers\DepenseController;
 use flight\Engine;
 use flight\net\Router;
 //use Flight;
@@ -32,4 +33,10 @@ $router->get('/commande/list', [$CommandeController, 'list']);
 
 
 // Depenses
-$router->get('/depense/list', ['app\controllers\DepenseController', 'list']);
+$DepenseController = new DepenseController();
+$router->get('/depense/list', [$DepenseController, 'list']);
+
+
+//Budget
+$BudgetController = new BudgetController();
+$router->get('/budget/index', [$BudgetController, 'index']);

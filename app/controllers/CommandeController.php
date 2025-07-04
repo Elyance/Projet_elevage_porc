@@ -51,8 +51,8 @@ class CommandeController
    public function recette()
     {
         $conn = Flight::db();
-        $sql = 'SELECT * FROM bao_recette WHERE 1=1';
-        $sql_total = 'SELECT SUM(prix_total) as total FROM bao_recette WHERE 1=1';
+        $sql = 'SELECT * FROM bao_view_recette WHERE 1=1';
+        $sql_total = 'SELECT SUM(prix_total) as total FROM bao_view_recette WHERE 1=1';
         $params = [];
 
         // Filtrer par date_debut et date_fin si fournis

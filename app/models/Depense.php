@@ -20,7 +20,7 @@ class Depense
     public static function getAll()
     {
         $conn = Flight::db();
-        $sql = 'SELECT type_depense, date_depense, montant FROM depenses_totales';
+        $sql = 'SELECT type_depense, date_depense, montant FROM bao_view_depenses_totales';
         $result = $conn->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
         return array_map(fn($item) => self::fromArray($item), $result);
     }
@@ -28,7 +28,7 @@ class Depense
     public static function getFiltered(?string $date_debut = null, ?string $date_fin = null)
     {
         $conn = Flight::db();
-        $sql = 'SELECT type_depense, date_depense, montant FROM depenses_totales WHERE 1=1';
+        $sql = 'SELECT type_depense, date_depense, montant FROM bao_view_depenses_totales WHERE 1=1';
         $params = [];
 
         if (!empty($date_debut)) {
@@ -49,7 +49,7 @@ class Depense
     public static function getTotal(?string $date_debut = null, ?string $date_fin = null)
     {
         $conn = Flight::db();
-        $sql = 'SELECT SUM(montant) as total FROM depenses_totales WHERE 1=1';
+        $sql = 'SELECT SUM(montant) as total FROM bao_view_depenses_totales WHERE 1=1';
         $params = [];
 
         if (!empty($date_debut)) {
