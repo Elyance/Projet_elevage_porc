@@ -314,7 +314,17 @@ ALTER TABLE bao_cycle_reproduction ADD COLUMN id_insemination INTEGER;
 ALTER TABLE bao_cycle_reproduction ADD CONSTRAINT fk_insemination FOREIGN KEY (id_insemination) REFERENCES bao_insemination(id_insemination) ON DELETE SET NULL;
 
 ALTER TABLE bao_insemination
-DROP CHECK `bao_insemination.resultat`,
-ADD CHECK (resultat IN ('succes', 'echec', 'en cours'));
+DROP CONSTRAINT bao_insemination_resultat_check;
+
+ALTER TABLE bao_insemination
+ADD CONSTRAINT check_resultat_valid
+CHECK (resultat IN ('succes', 'echec', 'en cours'));
+
+ALTER TABLE bao_cycle_reproduction
+ADD COLUMN etat VARCHAR(20),
+ADD CONSTRAINT check_etat_cycle
+CHECK (etat IN ('actif', 'inactif', 'termine'));
+
+
 -- Re-enable foreign key checks
 SET session_replication_role = DEFAULT;

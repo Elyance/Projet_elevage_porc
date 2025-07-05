@@ -14,9 +14,9 @@
         <td><?= htmlspecialchars($cycle->date_debut_cycle) ?></td>
         <td><?= htmlspecialchars($cycle->date_fin_cycle) ?></td>
         <td><?= htmlspecialchars($cycle->nombre_portee) ?></td>
-        <td><a href="/cycle/details/<?= $cycle->id_cycle_reproduction ?>">Détails</a></td>
+        <td><a href="<?php echo Flight::get('flight.base_url')?>/cycle/details/<?= $cycle->id_cycle_reproduction ?>">Détails</a></td>
     </tr>
     <?php endforeach; ?>
 </table>
-<a href="/cycle/add">Ajouter Cycle</a>
-<a href="/naissance/add">Ajouter Naissance</a>
+<a href="<?php echo Flight::get('flight.base_url')?>/cycle/add">Ajouter Cycle</a>
+<a href="<?php echo Flight::get('flight.base_url')?>/naissance/add">Ajouter Naissance</a>

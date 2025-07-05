@@ -6,7 +6,7 @@ Voici une réponse détaillée à votre requête, en me basant sur les wireframe
 
 #### **Comment cela affecte le programme ?**
 Dans l'interface employé, la liste de tâches comme "peser les porcs" (visible dans le wireframe #4 "Gestion tâches" pour le côté employé et suggérée dans d'autres comme #8 "Gestion Enclos et Mise en Vente") a plusieurs impacts sur le programme :
-- **Mise à jour des statuts** : Lorsqu’un employé marque une tâche comme "peser les porcs" comme terminée (par exemple, en cochant une case et en cliquant sur "DONE" dans #4), le statut de la tâche passe de "en cours" à "accomplie" dans la base de données.
+- **Mise à jour des statuts** : Lorsqu’un employé marque une tâche comme "peser les porcs" comme termine (par exemple, en cochant une case et en cliquant sur "DONE" dans #4), le statut de la tâche passe de "en cours" à "accomplie" dans la base de données.
 - **Enregistrement des résultats** : Cette tâche implique la collecte de données (par exemple, le poids des porcs). Ces données doivent être enregistrées et liées aux entités concernées (porcs, enclos, cycles reproductifs).
 - **Effets en cascade** : Les données de poids peuvent influencer d'autres parties du système, comme :
   - **Santé** (#10 "Gestion Santé") : Le poids peut signaler des problèmes de santé (ex. sous-poids nécessitant un diagnostic).
@@ -28,14 +28,14 @@ Pour supporter cette fonctionnalité dans la base actuelle, les tables suivantes
 #### **Zones d'ombre dans l'interface employé**
 - **Assignation des tâches** : Dans #4, les tâches apparaissent dans une liste, mais il n’est pas clair comment elles sont assignées (manuellement par l’admin ou automatiquement ?).
 - **Détails des tâches** : Aucun wireframe ne montre les instructions spécifiques (ex. quels porcs peser, quel équipement utiliser).
-- **Suivi des progrès** : Pas de mécanisme pour indiquer une tâche "en cours" ou partiellement terminée (ex. 10 porcs pesés sur 20).
+- **Suivi des progrès** : Pas de mécanisme pour indiquer une tâche "en cours" ou partiellement termine (ex. 10 porcs pesés sur 20).
 - **Notifications** : Les employés ne semblent pas recevoir d’alertes pour les tâches nouvelles ou en retard.
 
 #### **Suggestions pour l'interface employé**
 - **Mécanisme d’assignation** : Ajouter un système clair pour assigner les tâches (ex. un champ "Assigné à" dans la liste des tâches).
 - **Détails des tâches** : Inclure une section "Détails" dans la liste (ex. "Peser les porcs de l’enclos E1, utiliser la balance X").
 - **Suivi des statuts** : Ajouter des statuts intermédiaires (ex. "en cours") avec des indicateurs visuels (ex. couleurs).
-- **Formulaire de résultats** : Après avoir marqué une tâche comme terminée, afficher un formulaire pour entrer les poids, avec validation (ex. poids > 0).
+- **Formulaire de résultats** : Après avoir marqué une tâche comme termine, afficher un formulaire pour entrer les poids, avec validation (ex. poids > 0).
 - **Notifications** : Implémenter un système d’alertes (ex. pop-up ou icône dans l’interface pour les nouvelles tâches).
 
 ---
@@ -62,11 +62,11 @@ Les wireframes (#5 "Admin Side", #7 "Gestion Employé", #8 "Statistique et Simul
   - Ajouter un tableau "Tâches en cours" avec filtres (ex. par employé, statut, date limite).
   - Inclure un formulaire pour créer des tâches récurrentes (ex. "Peser les porcs tous les lundis").
 - **Tableau de bord** :
-  - Créer une page d’accueil avec des widgets (ex. nombre de tâches terminées, alertes santé, niveau des stocks).
+  - Créer une page d’accueil avec des widgets (ex. nombre de tâches termines, alertes santé, niveau des stocks).
 - **Gestion des utilisateurs** :
   - Ajouter une section "Rôles et Permissions" pour définir ce que chaque employé peut faire (ex. "Assigner tâches" réservé aux admins).
 - **Rapports avancés** :
-  - Inclure des graphiques sur la productivité (ex. tâches terminées par employé) et la santé (ex. tendances des poids).
+  - Inclure des graphiques sur la productivité (ex. tâches termines par employé) et la santé (ex. tendances des poids).
 - **Configuration** :
   - Ajouter un panneau pour définir les types de tâches, les seuils (ex. poids minimum pour vente), et les alertes.
 

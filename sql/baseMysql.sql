@@ -306,7 +306,7 @@ CREATE TABLE bao_cycle_reproduction (
     date_fin_cycle DATE,
     nombre_portee INT,
     id_insemination INT,
-    etat VARCHAR(20) CHECK (etat IN ('en cours', 'terminée')),
+    etat VARCHAR(20) CHECK (etat IN ('en cours', 'termine')),
     FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie) ON DELETE SET NULL,
     FOREIGN KEY (id_insemination) REFERENCES bao_insemination(id_insemination) ON DELETE SET NULL
 );

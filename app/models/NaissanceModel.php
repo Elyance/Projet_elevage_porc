@@ -22,20 +22,45 @@ class NaissanceModel
 
     public static function create(int $id_cycle_reproduction, int $id_truie, int $nombre_porcs, int $id_enclos): bool {
         $conn = Flight::db();
-        $stmt = $conn->prepare("INSERT INTO bao_portee (id_truie, id_cycle_reproduction, nombre_porcs, date_naissance) VALUES (:id_truie, :id_cycle_reproduction, :nombre_porcs, CURDATE())");
-        $success = $stmt->execute([':id_truie' => $id_truie, ':id_cycle_reproduction' => $id_cycle_reproduction, ':nombre_porcs' => $nombre_porcs]);
 
-        if ($success) {
-            $portee_id = $conn->lastInsertId();
-            $insertEnclosStmt = $conn->prepare("INSERT INTO bao_enclos_portee (id_enclos, id_portee, quantite_portee, poids_estimation, statut_vente) VALUES (:id_enclos, :id_portee, :quantite_portee, 0, 'non possible')");
-            $insertEnclosStmt->execute([':id_enclos' => $id_enclos, ':id_portee' => $portee_id, ':quantite_portee' => $nombre_porcs]);
+        // PostgreSQL INSERT avec RETURNING pour récupérer l'id inséré
+        $sqlInsertPortee = "INSERT INTO bao_portee (id_truie, id_cycle_reproduction, nombre_porcs, date_naissance) 
+                            VALUES (:id_truie, :id_cycle_reproduction, :nombre_porcs, CURRENT_DATE) RETURNING id_portee";
+        $stmt = $conn->prepare($sqlInsertPortee);
+        $stmt->execute([
+            ':id_truie' => $id_truie, 
+            ':id_cycle_reproduction' => $id_cycle_reproduction, 
+            ':nombre_porcs' => $nombre_porcs
+        ]);
+        $portee_id = $stmt->fetchColumn();
 
-            CycleModel::updateEtat($id_cycle_reproduction, 'terminée');
-            $updateStmt = $conn->prepare("UPDATE bao_cycle_reproduction SET nombre_portee = :nombre_portee, date_fin_cycle = CURDATE() WHERE id_cycle_reproduction = :id_cycle_reproduction");
-            $updateStmt->execute([':nombre_portee' => $nombre_porcs, ':id_cycle_reproduction' => $id_cycle_reproduction]);
+        if ($portee_id) {
+            $insertEnclosStmt = $conn->prepare(
+                "INSERT INTO bao_enclos_portee (id_enclos, id_portee, quantite_portee, poids_estimation, statut_vente) 
+                 VALUES (:id_enclos, :id_portee, :quantite_portee, 0, 'non possible')"
+            );
+            $insertEnclosStmt->execute([
+                ':id_enclos' => $id_enclos, 
+                ':id_portee' => $portee_id, 
+                ':quantite_portee' => $nombre_porcs
+            ]);
+
+            CycleModel::updateEtat($id_cycle_reproduction, 'termine');
+
+            $updateStmt = $conn->prepare(
+                "UPDATE bao_cycle_reproduction 
+                 SET nombre_portee = :nombre_portee, date_fin_cycle = CURRENT_DATE 
+                 WHERE id_cycle_reproduction = :id_cycle_reproduction"
+            );
+            $updateStmt->execute([
+                ':nombre_portee' => $nombre_porcs, 
+                ':id_cycle_reproduction' => $id_cycle_reproduction
+            ]);
+
+            return true;
         }
 
-        return $success;
+        return false;
     }
 
     public static function fromArray(array $data): NaissanceModel

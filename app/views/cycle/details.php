@@ -34,4 +34,4 @@
 <p>Nombre de Portées Moyen: <?= number_format($prevision['portee'], 2) ?></p>
 
 <h2>Action</h2>
-<a href="/naissance/add?cycle_id=<?= htmlspecialchars($currentCycle->id_cycle_reproduction) ?>&truie_id=<?= htmlspecialchars($currentCycle->id_truie) ?>">Naissance</a>
+<a href="<?php echo Flight::get('flight.base_url')?>/naissance/add?cycle_id=<?= htmlspecialchars($currentCycle->id_cycle_reproduction) ?>&truie_id=<?= htmlspecialchars($currentCycle->id_truie) ?>">Naissance</a>

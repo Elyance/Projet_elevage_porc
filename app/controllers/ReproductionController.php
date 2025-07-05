@@ -25,7 +25,7 @@ class ReproductionController {
                 CycleModel::create($insemination->id_truie, $insemination->date_insemination, $date_fin_cycle, 0, $id_insemination);
             }
 
-            Flight::redirect('/reproduction');
+            Flight::redirect('reproduction');
         }
 
         Flight::render('reproduction/index', ['inseminations' => $inseminations]);

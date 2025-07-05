@@ -15,14 +15,14 @@ class HomeController
             'page' => 'home',
             'title' => 'Gestion Porc - Accueil',
             'links' => [
-                'Accueil' => '/',
-                'Taches' => '/taches',
-                'Reproduction' => '/reproduction',
-                'Alimentation' => '/alimentation',
-                'Animaux' => '/animaux',
-                'Enclos' => '/enclos',
-                'Employés' => '/employe',
-                'Affichages' => '/affichages'
+                'Accueil' => Flight::get('flight.base_url'),
+                'Taches' => Flight::get('flight.base_url').'/taches',
+                'Reproduction' => Flight::get('flight.base_url').'/reproduction',
+                'Alimentation' => Flight::get('flight.base_url').'/alimentation',
+                'Animaux' => Flight::get('flight.base_url').'/animaux',
+                'Enclos' => Flight::get('flight.base_url').'/enclos',
+                'Employés' => Flight::get('flight.base_url').'/employe',
+                'Affichages' => Flight::get('flight.base_url').'/affichages'
             ]
         ];
 

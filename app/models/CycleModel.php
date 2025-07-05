@@ -64,7 +64,7 @@ class CycleModel
 
     public static function getPrecedentTerminatedCycle(int $truieId): ?CycleModel {
         $conn = Flight::db();
-        $stmt = $conn->prepare("SELECT * FROM bao_cycle_reproduction WHERE id_truie = :id_truie AND etat = 'terminée' ORDER BY date_fin_cycle DESC LIMIT 1");
+        $stmt = $conn->prepare("SELECT * FROM bao_cycle_reproduction WHERE id_truie = :id_truie AND etat = 'termine' ORDER BY date_fin_cycle DESC LIMIT 1");
         $stmt->execute([':id_truie' => $truieId]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result ? CycleModel::fromArray($result) : null;
@@ -72,7 +72,7 @@ class CycleModel
 
     public static function getPrevision(int $truieId, int $currentId): array {
         $conn = Flight::db();
-        $stmt = $conn->prepare("SELECT AVG(DATEDIFF(date_fin_cycle, date_debut_cycle)) as avg_days, AVG(nombre_portee) as avg_portee FROM bao_cycle_reproduction WHERE id_truie = :id_truie AND nombre_portee IS NOT NULL AND id_cycle_reproduction != :current_id");
+        $stmt = $conn->prepare("SELECT AVG((date_fin_cycle - date_debut_cycle)) AS avg_days,AVG(nombre_portee) AS avg_portee FROM bao_cycle_reproduction WHERE id_truie = :id_truie AND nombre_portee IS NOT NULL AND id_cycle_reproduction != :current_id;");
         $stmt->execute([':id_truie' => $truieId, ':current_id' => $currentId]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return [
