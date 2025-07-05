@@ -9,17 +9,19 @@
         <th>Adresse Livraison</th>
         <th>Date Livraison</th>
         <th>Statut Livraison</th>
+        <th>Action</th>
     </tr>
     <?php foreach ($commands as $command): ?>
         <tr>
-            <td><?= $command->id_commande ?></td>
-            <td><?= $command->nomClient ?? 'Inconnu' ?></td>
-            <td><?= $command->id_enclos_portee ?></td>
-            <td><?= $command->quantite ?></td>
-            <td><?= $command->date_commande ?></td>
-            <td><?= $command->adresse_livraison ?></td>
-            <td><?= $command->date_livraison ?? 'Non défini' ?></td>
-            <td><?= $command->statut_livraison ?></td>
+            <td><?= htmlspecialchars($command->id_commande) ?></td>
+            <td><?= htmlspecialchars($command->nomClient ?? 'Inconnu') ?></td>
+            <td><?= htmlspecialchars($command->id_enclos_portee) ?></td>
+            <td><?= htmlspecialchars($command->quantite) ?></td>
+            <td><?= htmlspecialchars($command->date_commande) ?></td>
+            <td><?= htmlspecialchars($command->adresse_livraison) ?></td>
+            <td><?= htmlspecialchars($command->date_livraison ?? 'Non défini') ?></td>
+            <td><?= htmlspecialchars($command->statut_livraison) ?></td>
+            <td><a href="/commande/edit-status/<?= $command->id_commande ?>"><button>Modifier statut</button></a></td>
         </tr>
     <?php endforeach; ?>
 </table>

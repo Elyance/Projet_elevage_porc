@@ -110,11 +110,11 @@ class Commande
             throw $th;
         }
     }
-    public static function update(int $id_commande, int $id_client, int $id_enclos_portee, int $quantite, string $date_commande, string $adresse_livraison, ?string $date_livraison, string $statut_livraison)
+    public static function update(int $id_commande, string $nomClient, int $id_enclos_portee, int $quantite, string $date_commande, string $adresse_livraison, ?string $date_livraison, string $statut_livraison)
     {
         $conn = Flight::db();
         $sql = 'UPDATE bao_commande 
-                SET id_client = :id_client, id_enclos_portee = :id_enclos_portee, quantite = :quantite, 
+                SET nomclient = :nomclient, id_enclos_portee = :id_enclos_portee, quantite = :quantite, 
                     date_commande = :date_commande, adresse_livraison = :adresse_livraison, 
                     date_livraison = :date_livraison, statut_livraison = :statut_livraison 
                 WHERE id_commande = :id_commande';
@@ -122,7 +122,7 @@ class Commande
         try {
             $stmt->execute([
                 ':id_commande' => $id_commande,
-                ':id_client' => $id_client,
+                ':nomclient' => $nomClient,
                 ':id_enclos_portee' => $id_enclos_portee,
                 ':quantite' => $quantite,
                 ':date_commande' => $date_commande,

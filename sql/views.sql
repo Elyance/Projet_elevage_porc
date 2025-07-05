@@ -4,6 +4,15 @@ CREATE TABLE bao_regle_gestion (
     nom_regle VARCHAR(50) UNIQUE,
     valeur DECIMAL(10,2)
 );
+
+
+CREATE TABLE bao_regle_gestion_porc(
+    id SERIAL PRIMARY KEY,
+    idRace INTEGER,
+    prix_unitaire DECIMAL(10,2)
+);
+
+
 INSERT INTO bao_regle_gestion(nom_regle,valeur) VALUES ('prix_vente_porc', 50000), ('prix_achat_aliment', 3000);
 
 -- Table de recette prenant les valeurs venant de regle_gestion

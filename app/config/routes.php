@@ -30,7 +30,8 @@ $router->post('/commande/add', [$CommandeController, 'add']);
 $router->get('/commande/add',[$CommandeController, 'form']);
 $router->get('/commande/recette', [$CommandeController, 'recette']);
 $router->get('/commande/list', [$CommandeController, 'list']);	
-
+$router->get('/commande/edit-status/@id', [$CommandeController, 'editStatus']);
+$router->post('/commande/edit-status/@id', [$CommandeController, 'updateStatus']);
 
 // Depenses
 $DepenseController = new DepenseController();
