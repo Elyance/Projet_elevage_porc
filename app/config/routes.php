@@ -1,6 +1,7 @@
 <?php
 
 use app\controllers\ApiExampleController;
+use app\controllers\DecesController;
 use app\controllers\WelcomeController;
 use app\controllers\SanteEvenementController;
 use app\controllers\SanteTypeEvenementController;
@@ -24,6 +25,7 @@ $santeevenementController = new SanteEvenementController();
 $santetypeevenementController = new SanteTypeEvenementController();
 $diagnosticController = new DiagnosticController();
 $maladieController = new MaladieController();
+$decesController = new DecesController();
 
 $router->get('/', [ $santeevenementController, 'home' ]); 
 $router->get('/evenement', [$santeevenementController, 'findByDate']);
@@ -46,5 +48,13 @@ $router->get('/maladie/add', [$maladieController, 'formAddMaladie']);
 $router->post('/maladie/add', [$maladieController, 'addMaladie']);
 $router->get('/maladie/edit/@id:\d+', [$maladieController, 'formUpdateMaladie']);
 $router->post('/maladie/edit/@id:\d+', [$maladieController, 'UpdateMaladie']);
+$router->get('/maladie/delete/@id:\d+', [$maladieController, 'deleteMaladie']);
+
+$router->get('/deces', [ $decesController, 'home' ]); 
+$router->get('/deces/add', [$decesController, 'formAddDeces']);
+$router->post('/deces/add', [$decesController, 'addDeces']);
+$router->get('/deces/edit/@id:\d+', [$decesController, 'formUpdateDeces']);
+$router->post('/deces/edit/@id:\d+', [$decesController, 'UpdateDeces']);
+$router->get('/deces/delete/@id:\d+', [$decesController, 'deleteDeces']);
 
 $router->get('/truie', [ $Welcome_Controller, 'truie' ]);

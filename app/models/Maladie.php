@@ -90,9 +90,11 @@ class Maladie
     {
         try {
             $this->db->beginTransaction();
+            $this->db->runQuery("DELETE FROM bao_diagnostic WHERE id_maladie = ?", [$id]);
+            $this->db->runQuery("DELETE FROM bao_maladie_symptome WHERE id_maladie = ?", [$id]);
             $sql = "DELETE FROM bao_maladie WHERE id_maladie = ?";
             $this->db->runQuery($sql, [$id]);
-            $this->db->runQuery("DELETE FROM bao_maladie_symptome WHERE id_maladie = ?", [$id]);
+            $this->db->commit();
         } catch (\Throwable $th) {
             $this->db->rollBack();
             throw $th;
