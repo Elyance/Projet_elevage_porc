@@ -16,23 +16,27 @@
     </label><br>
     <label>Nombre de Femelles Nées: <input type="number" name="femelle_nait" required min="0"></label><br>
     <label>Nombre de Mâles Nés: <input type="number" name="male_nait" required min="0"></label><br>
+    <label>Total (Affichage uniquement): <input type="number" id="total_display" readonly></label><br>
     <button type="submit">Ajouter</button>
 </form>
 
 <script>
     const femelleInput = document.querySelector('input[name="femelle_nait"]');
     const maleInput = document.querySelector('input[name="male_nait"]');
-    const totalInput = document.createElement('input');
-    totalInput.type = 'number';
-    totalInput.name = 'nombre_porcs';
-    totalInput.readOnly = true;
-    document.querySelector('form').appendChild(totalInput);
+    const totalDisplay = document.getElementById('total_display');
 
     [femelleInput, maleInput].forEach(input => {
         input.addEventListener('input', () => {
             const femelle = parseInt(femelleInput.value) || 0;
             const male = parseInt(maleInput.value) || 0;
-            totalInput.value = femelle + male;
+            totalDisplay.value = femelle + male;
         });
+    });
+
+    // Initialize total on page load
+    window.addEventListener('load', () => {
+        const femelle = parseInt(femelleInput.value) || 0;
+        const male = parseInt(maleInput.value) || 0;
+        totalDisplay.value = femelle + male;
     });
 </script>

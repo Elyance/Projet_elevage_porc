@@ -16,16 +16,28 @@ class EnclosModel
         $this->stockage = $stockage;
     }
 
-    public static function getAll() {
+    public static function getAll(): array
+    {
         $conn = Flight::db();
-        $stmt = $conn->query("SELECT * FROM bao_enclos");
+        $stmt = $conn->prepare("SELECT * FROM bao_enclos");
+        $stmt->execute();
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        return array_map(fn($item) => EnclosModel::fromArray($item), $result);
+        return array_map(fn($item) => self::fromArray($item), $result);
     }
 
-    public static function fromArray(array $data): EnclosModel
+    public static function findById(int $id_enclos): ?self
     {
-        return new EnclosModel(
+        $conn = Flight::db();
+        $sql = "SELECT * FROM bao_enclos WHERE id_enclos = :id_enclos";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':id_enclos' => $id_enclos]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result ? self::fromArray($result) : null;
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
             $data['id_enclos'] ?? 0,
             $data['enclos_type'] ?? null,
             $data['stockage'] ?? null

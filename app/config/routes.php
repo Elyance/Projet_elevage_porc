@@ -14,6 +14,10 @@ use app\controllers\SalaireController;
 use app\controllers\PresenceController;
 use app\controllers\TacheController;
 use app\controllers\AddEmployeController;
+use app\controllers\AlimentController;
+use app\controllers\NourrirController;
+use app\controllers\ReapproController;
+
 use flight\net\Router;
 use flight\Engine;
 
@@ -36,6 +40,16 @@ $router->get("/home", [$Home_Controller, "home"]);
 
 $router->get("/hello-world/@name", function($name) {
     echo "<h1>Hello world! Oh hey " . $name . "!</h1>";
+});
+
+$router->group('/typePorc', function () use ($router) {
+    $typePorcController = new TypePorcController();
+    $router->get('/', [$typePorcController, 'list']);
+    $router->get('/add', [$typePorcController, 'form']);
+    $router->post('/add', [$typePorcController, 'save']);
+    $router->get('/delete', [$typePorcController, 'delete']);
+    $router->get('/edit', [$typePorcController, 'form']);
+    $router->post('/edit', [$typePorcController, 'update']);
 });
 
 $Tache_controller = new TacheController();
@@ -100,3 +114,25 @@ $router->get("/tache", [$Tache_Controller, "index"]);
 
 $AddEmploye_Controller = new AddEmployeController();
 $router->get("/add_employe", [$AddEmploye_Controller, "index"]);
+
+$router->group('/aliments', function () use ($router) {
+    // Aliments
+    $AlimentController = new AlimentController();
+    $router->get('/', [$AlimentController, 'index']);
+    $router->get('/@id:[0-9]+', [$AlimentController, 'show']);
+
+    // Nourrir
+    $router->group('/nourrir', function () use ($router) {
+        $NourrirController = new NourrirController();
+        $router->get('/', [$NourrirController, 'index']);
+        $router->post('/action', [$NourrirController, 'nourrir']);
+    });
+    
+
+    // Réapprovisionnement
+    $ReapproController = new ReapproController();
+    $router->get('/reappro', [$ReapproController, 'index']);
+    $router->post('/reappro/action', [$ReapproController, 'reapprovisionner']);
+
+});
+

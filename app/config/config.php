@@ -72,7 +72,7 @@ return [
 		// uncomment the below 4 lines for mysql
 		 'host' => 'localhost',
 		 'dbname' => 'gestion_porc',
-		 'user' => 'postgres',
+		 'username' => 'postgres',
 		 'password' => 'postgres'
 
 		// uncomment the following line for sqlite

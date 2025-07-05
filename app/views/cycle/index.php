@@ -5,7 +5,8 @@
         <th>Truie</th>
         <th>Date Début Cycle</th>
         <th>Date Fin Cycle</th>
-        <th>Nombre Portée</th>
+        <th>Nombre de Mâles</th>
+        <th>Nombre de Femelles</th>
         <th>Action</th>
     </tr>
     <?php foreach ($cycles as $cycle): ?>
@@ -13,7 +14,9 @@
         <td><?= htmlspecialchars($cycle->truie_poids) ?> kg</td>
         <td><?= htmlspecialchars($cycle->date_debut_cycle) ?></td>
         <td><?= htmlspecialchars($cycle->date_fin_cycle) ?></td>
-        <td><?= htmlspecialchars($cycle->nombre_portee) ?></td>
+        <td><?= htmlspecialchars($cycle->nombre_males ?? 'N/A') ?></td>
+        <td><?= htmlspecialchars($cycle->nombre_femelles ?? 'N/A') ?></td>
+        <td><?= htmlspecialchars($cycle->etat ?? 'N/A') ?></td>
         <td><a href="<?php echo Flight::get('flight.base_url')?>/cycle/details/<?= $cycle->id_cycle_reproduction ?>">Détails</a></td>
     </tr>
     <?php endforeach; ?>

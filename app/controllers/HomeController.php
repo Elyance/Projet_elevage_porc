@@ -19,7 +19,7 @@ class HomeController
                 'Accueil' => Flight::get('flight.base_url'),
                 // 'Taches' => Flight::get('flight.base_url').'/taches',
                 'Reproduction' => Flight::get('flight.base_url').'/reproduction',
-                'Alimentation' => Flight::get('flight.base_url').'/alimentation',
+                'Alimentation' => Flight::get('flight.base_url').'/aliments',
                 'Animaux' => Flight::get('flight.base_url').'/animaux',
                 'Enclos' => Flight::get('flight.base_url').'/enclos',
                 'Employés' => Flight::get('flight.base_url').'/employe',

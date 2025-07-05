@@ -7,7 +7,8 @@ use app\models\CycleModel;
 use app\models\EnclosModel;
 use Flight;
 
-class NaissanceController {
+class NaissanceController
+{
     public function add()
     {
         $truies = TruieModel::getAll();
@@ -20,9 +21,9 @@ class NaissanceController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $cycle_id = $_POST['cycle_id'] ?? $cycle_id;
             $truie_id = $_POST['truie_id'] ?? $truie_id;
-            $femelle_nait = $_POST['femelle_nait'] ?? 0;
-            $male_nait = $_POST['male_nait'] ?? 0;
-            $enclos_id = $_POST['enclos_id'] ?? null;
+            $femelle_nait = (int)($_POST['femelle_nait'] ?? 0);
+            $male_nait = (int)($_POST['male_nait'] ?? 0);
+            $enclos_id = (int)($_POST['enclos_id'] ?? null);
 
             // Validation de base
             if (!$cycle_id || !$truie_id || !$enclos_id || $femelle_nait < 0 || $male_nait < 0) {
@@ -30,7 +31,6 @@ class NaissanceController {
                 return;
             }
 
-            $nombre_porcs = $femelle_nait + $male_nait;
             NaissanceModel::create((int)$cycle_id, (int)$truie_id, $femelle_nait, $male_nait, (int)$enclos_id);
 
             Flight::redirect('/cycle');

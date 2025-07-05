@@ -5,7 +5,8 @@ use app\models\CycleModel;
 use app\models\TruieModel;
 use Flight;
 
-class CycleController {
+class CycleController
+{
     public function index()
     {
         $cycles = CycleModel::getAll();
@@ -17,12 +18,13 @@ class CycleController {
         $truies = TruieModel::getAll();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $truie_id = $_POST['truie_id'];
+            $truie_id = (int)($_POST['truie_id']);
             $date_debut_cycle = $_POST['date_debut_cycle'];
-            $date_fin_cycle = $_POST['date_fin_cycle'];
-            $nombre_portee = $_POST['nombre_portee'] ?? 0;
+            $date_fin_cycle = $_POST['date_fin_cycle'] ?? null;
+            $nombre_males = (int)($_POST['nombre_males'] ?? 0);
+            $nombre_femelles = (int)($_POST['nombre_femelles'] ?? 0);
 
-            CycleModel::create($truie_id, $date_debut_cycle, $date_fin_cycle, $nombre_portee);
+            CycleModel::create($truie_id, $date_debut_cycle, $date_fin_cycle, $nombre_males, $nombre_femelles);
 
             Flight::redirect('/cycle');
         }

@@ -24,7 +24,12 @@ DROP TABLE IF EXISTS bao_commande CASCADE;
 DROP TABLE IF EXISTS bao_client CASCADE;
 DROP TABLE IF EXISTS bao_enclos_portee CASCADE;
 DROP TABLE IF EXISTS bao_enclos CASCADE;
+<<<<<<< HEAD
 DROP TABLE IF EXISTS bao_enclos_type CASCADE;
+=======
+DROP TABLE IF EXISTS bao_type_porc CASCADE;
+-- DROP TABLE IF EXISTS bao_enclos_type CASCADE;
+>>>>>>> origin/Hardy
 DROP TABLE IF EXISTS bao_portee CASCADE;
 DROP TABLE IF EXISTS bao_truie CASCADE;
 DROP TABLE IF EXISTS bao_utilisateur CASCADE;
@@ -52,6 +57,7 @@ VALUES ('admin', 'admin', 1),
        ('emp', 'emp', 2);
 
 ------------- 2/ ENCLOS-PORCS
+<<<<<<< HEAD
 CREATE TABLE bao_enclos_type (
     id_enclos_type SERIAL PRIMARY KEY,
     nom_enclos_type VARCHAR(50)
@@ -60,11 +66,27 @@ CREATE TABLE bao_enclos_type (
 INSERT INTO bao_enclos_type(nom_enclos_type)
 VALUES ('Truie'), ('Portee'), ('Quarantaine');
 
+=======
+CREATE TABLE bao_type_porc(
+    id_type_porc SERIAL PRIMARY Key,
+    nom_type VARCHAR(50),
+    age_min integer,
+    age_max integer,
+    poids_min decimal(10,2),
+    poids_max decimal(10,2),
+    espace_requis decimal(10,2)
+);
+
+>>>>>>> origin/Hardy
 CREATE TABLE bao_enclos (
     id_enclos SERIAL PRIMARY KEY,
     enclos_type INTEGER,
     stockage INTEGER, -- nombre de porc contenu dans l'enclos
+<<<<<<< HEAD
     FOREIGN KEY (enclos_type) REFERENCES bao_enclos_type(id_enclos_type)
+=======
+    FOREIGN KEY (enclos_type) REFERENCES bao_type_porc(id_type_porc)
+>>>>>>> origin/Hardy
 );
 
 CREATE TABLE bao_truie (
@@ -75,6 +97,7 @@ CREATE TABLE bao_truie (
     FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos)
 );
 
+<<<<<<< HEAD
 CREATE TABLE bao_portee (
     id_portee SERIAL PRIMARY KEY,
     id_truie INTEGER, -- truie qui a donne naissance a la portee
@@ -397,6 +420,9 @@ CREATE TABLE bao_truie (
     date_entree DATE,
     FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos)
 );
+=======
+ALTER TABLE bao_truie ADD COLUMN id_race FOREIGN KEY (id_race) REFERENCES bao_enclos(id_race)
+>>>>>>> origin/Hardy
 
 CREATE TABLE bao_portee (
     id_portee SERIAL PRIMARY KEY,
@@ -406,6 +432,11 @@ CREATE TABLE bao_portee (
     FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
 );
 
+<<<<<<< HEAD
+=======
+ALTER TABLE bao_portee ADD COLUMN id_race FOREIGN KEY (id_race) REFERENCES races_porcs(id_race)
+
+>>>>>>> origin/Hardy
 -- pour gerer les deplacement/vente de portee (fusion/mix entre plusioeurs portees)
 -- (sinon il sera dur de gerer les plusieurs portees dans diff enclos sans cette table)
 CREATE TABLE bao_enclos_portee (
