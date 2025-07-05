@@ -1,3 +1,4 @@
+drop DATABASE IF EXISTS gestion_porc;
 create DATABASE gestion_porc;
 \c gestion_porc;
 

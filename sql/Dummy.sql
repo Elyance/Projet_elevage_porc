@@ -211,6 +211,7 @@ CREATE TABLE bao_tache_employe (
     id_employe INTEGER,
     date_attribution DATE,
     statut VARCHAR(20) CHECK (statut IN ('non commencer', 'terminee')),
+    date_echeance DATE, -- Luberri 
     FOREIGN KEY (id_tache) REFERENCES bao_tache(id_tache),
     FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
 );
