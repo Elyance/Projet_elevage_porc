@@ -76,6 +76,8 @@ CREATE TABLE bao_portee (
     id_portee SERIAL PRIMARY KEY,
     id_truie INTEGER,
     nombre_porcs INTEGER,
+    femelle_nait INTEGER,
+    male_nait INTEGER,
     date_naissance DATE,
     id_cycle_reproduction INTEGER,
     FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)

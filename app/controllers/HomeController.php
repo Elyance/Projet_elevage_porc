@@ -10,6 +10,7 @@ class HomeController
      */
     public function home()
     {
+        
         // Prepare data for the view
         $data = [
             'page' => 'home',

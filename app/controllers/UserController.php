@@ -19,23 +19,8 @@ class UserController {
 
         if ($user) {
             if ($user->getRole() == 1) {
-
                 $_SESSION['admin'] = $user;
-                $data = [
-                    'title' => 'Gestion Porc - Accueil',
-                    'admin' => $_SESSION['admin'],
-                    'links' => [
-                        'Accueil' => Flight::get('flight.base_url'),
-                        // 'Taches' => Flight::get('flight.base_url').'/taches',
-                        'Reproduction' => Flight::get('flight.base_url').'/reproduction',
-                        'Alimentation' => Flight::get('flight.base_url').'/alimentation',
-                        'Animaux' => Flight::get('flight.base_url').'/animaux',
-                        'Enclos' => Flight::get('flight.base_url').'/enclos',
-                        'Employés' => Flight::get('flight.base_url').'/employe',
-                        'Affichages' => Flight::get('flight.base_url').'/affichages'
-                    ]
-                ];
-                Flight::render('home', $data);
+                Flight::redirect('/home');
             } else {
                 $_SESSION['employe'] = $user;
                 Flight::render('employeHome', ['message'=> "Bienvenue mon cher employe"]);

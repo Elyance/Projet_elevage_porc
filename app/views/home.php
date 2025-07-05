@@ -8,7 +8,6 @@
     </style>
 </head>
 <body>
-    <h1>Bienvenue sur Gestion Porc <?php print_r($_SESSION['admin']); ?></h1>
 
     <div class="menu">
         <?php foreach ($links as $title => $url): ?>

@@ -20,14 +20,29 @@ class NaissanceController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $cycle_id = $_POST['cycle_id'] ?? $cycle_id;
             $truie_id = $_POST['truie_id'] ?? $truie_id;
-            $nombre_porcs = $_POST['nombre_porcs'];
-            $enclos_id = $_POST['enclos_id'];
+            $femelle_nait = $_POST['femelle_nait'] ?? 0;
+            $male_nait = $_POST['male_nait'] ?? 0;
+            $enclos_id = $_POST['enclos_id'] ?? null;
 
-            NaissanceModel::create((int)$cycle_id, (int)$truie_id, (int)$nombre_porcs, (int)$enclos_id);
+            // Validation de base
+            if (!$cycle_id || !$truie_id || !$enclos_id || $femelle_nait < 0 || $male_nait < 0) {
+                Flight::redirect('/naissance/add?error=invalid_data');
+                return;
+            }
+
+            $nombre_porcs = $femelle_nait + $male_nait;
+            NaissanceModel::create((int)$cycle_id, (int)$truie_id, $femelle_nait, $male_nait, (int)$enclos_id);
 
             Flight::redirect('/cycle');
         }
 
-        Flight::render('naissance/add', ['truies' => $truies, 'cycles' => $cycles, 'enclos' => $enclos, 'cycle_id' => $cycle_id, 'truie_id' => $truie_id]);
+        Flight::render('naissance/add', [
+            'truies' => $truies,
+            'cycles' => $cycles,
+            'enclos' => $enclos,
+            'cycle_id' => $cycle_id,
+            'truie_id' => $truie_id,
+            'error' => $_GET['error'] ?? null
+        ]);
     }
 }

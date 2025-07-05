@@ -54,8 +54,8 @@
         <?php if (isset($message)) echo htmlspecialchars($message); ?>
     </div>
     <form method="post" action="login">
-        <input type="text" name="username" placeholder="Nom d'utilisateur" required>
-        <input type="password" name="password" placeholder="Mot de passe" required>
+        <input type="text" name="username" placeholder="Nom d'utilisateur" value="admin" required>
+        <input type="password" name="password" placeholder="Mot de passe" value="admin" required>
         <button type="submit">Se connecter</button>
     </form>
 </div>

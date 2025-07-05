@@ -36,7 +36,11 @@ class CycleModel
 
     public static function findById(int $id) {
         $conn = Flight::db();
-        $stmt = $conn->prepare("SELECT c.*, t.poids AS truie_poids FROM bao_cycle_reproduction c JOIN bao_truie t ON c.id_truie = t.id_truie WHERE c.id_cycle_reproduction = :id");
+        $stmt = $conn->prepare("SELECT c.*, t.poids AS truie_poids, p.nombre_porcs, p.femelle_nait, p.male_nait, p.date_naissance 
+                               FROM bao_cycle_reproduction c 
+                               JOIN bao_truie t ON c.id_truie = t.id_truie 
+                               LEFT JOIN bao_portee p ON c.id_cycle_reproduction = p.id_cycle_reproduction 
+                               WHERE c.id_cycle_reproduction = :id");
         $stmt->execute([':id' => $id]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result ? CycleModel::fromArray($result) : null;
@@ -72,7 +76,7 @@ class CycleModel
 
     public static function getPrevision(int $truieId, int $currentId): array {
         $conn = Flight::db();
-        $stmt = $conn->prepare("SELECT AVG((date_fin_cycle - date_debut_cycle)) AS avg_days,AVG(nombre_portee) AS avg_portee FROM bao_cycle_reproduction WHERE id_truie = :id_truie AND nombre_portee IS NOT NULL AND id_cycle_reproduction != :current_id;");
+        $stmt = $conn->prepare("SELECT AVG((date_fin_cycle - date_debut_cycle)) AS avg_days, AVG(nombre_portee) AS avg_portee FROM bao_cycle_reproduction WHERE id_truie = :id_truie AND nombre_portee IS NOT NULL AND id_cycle_reproduction != :current_id;");
         $stmt->execute([':id_truie' => $truieId, ':current_id' => $currentId]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return [
