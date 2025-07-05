@@ -73,7 +73,7 @@ if (Debugger::$showBar && php_sapi_name() !== 'cli') {
 // 		 'host' => 'localhost',
 // 		 'dbname' => 'gestion_porc',
 // 		 'user' => 'postgres',
-// 		 'password' => 'RiaNa004'
+// 		 'password' => ' '
 
 // 		// uncomment the following line for sqlite
 // 		// 'file_path' => __DIR__ . $ds . '..' . $ds . 'database.sqlite'
