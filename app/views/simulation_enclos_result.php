@@ -41,7 +41,7 @@
 }
 .couloir {
     width: 40px;
-    min-height: 350px;
+
     background: repeating-linear-gradient(
         135deg, #e2e3e5, #e2e3e5 10px, #f8fafc 10px, #f8fafc 20px
     );

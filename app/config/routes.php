@@ -24,3 +24,6 @@ $router->get('/truie', [ $Welcome_Controller, 'truie' ]);
 $router->get('/simulation/enclos', [ $simul, 'showForm' ]); 
 $router->post('/simulation/enclos', [ $simul, 'simulate' ]); 
 
+
+Flight::route('GET /simulation/benefice', ['app\controllers\SimulationBeneficeController', 'showForm']);
+Flight::route('POST /simulation/benefice', ['app\controllers\SimulationBeneficeController', 'simulate']);
