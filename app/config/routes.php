@@ -156,3 +156,18 @@ Flight::route('POST /statistiques/ventes', ['app\controllers\StatVenteController
 
 Flight::route('GET /conge/add', ['app\controllers\CongeController', 'addForm']);
 Flight::route('POST /conge/add', ['app\controllers\CongeController', 'add']);
+
+$Tache_Controller = new TacheController();
+$router->get('/taches', [ $Tache_Controller, 'index' ]);
+$router->get('/tache/create', [ $Tache_Controller, 'form' ]);
+$router->post('/tache/save', [ $Tache_Controller, 'save' ]);
+$router->get('/tache/edit/@id', [ $Tache_Controller, 'form' ]);
+$router->get('/tache/delete/@id', [ $Tache_Controller, 'delete' ]);
+$router->get('/tache/assign', [ $Tache_Controller, 'assignForm' ]);
+$router->post('/tache/assign', [ $Tache_Controller, 'assignForm' ]);
+$router->post('/tache/assign/save', [ $Tache_Controller, 'assignSave' ]);
+$router->get('/taches/employe/@id_employe', [ $Tache_Controller, 'employeTaches' ]);
+$router->post('/tache/done', [ $Tache_Controller, 'done' ]);
+
+
+Flight::route('GET /taches/employelanding/@id_employe', ['app\controllers\TacheController', 'employeeLanding']);

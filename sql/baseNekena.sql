@@ -21,9 +21,9 @@ CREATE TABLE bao_utilisateur (
 );
 
 INSERT INTO bao_utilisateur_role (nom_role) VALUES ('admin'), ('emp');
-INSERT INTO bao_utilisateur (id_utilisateur,nom_utilisateur, mot_de_passe, id_utilisateur_role)
-VALUES (0,'admin', 'admin', 1), (1,'emp', 'emp', 2);
-SELECT setval('bao_utilisateur_id_utilisateur_seq', 2, true);
+SELECT setval('bao_utilisateur_id_utilisateur_seq', 0, true);
+INSERT INTO bao_utilisateur (nom_utilisateur, mot_de_passe, id_utilisateur_role)
+VALUES ('admin', 'admin', 1), ('emp', 'emp', 2);
 
 -- 2. TABLES ENCLOS ET TRUIES
 CREATE TABLE bao_enclos_type (
@@ -266,10 +266,13 @@ CREATE TABLE bao_tache_employe (
     id_tache INTEGER,
     id_employe INTEGER,
     date_attribution DATE,
+    date_echeance DATE,
     statut VARCHAR(20) CHECK (statut IN ('non commencer', 'terminee')),
     FOREIGN KEY (id_tache) REFERENCES bao_tache(id_tache),
     FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
 );
+ALTER TABLE bao_tache_employe
+ADD COLUMN precision TEXT;
 
 
 -- DONNEES

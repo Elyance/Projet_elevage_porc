@@ -53,4 +53,27 @@ class TacheModel
             $data['date_pesee'] ?? date('Y-m-d')
         );
     }
+
+    // Existing methods remain unchanged, but add methods for task assignments with precision
+    public static function assignTache(array $data) {
+        $conn = Flight::db();
+        $stmt = $conn->prepare("INSERT INTO bao_tache_employe (id_employe, id_tache, date_echeance, precision) 
+                               VALUES (:id_employe, :id_tache, :date_echeance, :precision)");
+        return $stmt->execute([
+            ':id_employe' => $data['id_employe'],
+            ':id_tache' => $data['id_tache'],
+            ':date_echeance' => $data['date_echeance'],
+            ':precision' => $data['precision'] ?? ''
+        ]);
+    }
+
+    public static function getTachesEmploye(int $id_employe) {
+        $conn = Flight::db();
+        $stmt = $conn->prepare("SELECT t.*, te.date_echeance, te.precision 
+                               FROM bao_tache t 
+                               JOIN bao_tache_employe te ON t.id_tache = te.id_tache 
+                               WHERE te.id_employe = :id_employe");
+        $stmt->execute([':id_employe' => $id_employe]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

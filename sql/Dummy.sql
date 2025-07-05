@@ -188,7 +188,11 @@ CREATE TABLE bao_employe(
     statut VARCHAR(20) CHECK (statut IN ('actif', 'retraiter', 'congedier')),
     FOREIGN KEY (id_employe_poste) REFERENCES bao_employe_poste(id_employe_poste)
 );
-
+INSERT INTO bao_employe(nom_employe, prenom_employe, id_employe_poste, adresse, contact_telephone, date_recrutement, statut)
+VALUES ('Dupont', 'Jean', 1, '10 rue de la Paix, Paris', '0123456789', '2023-01-15', 'actif'),
+       ('Martin', 'Sophie', 2, '20 avenue des, Paris', '0987654321', '2022-11-20', 'actif'),
+       ('Durand', 'Pierre', 3, '30 boulevard Saint-Germain, Paris', '0147258369', '2021-05-10', 'retraiter'),
+       ('Leroy', 'Lucie', 4, '40 rue de Rivoli, Paris', '0167894321', '2020-08-25', 'congedier');
 ----------- 5a/ GESTION SALAIRE EMPLOYÉ
 CREATE TABLE bao_salaire (
     id_salaire SERIAL PRIMARY KEY,
@@ -234,10 +238,21 @@ CREATE TABLE bao_tache_employe (
     id_employe INTEGER,
     date_attribution DATE,
     statut VARCHAR(20) CHECK (statut IN ('non commencer', 'terminee')),
+    date_echeance DATE, -- Luberri 
     FOREIGN KEY (id_tache) REFERENCES bao_tache(id_tache),
     FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
 );
-
+INSERT INTO bao_tache (id_employe_poste, nom_tache, description)
+VALUES 
+    (1, 'Nourrir les animaux', 'Distribuer les aliments aux truies/portes.'),
+    (1, 'Peser les porcs', 'Enregistrer le poids des truies ou portes.'),
+    (4, 'Nettoyer les enclos', 'Maintenir l''hygiene des enclos.'),
+    (3, 'Verifier l''etat de sante', 'Observer les animaux pour detecter des symptomes.'),
+    (3, 'Enregistrer les naissances', 'Documenter les accouchements.'),
+    (2, 'Gerer les stocks d''aliments', 'Verifier et ajuster les stocks.'),
+    (2, 'Preparer les commandes', 'Organiser les porcs pour la livraison.'),
+    (3, 'Effectuer les vaccinations', 'Administrer les vaccins planifies.'),
+    (1, 'Surveiller les gestations', 'Suivre les truies gestantes.');
 ----------- 7/ SANTE ANIMALE -----------
 CREATE TABLE bao_sante_type_evenement (
     id_type_evenement SERIAL PRIMARY KEY,
@@ -247,7 +262,7 @@ CREATE TABLE bao_sante_type_evenement (
 
 INSERT INTO bao_sante_type_evenement(nom_type_evenement, prix)
 VALUES ('Vaccination', 50.00),
-       ('Consultation vétérinaire', 100.00),
+       ('Consultation vetérinaire', 100.00),
        ('Insemination', 75.00);
 
 CREATE TABLE bao_sante_evenement (
@@ -661,3 +676,5 @@ CREATE TABLE bao_cycle_reproduction (
 
 -- Re-enable foreign key checks
 SET session_replication_role = DEFAULT;
+
+
