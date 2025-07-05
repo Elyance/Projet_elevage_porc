@@ -67,22 +67,32 @@ if (Debugger::$showBar && php_sapi_name() !== 'cli') {
  * 
  * What you store here is totally up to you.
  */
+// return [
+// 	'database' => [
+// 		// uncomment the below 4 lines for mysql
+// 		 'host' => 'localhost',
+// 		 'dbname' => 'gestion_porc',
+// 		 'user' => 'postgres',
+// 		 'password' => ' '
+
+// 		// uncomment the following line for sqlite
+// 		// 'file_path' => __DIR__ . $ds . '..' . $ds . 'database.sqlite'
+// 	],
+
+// 	// this is just here for an example
+// 	// 'google_oauth' => [
+// 	// 	'client_id' => 'client_id',
+// 	// 	'client_secret' => 'client_secret',
+// 	// 	'redirect_uri' => 'redirect_uri'
+// 	// ],
+// ];
 return [
-	'database' => [
-		// uncomment the below 4 lines for mysql
-		 'host' => 'localhost',
-		 'dbname' => 'gestion_porc',
-		 'user' => 'postgres',
-		 'password' => ' '
-
-		// uncomment the following line for sqlite
-		// 'file_path' => __DIR__ . $ds . '..' . $ds . 'database.sqlite'
-	],
-
-	// this is just here for an example
-	// 'google_oauth' => [
-	// 	'client_id' => 'client_id',
-	// 	'client_secret' => 'client_secret',
-	// 	'redirect_uri' => 'redirect_uri'
-	// ],
+    'database' => [
+        'driver'   => 'pgsql',
+        'host'     => 'localhost' ,
+        'port'     => '5432' ,
+        'dbname'   => 'bao_gestion_porc' ,
+        'user'     => 'postgres' ,
+        'password' => ' ' ,
+    ],
 ];

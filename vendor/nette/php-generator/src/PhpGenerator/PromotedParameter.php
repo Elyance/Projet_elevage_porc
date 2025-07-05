@@ -18,11 +18,14 @@ use Nette;
 final class PromotedParameter extends Parameter
 {
 	use Traits\VisibilityAware;
+	use Traits\CommentAware;
 
-	private bool $readOnly = false;
+	/** @var bool */
+	private $readOnly = false;
 
 
-	public function setReadOnly(bool $state = true): static
+	/** @return static */
+	public function setReadOnly(bool $state = true): self
 	{
 		$this->readOnly = $state;
 		return $this;

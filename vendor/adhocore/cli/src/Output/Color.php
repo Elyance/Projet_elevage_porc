@@ -13,22 +13,6 @@ namespace Ahc\Cli\Output;
 
 use Ahc\Cli\Exception\InvalidArgumentException;
 
-use function array_intersect_key;
-use function constant;
-use function defined;
-use function lcfirst;
-use function method_exists;
-use function preg_match_all;
-use function sprintf;
-use function str_ireplace;
-use function str_replace;
-use function stripos;
-use function strtolower;
-use function strtoupper;
-use function strtr;
-
-use const PHP_EOL;
-
 /**
  * Cli Colorizer.
  *
@@ -50,13 +34,19 @@ class Color
     const GRAY     = 47;
     const DARKGRAY = 100;
 
-    protected string $format = "\033[:mod:;:fg:;:bg:m:txt:\033[0m";
+    /** @var string Cli format */
+    protected $format = "\033[:mod:;:fg:;:bg:m:txt:\033[0m";
 
     /** @var array Custom styles */
-    protected static array $styles = [];
+    protected static $styles = [];
 
     /**
      * Returns a line formatted as comment.
+     *
+     * @param string $text
+     * @param array  $style
+     *
+     * @return string
      */
     public function comment(string $text, array $style = []): string
     {
@@ -65,6 +55,11 @@ class Color
 
     /**
      * Returns a line formatted as comment.
+     *
+     * @param string $text
+     * @param array  $style
+     *
+     * @return string
      */
     public function error(string $text, array $style = []): string
     {
@@ -73,6 +68,11 @@ class Color
 
     /**
      * Returns a line formatted as ok msg.
+     *
+     * @param string $text
+     * @param array  $style
+     *
+     * @return string
      */
     public function ok(string $text, array $style = []): string
     {
@@ -81,6 +81,11 @@ class Color
 
     /**
      * Returns a line formatted as warning.
+     *
+     * @param string $text
+     * @param array  $style
+     *
+     * @return string
      */
     public function warn(string $text, array $style = []): string
     {
@@ -89,6 +94,11 @@ class Color
 
     /**
      * Returns a line formatted as info.
+     *
+     * @param string $text
+     * @param array  $style
+     *
+     * @return string
      */
     public function info(string $text, array $style = []): string
     {
@@ -97,16 +107,21 @@ class Color
 
     /**
      * Returns a formatted/colored line.
+     *
+     * @param string $text
+     * @param array  $style
+     *
+     * @return string
      */
     public function line(string $text, array $style = []): string
     {
         $style += ['bg' => null, 'fg' => static::WHITE, 'bold' => 0, 'mod' => null];
 
         $format = $style['bg'] === null
-            ? str_replace(';:bg:', '', $this->format)
+            ? \str_replace(';:bg:', '', $this->format)
             : $this->format;
 
-        $line = strtr($format, [
+        $line = \strtr($format, [
             ':mod:' => (int) ($style['mod'] ?? $style['bold']),
             ':fg:'  => (int) $style['fg'],
             ':bg:'  => (int) $style['bg'] + 10,
@@ -120,24 +135,28 @@ class Color
      * Prepare a multi colored string with html like tags.
      *
      * Example: "<errorBold>Text</end><eol/><bgGreenBold>Text</end><eol>"
+     *
+     * @param string $text
+     *
+     * @return string
      */
     public function colors(string $text): string
     {
-        $text = str_replace(['<eol>', '<eol/>', '</eol>', "\r\n", "\n"], '__PHP_EOL__', $text);
+        $text = \str_replace(['<eol>', '<eol/>', '</eol>', "\r\n", "\n"], '__PHP_EOL__', $text);
 
-        if (!preg_match_all('/<(\w+)>(.*?)<\/end>/', $text, $matches)) {
-            return str_replace('__PHP_EOL__', PHP_EOL, $text);
+        if (!\preg_match_all('/<(\w+)>(.*?)<\/end>/', $text, $matches)) {
+            return \str_replace('__PHP_EOL__', \PHP_EOL, $text);
         }
 
         $end  = "\033[0m";
-        $text = str_replace(['<end>', '</end>'], $end, $text);
+        $text = \str_replace(['<end>', '</end>'], $end, $text);
 
         foreach ($matches[1] as $i => $method) {
-            $part = str_replace($end, '', $this->{$method}(''));
-            $text = str_replace("<$method>", $part, $text);
+            $part = \str_replace($end, '', $this->{$method}(''));
+            $text = \str_replace("<$method>", $part, $text);
         }
 
-        return str_replace('__PHP_EOL__', PHP_EOL, $text);
+        return \str_replace('__PHP_EOL__', \PHP_EOL, $text);
     }
 
     /**
@@ -148,16 +167,16 @@ class Color
      *
      * @return void
      */
-    public static function style(string $name, array $style): void
+    public static function style(string $name, array $style)
     {
         $allow = ['fg' => true, 'bg' => true, 'bold' => true];
-        $style = array_intersect_key($style, $allow);
+        $style = \array_intersect_key($style, $allow);
 
         if (empty($style)) {
             throw new InvalidArgumentException('Trying to set empty or invalid style');
         }
 
-        if (isset(static::$styles[$name]) || method_exists(static::class, $name)) {
+        if (isset(static::$styles[$name]) || \method_exists(static::class, $name)) {
             throw new InvalidArgumentException('Trying to define existing style');
         }
 
@@ -178,19 +197,19 @@ class Color
             throw new InvalidArgumentException('Text required');
         }
 
-        [$name, $text, $style] = $this->parseCall($name, $arguments);
+        list($name, $text, $style) = $this->parseCall($name, $arguments);
 
         if (isset(static::$styles[$name])) {
             return $this->line($text, $style + static::$styles[$name]);
         }
 
-        if (defined($color = static::class . '::' . strtoupper($name))) {
+        if (\defined($color = static::class . '::' . \strtoupper($name))) {
             $name   = 'line';
-            $style += ['fg' => constant($color)];
+            $style += ['fg' => \constant($color)];
         }
 
-        if (!method_exists($this, $name)) {
-            throw new InvalidArgumentException(sprintf('Style "%s" not defined', $name));
+        if (!\method_exists($this, $name)) {
+            throw new InvalidArgumentException(\sprintf('Style "%s" not defined', $name));
         }
 
         return $this->{$name}($text, $style);
@@ -198,43 +217,54 @@ class Color
 
     /**
      * Parse the name argument pairs to determine callable method and style params.
+     *
+     * @param string $name
+     * @param array  $arguments
+     *
+     * @return array
      */
     protected function parseCall(string $name, array $arguments): array
     {
-        [$text, $style] = $arguments + ['', []];
+        list($text, $style) = $arguments + ['', []];
 
         $mods = ['bold' => 1, 'dim' => 2, 'italic' => 3, 'underline' => 4, 'flash' => 5];
 
         foreach ($mods as $mod => $value) {
-            if (stripos($name, $mod) !== false) {
-                $name   = str_ireplace($mod, '', $name);
+            if (\stripos($name, $mod) !== false) {
+                $name   = \str_ireplace($mod, '', $name);
                 $style += ['bold' => $value];
             }
         }
 
-        if (!preg_match_all('/([b|B|f|F]g)?([A-Z][a-z]+)([^A-Z])?/', $name, $matches)) {
-            return [lcfirst($name) ?: 'line', $text, $style];
+        if (!\preg_match_all('/([b|B|f|F]g)?([A-Z][a-z]+)([^A-Z])?/', $name, $matches)) {
+            return [\lcfirst($name) ?: 'line', $text, $style];
         }
 
-        [$name, $style] = $this->buildStyle($name, $style, $matches);
+        list($name, $style) = $this->buildStyle($name, $style, $matches);
 
         return [$name, $text, $style];
     }
 
     /**
      * Build style parameter from matching combination.
+     *
+     * @param string $name
+     * @param array  $style
+     * @param array  $matches
+     *
+     * @return array
      */
     protected function buildStyle(string $name, array $style, array $matches): array
     {
         foreach ($matches[0] as $i => $match) {
-            $name  = str_replace($match, '', $name);
-            $type  = strtolower($matches[1][$i]) ?: 'fg';
+            $name  = \str_replace($match, '', $name);
+            $type  = \strtolower($matches[1][$i]) ?: 'fg';
 
-            if (defined($color = static::class . '::' . strtoupper($matches[2][$i]))) {
-                $style += [$type => constant($color)];
+            if (\defined($color = static::class . '::' . \strtoupper($matches[2][$i]))) {
+                $style += [$type => \constant($color)];
             }
         }
 
-        return [lcfirst($name) ?: 'line', $style];
+        return [\lcfirst($name) ?: 'line', $style];
     }
 }
