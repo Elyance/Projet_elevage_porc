@@ -1,3 +1,7 @@
+Create database gestion_porc;
+
+\c gestion_porc;
+
 -- Disable foreign key checks and drop existing tables
 SET session_replication_role = replica;
 
