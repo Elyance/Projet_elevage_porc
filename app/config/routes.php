@@ -27,3 +27,7 @@ $router->post('/simulation/enclos', [ $simul, 'simulate' ]);
 
 Flight::route('GET /simulation/benefice', ['app\controllers\SimulationBeneficeController', 'showForm']);
 Flight::route('POST /simulation/benefice', ['app\controllers\SimulationBeneficeController', 'simulate']);
+Flight::route('GET /statistiques/aliments', ['app\controllers\StatAlimentController', 'showForm']);
+Flight::route('POST /statistiques/aliments', ['app\controllers\StatAlimentController', 'showStats']);
+Flight::route('GET /statistiques/ventes', ['app\controllers\StatVenteController', 'showForm']);
+Flight::route('POST /statistiques/ventes', ['app\controllers\StatVenteController', 'showStats']);

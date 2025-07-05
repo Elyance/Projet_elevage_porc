@@ -2,6 +2,7 @@
 namespace app\controllers;
 
 use app\models\SimulationBeneficeModel;
+use app\models\StatAlimentModel;
 use Flight;
 
 class SimulationBeneficeController
@@ -11,6 +12,7 @@ class SimulationBeneficeController
     }
 
     public static function simulate() {
+        // Simulation bénéfice
         $params = [
             'nbTruies' => (int)$_POST['nbTruies'],
             'nbPorcs' => (int)$_POST['nbPorcs'],
@@ -27,6 +29,24 @@ class SimulationBeneficeController
         ];
         $model = new SimulationBeneficeModel();
         $result = $model->simulerElevage($params);
-        Flight::render('simulation_benefice_result', ['simulation' => $result, 'params' => $params]);
+
+        // Statistiques aliment (si formulaire soumis)
+        $aliments_stats = null;
+        $annee_aliment = null;
+        if (isset($_POST['annee_aliment'])) {
+            $annee_aliment = (int)$_POST['annee_aliment'];
+            $statModel = new StatAlimentModel();
+            $aliments_stats = $statModel->getStatsAliments($annee_aliment);
+        }
+
+        Flight::render(
+            'simulation_benefice_result',
+            [
+                'simulation' => $result,
+                'params' => $params,
+                'aliments_stats' => $aliments_stats,
+                'annee_aliment' => $annee_aliment
+            ]
+        );
     }
 }

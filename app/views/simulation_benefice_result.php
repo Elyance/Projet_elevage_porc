@@ -94,6 +94,15 @@ th {
             break;
         }
     }
+    // Statistiques supplémentaires
+    $moisPlusRentable = null;
+    $maxBenefice = null;
+    foreach ($simulation as $mois) {
+        if ($maxBenefice === null || $mois['beneficeMensuel'] > $maxBenefice) {
+            $maxBenefice = $mois['beneficeMensuel'];
+            $moisPlusRentable = $mois['mois'];
+        }
+    }
     ?>
     <div class="summary">
         <h3>💰 Résumé Financier</h3>
@@ -104,6 +113,11 @@ th {
            <span class="<?= $beneficeTotal >= 0 ? 'positive' : 'negative' ?>"><?= number_format($beneficeTotal, 0, ',', ' ') ?> Ar</span></p>
         <p><strong>ROI :</strong> <span class="<?= $roi >= 0 ? 'positive' : 'negative' ?>"><?= number_format($roi, 2, ',', ' ') ?>%</span></p>
         <p><strong>Retour sur investissement :</strong> <?= $moisROI ?></p>
-        <p><strong>Bénéfice moyen par mois :</strong> <?= number_format($beneficeTotal / $params['nbMoisSimulation'], 0, ',', ' ') ?> Ar</p>
+        <h3>📈 Statistiques</h3>
+        <ul>
+            <li><strong>Mois le plus rentable :</strong> Mois <?= $moisPlusRentable ?> (<?= number_format($maxBenefice, 0, ',', ' ') ?> Ar)</li>
+            <li><strong>Bénéfice total :</strong> <?= number_format($beneficeTotal, 0, ',', ' ') ?> Ar</li>
+            <li><strong>Bénéfice moyen par mois :</strong> <?= number_format($beneficeTotal / $params['nbMoisSimulation'], 0, ',', ' ') ?> Ar</li>
+        </ul>
     </div>
 </div>
