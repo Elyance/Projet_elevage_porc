@@ -32,7 +32,7 @@
         <?php foreach ($recettes as $recette): ?>
             <tr>
                 <td><?= htmlspecialchars($recette['id_commande']) ?></td>
-                <td><?= htmlspecialchars($recette['nom_client']) ?></td>
+                <td><?= htmlspecialchars($recette['nomclient']) ?></td>
                 <td><?= htmlspecialchars($recette['date_recette']) ?></td>
                 <td><?= htmlspecialchars($recette['quantite']) ?></td>
                 <td><?= htmlspecialchars($recette['prix_unitaire']) ?></td>

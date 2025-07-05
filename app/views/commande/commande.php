@@ -1,15 +1,16 @@
 <h2>Ajouter une commande</h2>
-<form method="post">
+<form method="post" action="/commande/add">
     <div>
-        <label for="id_client">Client</label>
-        <select name="id_client" id="id_client">
+        <label for="nomClient">Client</label>
+        <input type="text" name="nomClient" placeholder="Entrez le nom du client">
+        <!-- <select name="id_client" id="id_client">
             <?php foreach ($clients as $client): ?>
                 <option value="<?= $client['id_client'] ?>"><?= $client['nom_client'] ?></option>
             <?php endforeach; ?>
-        </select>
+        </select> -->
     </div>
     <div>
-        <label for="id_enclos_portee">Enclos Portee</label>
+        <label for="id_enclos_portee">Enclos Numero:</label>
         <select name="id_enclos_portee" id="id_enclos_portee">
             <?php foreach ($enclos_portees as $enclos_portee): ?>
                 <option value="<?= $enclos_portee['id_enclos_portee'] ?>"><?= $enclos_portee['id_enclos_portee'] ?></option>
@@ -38,7 +39,7 @@
         <select name="statut_livraison" id="statut_livraison">
             <option value="en attente">En attente</option>
             <option value="en cours">En cours</option>
-            <option value="livré">Livré</option>
+            <option value="livre">Livré</option>
             <option value="annule">Annulé</option>
         </select>
     </div>

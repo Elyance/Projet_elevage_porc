@@ -1,5 +1,5 @@
-CREATE DATABASE bao_gestion_porc
-\c bao_gestion porc
+CREATE DATABASE bao_gestion_porc2;
+\c bao_gestion_porc2;
 -- Disable foreign key checks and drop existing tables
 SET session_replication_role = replica;
 
@@ -135,7 +135,7 @@ CREATE TABLE bao_commande (
     date_commande DATE, -- date de la commande
     adresse_livraison VARCHAR(100),
     date_livraison DATE, -- date de la livraison, null au debut
-    statut_livraison VARCHAR(20) CHECK (statut_livraison IN ('en attente', 'en cours', 'livré', 'annulé')), -- statut de la livraison
+    statut_livraison VARCHAR(20) CHECK (statut_livraison IN ('en attente', 'en cours', 'livre', 'annule')), -- statut de la livraison
     FOREIGN KEY (id_client) REFERENCES bao_client(id_client),
     FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee)
 );
@@ -150,7 +150,7 @@ CREATE TABLE bao_employe_poste (
 INSERT INTO bao_employe_poste(nom_poste, salaire_base)
 VALUES ('Technicien en reproduction', 1200), 
        ('Technicien en alimentation', 1100), 
-       ('Technicien en santé animale', 1500),
+       ('Technicien en sante animale', 1500),
        ('Agent entretien enclos', 1000),
        ('Agent clientèle', 1100),
        ('Agent administratif', 1300);
@@ -168,17 +168,17 @@ CREATE TABLE bao_employe(
     FOREIGN KEY (id_employe_poste) REFERENCES bao_employe_poste(id_employe_poste)
 );
 
------------ 5a/ GESTION SALAIRE EMPLOYÉ
+----------- 5a/ GESTION SALAIRE EMPLOYe
 CREATE TABLE bao_salaire (
     id_salaire SERIAL PRIMARY KEY,
     id_employe INTEGER,
     date_salaire DATE, -- date de paiement du salaire
     montant DECIMAL(10,2), -- montant du salaire
-    statut VARCHAR(20) CHECK (statut IN ('payé', 'non payé')),
+    statut VARCHAR(20) CHECK (statut IN ('paye', 'non paye')),
     FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
 );
 
------------ 5b/ GESTION PRESENCE EMPLOYÉ
+----------- 5b/ GESTION PRESENCE EMPLOYe
 CREATE TABLE bao_presence (
     id_presence SERIAL PRIMARY KEY,
     id_employe INTEGER,
@@ -187,7 +187,7 @@ CREATE TABLE bao_presence (
     FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
 );
 
------------ 5c/ GESTION CONGES EMPLOYÉ
+----------- 5c/ GESTION CONGES EMPLOYe
 CREATE TABLE bao_conge (
     id_conge SERIAL PRIMARY KEY,
     id_employe INTEGER,
@@ -198,7 +198,7 @@ CREATE TABLE bao_conge (
     FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
 );
 
------------ 6/ GESTION TACHES EMPLOYÉ
+----------- 6/ GESTION TACHES EMPLOYe
 CREATE TABLE bao_tache (
     id_tache SERIAL PRIMARY KEY,
     id_employe_poste INTEGER, -- les taches sont liees a un poste specifique
@@ -226,7 +226,7 @@ CREATE TABLE bao_sante_type_evenement (
 
 INSERT INTO bao_sante_type_evenement(nom_type_evenement, prix)
 VALUES ('Vaccination', 50.00),
-       ('Consultation vétérinaire', 100.00),
+       ('Consultation veterinaire', 100.00),
        ('Insemination', 75.00);
 
 CREATE TABLE bao_sante_evenement (
@@ -294,7 +294,7 @@ CREATE TABLE bao_insemination (
     id_insemination SERIAL PRIMARY KEY,
     id_truie INTEGER,
     date_insemination DATE,
-    resultat VARCHAR(20) CHECK (resultat IN ('succes', 'echec')),
+    resultat VARCHAR(20) CHECK (resultat IN ('succes', 'echec', 'en cours')),
     FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
 );
 
@@ -313,8 +313,8 @@ ALTER TABLE bao_portee ADD CONSTRAINT fk_cycle_reproduction FOREIGN KEY (id_cycl
 ALTER TABLE bao_cycle_reproduction ADD COLUMN id_insemination INTEGER;
 ALTER TABLE bao_cycle_reproduction ADD CONSTRAINT fk_insemination FOREIGN KEY (id_insemination) REFERENCES bao_insemination(id_insemination) ON DELETE SET NULL;
 
-ALTER TABLE bao_insemination
-DROP CHECK `bao_insemination.resultat`,
-ADD CHECK (resultat IN ('succes', 'echec', 'en cours'));
+-- ADD CHECK (resultat IN ('succes', 'echec', 'en cours'));
+-- ALTER TABLE bao_insemination
+-- DROP CHECK `bao_insemination.resultat`;
 -- Re-enable foreign key checks
 SET session_replication_role = DEFAULT;

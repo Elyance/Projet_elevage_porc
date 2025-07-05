@@ -10,7 +10,8 @@ class CommandeController
         {
             try {
                 Commande::create(
-                    Flight::request()->data['id_client'],
+                    // Flight::request()->data['id_client'],
+                    Flight::request()->data['nomClient'],
                     Flight::request()->data['id_enclos_portee'],
                     Flight::request()->data['quantite'],
                     Flight::request()->data['date_commande'],
@@ -26,10 +27,14 @@ class CommandeController
         public function list()
     {
         $conn = Flight::db();
-        $sql = 'SELECT c.*, cl.nom_client 
-                FROM bao_commande c 
-                LEFT JOIN bao_client cl ON c.id_client = cl.id_client';
+        // $sql = 'SELECT c.*, cl.nom_client 
+        //         FROM bao_commande c 
+        //         LEFT JOIN bao_client cl ON c.id_client = cl.id_client';
+        $sql = 'SELECT * FROM bao_commande';
         $commands = $conn->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        foreach($commands as $e){
+            print_r($e);
+        }
         $data = [
             'commands' => array_map(fn($item) => Commande::fromArray($item), $commands),
             'page' => 'commande/liste'

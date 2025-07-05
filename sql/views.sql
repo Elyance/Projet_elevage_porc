@@ -4,23 +4,24 @@ CREATE TABLE bao_regle_gestion (
     nom_regle VARCHAR(50) UNIQUE,
     valeur DECIMAL(10,2)
 );
-
+INSERT INTO bao_regle_gestion(nom_regle,valeur) VALUES ('prix_vente_porc', 50000), ('prix_achat_aliment', 3000);
 
 -- Table de recette prenant les valeurs venant de regle_gestion
-CREATE VIEW bao_view_recette AS
+CREATE OR REPLACE VIEW bao_view_recette AS
 SELECT 
     c.id_commande,
-    cl.nom_client,
+    c.nomclient,
+    -- cl.nom_client,
     c.date_livraison AS date_recette,
     c.quantite,
     (SELECT valeur FROM bao_regle_gestion WHERE nom_regle = 'prix_vente_porc') AS prix_unitaire,
     c.quantite * (SELECT valeur FROM bao_regle_gestion WHERE nom_regle = 'prix_vente_porc') AS prix_total
 FROM 
     bao_commande c
-JOIN 
-    bao_client cl ON c.id_client = cl.id_client
+-- JOIN 
+    -- bao_client cl ON c.id_client = cl.id_client
 WHERE 
-    c.statut_livraison = 'livré';
+    c.statut_livraison = 'livre';
 
 
 

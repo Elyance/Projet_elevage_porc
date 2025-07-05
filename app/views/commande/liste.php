@@ -13,7 +13,7 @@
     <?php foreach ($commands as $command): ?>
         <tr>
             <td><?= $command->id_commande ?></td>
-            <td><?= $command->nom_client ?? 'Inconnu' ?></td>
+            <td><?= $command->nomClient ?? 'Inconnu' ?></td>
             <td><?= $command->id_enclos_portee ?></td>
             <td><?= $command->quantite ?></td>
             <td><?= $command->date_commande ?></td>
