@@ -2,9 +2,6 @@
 
 namespace app\models;
 
-use Flight;
-use PDO;
-
 class TypePorcModel
 {
     private $db;
@@ -16,7 +13,7 @@ class TypePorcModel
 
     public function findAll()
     {
-        $sql = 'SELECT * FROM TypePorc';
+        $sql = 'select * from bao_enclos JOIN bao_enclos_type on bao_enclos.enclos_type = bao_enclos_type.id_enclos_type';
         try {
             $pstmt = $this->db->prepare($sql);
             $pstmt->execute();
@@ -25,8 +22,9 @@ class TypePorcModel
 
             return $result_select;
         } catch (\Throwable $th) {
-            echo 'error: ' . $th->getMessage();
+            echo 'error: '.$th->getMessage();
         }
+
         return null;
     }
 
@@ -52,7 +50,7 @@ class TypePorcModel
                 ':age_max' => $age_max,
                 ':poids_min' => $poids_min,
                 ':poids_max' => $poids_max,
-                ':espace_requis' => $espace_requis
+                ':espace_requis' => $espace_requis,
             ]);
         } catch (\Throwable $th) {
             throw $th;
@@ -71,7 +69,7 @@ class TypePorcModel
                 ':poids_min' => $poids_min,
                 ':poids_max' => $poids_max,
                 ':espace_requis' => $espace_requis,
-                ':id' => $id
+                ':id' => $id,
             ]);
         } catch (\Throwable $th) {
             throw $th;

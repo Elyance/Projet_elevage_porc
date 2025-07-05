@@ -2,87 +2,51 @@
 
 namespace app\models;
 
-use Flight;
-use PDO;
-
 class EnclosModel
 {
-    private $db;
-
-    public function __construct($db)
+    public static function delete($id)
     {
-        $this->db = $db;
+        $stmt = \Flight::db()->prepare('DELETE FROM bao_enclos WHERE id_enclos = ?');
+
+        return $stmt->execute([$id]);
     }
 
-    public function findAll()
+    public static function update($id, $enclos_type, $stockage)
     {
-        $sql = 'SELECT * FROM Enclos';
-        try {
-            $pstmt = $this->db->prepare($sql);
-            $pstmt->execute();
+        $stmt = \Flight::db()->prepare('UPDATE bao_enclos SET enclos_type = ?, stockage = ? WHERE id_enclos = ?');
 
-            $result_select = $pstmt->fetchAll();
-
-            return $result_select;
-        } catch (\Throwable $th) {
-            echo 'error: ' . $th->getMessage();
-        }
-        return null;
+        return $stmt->execute([$enclos_type, $stockage, $id]);
     }
 
-    public function findById($id)
+    public static function getAll()
     {
-        $sql = 'SELECT * FROM Enclos where id = :id';
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':id' => $id]);
+        $stmt = \Flight::db()->query('select * from bao_enclos JOIN bao_enclos_type on bao_enclos.enclos_type = bao_enclos_type.id_enclos_type');
+
+        return $stmt->fetchAll();
+    }
+
+    public static function create($type_enclos, $stockage)
+    {
+        $stmt = \Flight::db()->prepare('INSERT INTO bao_enclos(enclos_type, stockage) VALUES (?,?)');
+
+        return $stmt->execute([$type_enclos, $stockage]);
+    }
+
+    public static function findByIdJoined($id)
+    {
+        $stmt = \Flight::db()->prepare('SELECT * FROM bao_enclos JOIN bao_enclos_type ON bao_enclos_type.id_enclos_type = bao_enclos.enclos_type  WHERE id_enclos = ?');
+        $stmt->execute([$id]);
         $result = $stmt->fetch();
 
         return $result;
     }
 
-    public function create($nom, $type, $superficie, $capacite)
+    public static function findById($id)
     {
-        $sql = 'INSERT INTO  Enclos (nom, type , superficie , capacite) VALUES (:nom, :type , :superficie , :capacite)';
-        $stmt = $this->db->prepare($sql);
+        $stmt = \Flight::db()->prepare('SELECT * FROM bao_enclos WHERE id_enclos = ?');
+        $stmt->execute([$id]);
+        $result = $stmt->fetch();
 
-        try {
-            $stmt->execute([
-                ':nom' => $nom,
-                ':type' => $type,
-                ':superficie' => $superficie,
-                ':capacite' => $capacite
-            ]);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
-    public function update($id, $nom, $type, $superficie, $capacite)
-    {
-        $sql = 'UPDATE Enclos SET nom = :nom , type = :type , superficie = :superficie , capacite = :capacite WHERE id = :id';
-        $stmt = $this->db->prepare($sql);
-        try {
-            $stmt->execute([
-                ':nom' => $nom,
-                ':type' => $type,
-                ':superficie' => $superficie,
-                ':capacite' => $capacite,
-                ':id' => $id
-            ]);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
-    public function delete($id)
-    {
-        $sql = 'DELETE FROM Enclos WHERE id = :id';
-        $stmt = $this->db->prepare($sql);
-        try {
-            $stmt->execute([':id' => $id]);
-            echo 'Suppression réussie !';
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        return $result;
     }
 }
