@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'flightphp/skeleton',
-        'pretty_version' => 'v0.4.3',
-        'version' => '0.4.3.0',
+        'pretty_version' => '1.0.0+no-version-set',
+        'version' => '1.0.0.0',
         'reference' => null,
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
@@ -38,8 +38,8 @@
             'dev_requirement' => false,
         ),
         'flightphp/skeleton' => array(
-            'pretty_version' => 'v0.4.3',
-            'version' => '0.4.3.0',
+            'pretty_version' => '1.0.0+no-version-set',
+            'version' => '1.0.0.0',
             'reference' => null,
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',

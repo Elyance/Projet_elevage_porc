@@ -1,5 +1,6 @@
 <?php
 
+use app\models\EmployerModel;
 use flight\Engine;
 use flight\database\PdoWrapper;
 use flight\debug\database\PdoQueryCapture;
@@ -31,3 +32,22 @@ $dsn = 'pgsql:host=' . $config['database']['host'] . ';dbname=' . $config['datab
 // Redis? This is where you'd set that up
 // $app->register('redis', Redis::class, [ $config['redis']['host'], $config['redis']['port'] ]);
 
+Flight::map('MessageModel', function () {
+    return new EmployerModel(Flight::db());
+});
+
+
+// Flight::map('venteModel', function () {
+//     return new VenteModel(Flight::db());
+// });
+
+
+
+// Flight::map('actionReactionModel', function () {
+//     return new ActionReactionModel(Flight::db());
+// });
+
+
+Flight::map('MessageModel', function () {
+    return new EmployerModel(Flight::db());
+});
