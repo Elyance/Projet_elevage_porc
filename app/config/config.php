@@ -1,4 +1,8 @@
 <?php
+// Définir la base URL de l'application AVANT tout le reste
+if (!defined('BASE_URL')) {
+    define('BASE_URL', 'http://localhost/Projet_elevage_porc');
+}
 
 use flight\debug\tracy\TracyExtensionLoader;
 use Tracy\Debugger;

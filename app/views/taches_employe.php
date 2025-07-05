@@ -3,7 +3,7 @@
 // Liste des tâches assignées à un employé avec cases à cocher
 ?>
 <h2>Tâches assignées à <?= htmlspecialchars($employe_nom) ?></h2>
-<form method="post" action="/tache/done">
+<form method="post" action="<?= BASE_URL ?>/tache/done">
     <input type="hidden" name="id_employe" value="<?= $id_employe ?>">
     <ul>
         <?php foreach ($taches as $tache): ?>

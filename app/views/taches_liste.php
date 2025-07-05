@@ -4,7 +4,7 @@
 // Colonnes : Nom, Rôle concerné, Actions (modifier, supprimer)
 ?>
 <h2>Liste des tâches</h2>
-<a href="/tache/create">Créer une tâche</a>
+<a href="<?= BASE_URL ?>/tache/create">Créer une tâche</a>
 <table border="1">
     <tr>
         <th>Nom de la tâche</th>
@@ -16,10 +16,10 @@
         <td><?= htmlspecialchars($tache['nom_tache']) ?></td>
         <td><?= htmlspecialchars($tache['nom_poste']) ?></td>
         <td>
-            <a href="/tache/edit/<?= $tache['id_tache'] ?>">Modifier</a> |
-            <a href="/tache/delete/<?= $tache['id_tache'] ?>" onclick="return confirm('Supprimer ?')">Supprimer</a>
+            <a href="<?= BASE_URL ?>/tache/edit/<?= $tache['id_tache'] ?>">Modifier</a> |
+            <a href="<?= BASE_URL ?>/tache/delete/<?= $tache['id_tache'] ?>" onclick="return confirm('Supprimer ?')">Supprimer</a>
         </td>
     </tr>
     <?php endforeach; ?>
 </table>
-<a href="/tache/assign">Assigner une tâche</a>
+<a href="<?= BASE_URL ?>/tache/assign">Assigner une tâche</a>
