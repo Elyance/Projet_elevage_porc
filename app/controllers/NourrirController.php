@@ -4,42 +4,86 @@ namespace app\controllers;
 
 use app\models\AlimentModel;
 use app\models\NourrirModel;
-use app\models\RaceModel;
+use app\models\EnclosModel;
 use Flight;
 
 class NourrirController {
     private $nourrirModel;
-    private $raceModel;
+    private $enclosModel;
 
     public function __construct() {
         $this->nourrirModel = new NourrirModel();
-        $this->raceModel = new RaceModel();
+        $this->enclosModel = new EnclosModel(Flight::db());
     }
 
     // Affiche le formulaire de nourrissage
-    public function index($message = null) {
-        $races = $this->raceModel->getAllRaces();
+    public function index($id_enclos = null, $message = null) {
+        // Récupérer l'ID de l'enclos depuis la requête GET si non fourni
+        if ($id_enclos === null) {
+            $id_enclos = Flight::request()->query->enclos;
+        }
+    
+        $enclos = $this->enclosModel->findAll();
         $aliments = (new AlimentModel())->getAllAliments();
-        Flight::render('aliments/nourrir', ['races' => $races, 'aliments' => $aliments, 'message' => $message]);
+        
+        $infosNourrissage = [];
+        if ($id_enclos) {
+            $infosNourrissage = $this->nourrirModel->getInfosNourrissage($id_enclos);
+        }
+    
+        Flight::render('aliments/nourrir', [
+            'enclos' => $enclos,
+            'aliments' => $aliments,
+            'infosNourrissage' => $infosNourrissage,
+            'selectedEnclos' => $id_enclos,
+            'message' => $message
+        ]);
     }
 
     // Traite le formulaire de nourrissage
     public function nourrir() {
-        $id_race = Flight::request()->data->id_race;
-        $id_aliment = Flight::request()->data->id_aliment;
-        $quantite_kg = Flight::request()->data->quantite_kg;
+        $id_enclos = Flight::request()->data->id_enclos;
+        $data = Flight::request()->data;
+        
+        // Initialiser les tableaux
+        $aliments = [];
+        $quantites = [];
+        $repartitions = [];
+    
+        // Récupération des données du formulaire
+        if (isset($data['aliments']) && is_array($data['aliments'])) {
+            $aliments = $data['aliments'];
+        }
+        
+        if (isset($data['quantites']) && is_array($data['quantites'])) {
+            $quantites = $data['quantites'];
+        }
+    
+        // Construction du tableau de répartition
+        foreach ($data as $key => $value) {
+            if (strpos($key, 'repartitions') === 0) {
+                $parts = explode('[', str_replace(']', '', $key));
+                if (count($parts) >= 3) {
+                    $index = $parts[1];
+                    $id_enclos_portee = $parts[2];
+                    $repartitions[$index][$id_enclos_portee] = (float)$value;
+                }
+            }
+        }
     
         try {
-            $this->nourrirModel->nourrirPorcs($id_race, $id_aliment, $quantite_kg);
-            (new AlimentModel())->updateStock($id_aliment, -$quantite_kg);
-            $message['text'] = 'Nourrissage enregistré avec succès !';
-            $message['type'] = 'Success';
+            $this->nourrirModel->nourrirEnclos($id_enclos, $aliments, $quantites, $repartitions);
+            $message = [
+                'text' => 'Nourrissage enregistré avec succès !',
+                'type' => 'success'
+            ];
         } catch (Exception $e) {
-            $message = 'Erreur: ' . $e->getMessage();
-            $message['type'] = 'Error';
+            $message = [
+                'text' => 'Erreur: ' . $e->getMessage(),
+                'type' => 'danger'
+            ];
         }
-        $this->index($message);
+        
+        $this->index($id_enclos, $message);
     }
 }
-
-?>

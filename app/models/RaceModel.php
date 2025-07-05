@@ -16,4 +16,10 @@ class RaceModel {
         $query = "SELECT id_race, nom_race FROM races_porcs";
         return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function newRace($nomRace) {
+        $query = "INSERT INTO races_porcs (nom_race) VALUES (?)";
+        $stmt = $this->db->prepare($query);
+        return $stmt->execute([$nomRace]);
+    }
 }

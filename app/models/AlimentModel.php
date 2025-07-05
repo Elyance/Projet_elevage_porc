@@ -16,7 +16,10 @@ class AlimentModel {
     public function getAllAliments() {
         $query = "
             SELECT a.*, 
-                   (SELECT COUNT(*) FROM porcs WHERE est_en_engraissement = TRUE) * a.conso_journaliere_kg_par_porc 
+                   (SELECT COALESCE(SUM(quantite_males + quantite_femelles), 0) 
+                    FROM bao_enclos_portee 
+                    JOIN bao_enclos ON bao_enclos_portee.id_enclos = bao_enclos.id_enclos
+                    WHERE bao_enclos.enclos_type IN (3,4)) * a.conso_journaliere_kg_par_porc 
                    AS conso_journaliere_totale 
             FROM aliments a
         ";

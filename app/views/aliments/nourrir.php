@@ -2,7 +2,7 @@
 
 <div class="card">
     <div class="card-header bg-primary text-white">
-        <h2>🍽️ Nourrir les Porcs</h2>
+        <h2>🍽️ Nourrir les Porcs par Enclos</h2>
     </div>
     <?php if (isset($message)): ?>
         <div class="alert alert-<?= $message['type'] ?>">
@@ -11,78 +11,176 @@
     <?php endif; ?>
     <div class="card-body">
         <form id="form-nourrir" action="/aliments/nourrir/action" method="POST">
+            <input type="hidden" name="id_enclos" value="<?= $selectedEnclos ?>">
+            
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="id_race" class="form-label">Race de porc</label>
-                    <select class="form-select" id="id_race" name="id_race" required>
-                        <option value="">-- Sélectionnez une race --</option>
-                        <?php foreach ($races as $race): ?>
-                            <option value="<?= $race['id_race'] ?>">
-                                <?= htmlspecialchars($race['nom_race']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="id_aliment" class="form-label">Aliment</label>
-                    <select class="form-select" id="id_aliment" name="id_aliment" required>
-                        <option value="">-- Sélectionnez un aliment --</option>
-                        <?php foreach ($aliments as $aliment): ?>
-                            <option 
-                                value="<?= $aliment['id_aliment'] ?>" 
-                                data-stock="<?= $aliment['stock_kg'] ?>"
-                            >
-                                <?= htmlspecialchars($aliment['nom_aliment']) ?> 
-                                (Stock: <?= number_format($aliment['stock_kg'], 2) ?> kg)
-                            </option>
-                        <?php endforeach; ?>
+                    <label for="id_enclos_select" class="form-label">Sélectionner un enclos</label>
+                    <select class="form-select" id="id_enclos_select" required
+                            onchange="window.location.href='/aliments/nourrir?enclos='+this.value">
+                        <option value="">-- Sélectionnez un enclos --</option>
+                        <?php if (!empty($enclos)): ?>
+                            <?php foreach ($enclos as $enclo): ?>
+                                <option value="<?= $enclo['id_enclos'] ?>" <?= $selectedEnclos == $enclo['id_enclos'] ? 'selected' : '' ?>>
+                                    Enclos #<?= $enclo['id_enclos'] ?> (Type: <?= $enclo['enclos_type'] ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </select>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <label for="quantite_kg" class="form-label">Quantité totale (kg)</label>
-                <input 
-                    type="number" 
-                    class="form-control" 
-                    id="quantite_kg" 
-                    name="quantite_kg" 
-                    step="0.01" 
-                    min="0.1" 
-                    required
-                >
-                <div class="form-text" id="stock-disponible">
-                    Stock disponible: <span class="fw-bold">0</span> kg
+            <?php if (!empty($infosNourrissage)): ?>
+                <div class="mb-4">
+                    <h5>Porcs dans l'enclos</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Race</th>
+                                <th>Mâles</th>
+                                <th>Femelles</th>
+                                <th>Total</th>
+                                <th>Besoins nutritionnels</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($infosNourrissage as $info): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($info['nom_race']) ?></td>
+                                    <td><?= $info['quantite_males'] ?></td>
+                                    <td><?= $info['quantite_femelles'] ?></td>
+                                    <td><?= $info['quantite_males'] + $info['quantite_femelles'] ?></td>
+                                    <td><?= htmlspecialchars($info['besoins_nutritionnels']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
 
-            <button type="submit" class="btn btn-success">
-                ✅ Enregistrer le nourrissage
-            </button>
+                <div id="aliments-container">
+                    <!-- Les blocs d'aliments seront ajoutés ici -->
+                </div>
+
+                <button type="button" id="add-aliment" class="btn btn-primary mb-3">
+                    ➕ Ajouter un aliment
+                </button>
+
+                <button type="submit" class="btn btn-success">
+                    ✅ Enregistrer le nourrissage
+                </button>
+            <?php endif; ?>
         </form>
     </div>
 </div>
 
+<!-- Template pour un nouvel aliment (caché) -->
+<div id="aliment-template" class="d-none">
+    <div class="aliment-group mb-4 border p-3 rounded">
+        <div class="row mb-3">
+            <div class="col-md-5">
+                <label class="form-label">Aliment</label>
+                <select class="form-select aliment-select" name="aliments[]" required>
+                    <option value="">-- Sélectionnez --</option>
+                    <?php foreach ($aliments as $aliment): ?>
+                        <option value="<?= $aliment['id_aliment'] ?>" 
+                                data-stock="<?= $aliment['stock_kg'] ?>">
+                            <?= htmlspecialchars($aliment['nom_aliment']) ?> 
+                            (Stock: <?= number_format($aliment['stock_kg'], 2) ?> kg)
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">Quantité totale (kg)</label>
+                <input type="number" class="form-control aliment-quantity" 
+                       name="quantites[]" step="0.01" min="0.1" required>
+                <div class="form-text stock-disponible">
+                    Stock disponible: <span class="fw-bold">0</span> kg
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger remove-aliment mt-4">
+                    ❌ Supprimer
+                </button>
+            </div>
+        </div>
+        
+        <div class="repartition mt-3">
+            <h6>Répartition par race</h6>
+            <?php foreach ($infosNourrissage as $info): ?>
+                <div class="mb-2">
+                    <label><?= htmlspecialchars($info['nom_race']) ?> (<?= $info['quantite_males'] + $info['quantite_femelles'] ?> porcs)</label>
+                    <input type="number" class="form-control repartition-input mb-1" 
+                           name="repartitions[<?= $info['id_enclos_portee'] ?>][]" 
+                           step="0.01" min="0">
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+
 <script>
-    // Affiche le stock disponible quand on sélectionne un aliment
-    document.getElementById('id_aliment').addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        const stock = selectedOption.getAttribute('data-stock') || 0;
-        document.querySelector('#stock-disponible span').textContent = stock;
+document.addEventListener('DOMContentLoaded', function() {
+    // Ajouter un aliment
+    document.getElementById('add-aliment').addEventListener('click', function() {
+        const template = document.getElementById('aliment-template').cloneNode(true);
+        template.classList.remove('d-none');
+        template.removeAttribute('id');
+        document.getElementById('aliments-container').appendChild(template);
+        
+        // Activer les événements pour le nouveau bloc
+        initAlimentEvents(template);
     });
 
-    // Validation avant soumission
-    document.getElementById('form-nourrir').addEventListener('submit', function(e) {
-        const quantite = parseFloat(document.getElementById('quantite_kg').value);
-        const stock = parseFloat(
-            document.querySelector('#stock-disponible span').textContent
-        );
+    // Supprimer un aliment
+    function initAlimentEvents(element) {
+        element.querySelector('.remove-aliment').addEventListener('click', function() {
+            element.remove();
+        });
 
-        if (quantite > stock) {
+        // Gestion du stock
+        element.querySelector('.aliment-select').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const stock = selectedOption.getAttribute('data-stock') || 0;
+            element.querySelector('.stock-disponible span').textContent = stock;
+        });
+
+        // Calcul automatique de la quantité totale
+        element.querySelectorAll('.repartition-input').forEach(input => {
+            input.addEventListener('input', function() {
+                let total = 0;
+                element.querySelectorAll('.repartition-input').forEach(i => {
+                    total += parseFloat(i.value) || 0;
+                });
+                element.querySelector('.aliment-quantity').value = total.toFixed(2);
+            });
+        });
+    }
+
+    // Validation du formulaire
+    document.getElementById('form-nourrir').addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        document.querySelectorAll('.aliment-group').forEach(group => {
+            const quantite = parseFloat(group.querySelector('.aliment-quantity').value);
+            const stock = parseFloat(group.querySelector('.stock-disponible span').textContent);
+            
+            if (quantite > stock) {
+                alert('❌ La quantité demandée dépasse le stock disponible pour un aliment !');
+                isValid = false;
+            }
+        });
+
+        if (!isValid) {
             e.preventDefault();
-            alert('❌ La quantité demandée dépasse le stock disponible !');
         }
     });
+
+    // Ajouter un premier aliment automatiquement si des infos sont présentes
+    <?php if (!empty($infosNourrissage)): ?>
+        document.getElementById('add-aliment').click();
+    <?php endif; ?>
+});
 </script>
 
 <?php require_once __DIR__ . '/partials/footer.php'; ?>

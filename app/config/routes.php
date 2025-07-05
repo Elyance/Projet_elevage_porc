@@ -44,9 +44,12 @@ $router->group('/aliments', function () use ($router) {
     $router->get('/@id:[0-9]+', [$AlimentController, 'show']);
 
     // Nourrir
-    $NourrirController= new NourrirController();
-    $router->get('/nourrir', [$NourrirController, 'index']);
-    $router->post('/nourrir/action', [$NourrirController, 'nourrir']);
+    $router->group('/nourrir', function () use ($router) {
+        $NourrirController = new NourrirController();
+        $router->get('/', [$NourrirController, 'index']);
+        $router->post('/action', [$NourrirController, 'nourrir']);
+    });
+    
 
     // Réapprovisionnement
     $ReapproController = new ReapproController();
