@@ -32,7 +32,10 @@ class UserController {
                         'Animaux' => Flight::get('flight.base_url').'/animaux',
                         'Enclos' => Flight::get('flight.base_url').'/enclos',
                         'Employés' => Flight::get('flight.base_url').'/employe',
-                        'Affichages' => Flight::get('flight.base_url').'/affichages'
+                        'Affichages' => Flight::get('flight.base_url').'/affichages',
+                        'Simulation Bénéfice' => Flight::get('flight.base_url').'/simulation/benefice',
+                        'Statistique' => Flight::get('flight.base_url').'/statistiques/aliments',
+
                     ]
                 ];
                 Flight::render('home', $data);
