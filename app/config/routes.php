@@ -4,6 +4,8 @@ use app\controllers\ApiExampleController;
 use app\controllers\WelcomeController;
 use app\controllers\SanteEvenementController;
 use app\controllers\SanteTypeEvenementController;
+use app\controllers\DiagnosticController;
+use app\controllers\MaladieController;
 use flight\Engine;
 use flight\net\Router;
 //use Flight;
@@ -20,6 +22,9 @@ use flight\net\Router;
 $Welcome_Controller = new WelcomeController();
 $santeevenementController = new SanteEvenementController();
 $santetypeevenementController = new SanteTypeEvenementController();
+$diagnosticController = new DiagnosticController();
+$maladieController = new MaladieController();
+
 $router->get('/', [ $santeevenementController, 'home' ]); 
 $router->get('/evenement', [$santeevenementController, 'findByDate']);
 $router->get('/evenement/add', [$santeevenementController, 'formAjouterEvenement']);
@@ -31,5 +36,15 @@ $router->post('/typeevenement/edit/@id:\d+', [$santetypeevenementController, 'Up
 $router->get('/typeevenement/delete/@id:\d+', [$santetypeevenementController, 'deleteTypeEvenement']);
 $router->get('/typeevenement/add', [$santetypeevenementController, 'formAddTypeEvenement']);
 $router->post('/typeevenement/add', [$santetypeevenementController, 'addTypeEvenement']);
+
+$router->get('/diagnostic', [ $diagnosticController, 'home' ]); 
+$router->get('/diagnostic/add', [$diagnosticController, 'formAddDiagnostic']);
+$router->post('/diagnostic/add', [$diagnosticController, 'addDiagnostic']);
+
+$router->get('/maladie', [ $maladieController, 'home' ]); 
+$router->get('/maladie/add', [$maladieController, 'formAddMaladie']);
+$router->post('/maladie/add', [$maladieController, 'addMaladie']);
+$router->get('/maladie/edit/@id:\d+', [$maladieController, 'formUpdateMaladie']);
+$router->post('/maladie/edit/@id:\d+', [$maladieController, 'UpdateMaladie']);
 
 $router->get('/truie', [ $Welcome_Controller, 'truie' ]);

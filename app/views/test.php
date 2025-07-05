@@ -120,7 +120,7 @@
 <body>
     <div>
         <ul>
-            <li><a href="">Gestion maladie</a></li>
+            <li><a href="diagnostic">Gestion maladie</a></li>
             <li><a href="typeevenement">Liste type evenement</a></li>
             <li><a href="evenement/add">Ajouter evenement</a></li>
             <li><a href="">Gestion décès</a></li>
@@ -199,7 +199,7 @@
                     `;
                             });
                         } else {
-                            modalBody.innerHTML += `<p>Aucun événement Flight pour ce jour.</p>`;
+                            modalBody.innerHTML += `<p>Aucun événement pour ce jour.</p>`;
                         }
                         modal.style.display = 'block';
                     })

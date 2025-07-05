@@ -46,4 +46,15 @@ class SanteTypeEvenementController
             Flight::redirect('/typeevenement?error=Erreur lors de la modification de l'.'evenement');
         }
     }
+
+    public function deleteTypeEvenement($id) {
+        $typevenement =new SanteTypeEvenement(Flight::db());
+        try {
+            $typevenement->deleteTypeEvenement($id);
+            Flight::redirect('/typeevenement?success=typevenement supprime');
+        } catch (\Throwable $th) {
+            Flight::redirect('/typeevenement?error=Erreur lors de la suppression de la typevenement');
+        }
+    }
+
 }
