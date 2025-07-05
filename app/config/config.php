@@ -32,7 +32,7 @@ $app->path(__DIR__ . $ds . '..' . $ds . '..');
 $app->path(__DIR__ . $ds . '..' . $ds . 'controllers');
 
 // This is where you can set some flight config variables. 
-$app->set('flight.base_url', '/Git/Projet_elevage_porc'); // if this is in a subdirectory, you'll need to change this
+$app->set('flight.base_url', '/Projet_elevage_porc'); // if this is in a subdirectory, you'll need to change this
 $app->set('flight.case_sensitive', false); // if you want case sensitive routes, set this to true
 $app->set('flight.log_errors', true); // if you want to log errors, set this to true
 $app->set('flight.handle_errors', false); // if you want flight to handle errors, set this to true, otherwise Tracy will handle them
@@ -93,6 +93,6 @@ return [
         'port'     => '5432' ,
         'dbname'   => 'bao_gestion_porc' ,
         'user'     => 'postgres' ,
-        'password' => 'RiaNa004' ,
+        'password' => ' ' ,
     ],
 ];
