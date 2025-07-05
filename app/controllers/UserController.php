@@ -25,7 +25,7 @@ class UserController {
                     'title' => 'Gestion Porc - Accueil',
                     'admin' => $_SESSION['admin'],
                     'links' => [
-                        'Accueil' => Flight::get('flight.base_url'),
+                        'Accueil' => Flight::get('flight.base_url').'/login',
                         // 'Taches' => Flight::get('flight.base_url').'/taches',
                         'Reproduction' => Flight::get('flight.base_url').'/reproduction',
                         'Alimentation' => Flight::get('flight.base_url').'/alimentation',

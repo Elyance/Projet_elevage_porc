@@ -1,7 +1,6 @@
--- Connexion a la base PostgreSQL (dans psql)
--- CREATE DATABASE doit etre lance en dehors de \c
+-- Connexion à la base PostgreSQL
 \c postgres;
-DROP DATABASE gestion_porc;
+DROP DATABASE IF EXISTS gestion_porc;
 CREATE DATABASE gestion_porc;
 \c gestion_porc;
 
@@ -47,7 +46,7 @@ CREATE TABLE bao_truie (
         ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
 
--- 3. TABLE INSEMINATION (obligatoire pour cycle reproduction)
+-- 3. TABLE INSEMINATION
 CREATE TABLE bao_insemination (
     id_insemination SERIAL PRIMARY KEY,
     id_truie INTEGER,
@@ -129,7 +128,62 @@ CREATE TABLE bao_employe (
         ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
 
--- DONNEES
+-- 7. SALAIRES
+CREATE TABLE bao_salaire (
+    id_salaire SERIAL PRIMARY KEY,
+    id_employe INTEGER,
+    date_salaire DATE,
+    montant NUMERIC(10,2),
+    statut VARCHAR(20) CHECK (statut IN ('payé', 'non payé')),
+    FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
+        ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+);
+
+-- 8. PRESENCES
+CREATE TABLE bao_presence (
+    id_presence SERIAL PRIMARY KEY,
+    id_employe INTEGER,
+    date_presence DATE,
+    statut VARCHAR(20) CHECK (statut IN ('present', 'absent')),
+    FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
+        ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+);
+
+-- 9. CONGES
+CREATE TABLE bao_conge (
+    id_conge SERIAL PRIMARY KEY,
+    id_employe INTEGER,
+    date_debut DATE,
+    date_fin DATE,
+    motif VARCHAR(100),
+    statut VARCHAR(20) CHECK (statut IN ('demande', 'approuve', 'refuse')),
+    FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
+        ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+);
+
+-- 10. TACHES
+CREATE TABLE bao_tache (
+    id_tache SERIAL PRIMARY KEY,
+    id_employe_poste INTEGER,
+    nom_tache VARCHAR(100),
+    description TEXT,
+    FOREIGN KEY (id_employe_poste) REFERENCES bao_employe_poste(id_employe_poste)
+        ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+);
+
+CREATE TABLE bao_tache_employe (
+    id_tache_employe SERIAL PRIMARY KEY,
+    id_tache INTEGER,
+    id_employe INTEGER,
+    date_attribution DATE,
+    statut VARCHAR(20) CHECK (statut IN ('non commencer', 'termine')),
+    FOREIGN KEY (id_tache) REFERENCES bao_tache(id_tache)
+        ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+    FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
+        ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+);
+
+-- DONNEES DE TEST
 INSERT INTO bao_enclos_type (nom_enclos_type) VALUES ('Truie'), ('Portee'), ('Quarantaine');
 
 INSERT INTO bao_enclos (enclos_type, stockage) VALUES
@@ -151,3 +205,27 @@ VALUES
 INSERT INTO bao_client (nom_client, type_profil, adresse, contact_telephone, contact_email) VALUES
 ('AgriCorp', 'entreprise', 'Tamatave', '0339876543', 'contact@agricorp.com'),
 ('Rabe', 'particulier', 'Fianarantsoa', '0341112233', 'rabe@email.com');
+
+INSERT INTO bao_salaire (id_employe, date_salaire, montant, statut) VALUES
+(1, '2025-06-30', 1200.00, 'payé'),
+(2, '2025-06-30', 1100.00, 'payé'),
+(1, '2025-05-31', 1200.00, 'payé'),
+(2, '2025-05-31', 1100.00, 'payé');
+
+INSERT INTO bao_presence (id_employe, date_presence, statut) VALUES
+(1, '2025-07-01', 'present'),
+(2, '2025-07-01', 'absent'),
+(1, '2025-07-02', 'present'),
+(2, '2025-07-02', 'present');
+
+INSERT INTO bao_conge (id_employe, date_debut, date_fin, motif, statut) VALUES
+(2, '2025-07-10', '2025-07-15', 'Congé maladie', 'approuve'),
+(1, '2025-08-01', '2025-08-10', 'Vacances annuelles', 'demande');
+
+INSERT INTO bao_tache (id_employe_poste, nom_tache, description) VALUES
+(1, 'Surveiller l-ovulation', 'Suivre les périodes d-ovulation des truies.'),
+(2, 'Distribution aliment', 'Assurer la distribution quotidienne d-aliments.');
+
+INSERT INTO bao_tache_employe (id_tache, id_employe, date_attribution, statut) VALUES
+(1, 1, '2025-07-01', 'termine'),
+(2, 2, '2025-07-01', 'non commencer');

@@ -27,16 +27,8 @@ use flight\Engine;
 });*/
 
 $UserController = new UserController();
-$router->get('/login',[$UserController, 'getFormLogin']);
+$router->get('/',[$UserController, 'getFormLogin']);
 $router->post('/login',[$UserController, 'login']);
-
-
-$Home_Controller = new HomeController();
-$router->get("/", [$Home_Controller, "home"]);
-
-$router->get("/hello-world/@name", function($name) {
-    echo "<h1>Hello world! Oh hey " . $name . "!</h1>";
-});
 
 $Tache_controller = new TacheController();
 $router->get("/taches", [$Tache_controller, "index"]);

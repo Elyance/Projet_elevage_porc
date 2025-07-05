@@ -6,6 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    <span><?php echo $message; ?><?php print_r($_SESSION['employe']); ?></span>
+    <span><?php echo $message; ?><?php echo $_SESSION['employe']; ?></span>
 </body>
 </html>
