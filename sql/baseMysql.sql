@@ -311,6 +311,14 @@ CREATE TABLE bao_cycle_reproduction (
     FOREIGN KEY (id_insemination) REFERENCES bao_insemination(id_insemination) ON DELETE SET NULL
 );
 
+------------- 10/ NOUVELLES TABLES -----------
+CREATE TABLE bao_pesee (
+    id_pesee SERIAL PRIMARY KEY,
+    id_enclos INTEGER,
+    poids DECIMAL(10,2),
+    date_pesee DATE,
+    FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos)
+);
 
 -- Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;

@@ -25,6 +25,11 @@ $router->get("/hello-world/@name", function($name) {
     echo "<h1>Hello world! Oh hey " . $name . "!</h1>";
 });
 
+$Tache_controller = new TacheController();
+$router->get("/taches", [$Tache_controller, "index"]);
+$router->get("/tache_peser", [$Tache_controller, "peserPorcs"]);
+$router->post("/tache_peser_submit", [$Tache_controller, "submitPesee"]);
+
 $Reproduction_Controller = new ReproductionController();
 $router->get("/reproduction", [$Reproduction_Controller, "index"]);
 $router->get("/reproduction/inseminate", [$Reproduction_Controller, "inseminate"]);

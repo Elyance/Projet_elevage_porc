@@ -1,0 +1,187 @@
+Voici une réponse complète à votre requête concernant l’analyse de la base de données actuelle (`base.sql`) en lien avec le document "TACHES-ET-RÉPARTITION.docx". Je vais identifier les éléments manquants, proposer des tâches possibles pour la gestion des employés, et signaler les incohérences ou améliorations potentielles pour répondre aux besoins du projet.
+
+---
+
+### Analyse de la base de données actuelle
+
+La base de données actuelle couvre plusieurs aspects du projet, mais certains éléments clés mentionnés dans le document manquent ou nécessitent des ajustements pour répondre aux exigences, notamment les règles de gestion et une gestion détaillée des tâches des employés. Voici une analyse structurée :
+
+#### 1. Éléments manquants
+Voici les principales lacunes identifiées dans la base de données par rapport aux besoins du projet :
+
+##### a) Règles de gestion (Lu berri)
+- **Problème** : Le document mentionne des règles de gestion pour les stocks, les prix et les portées (ex. seuils de stock pour les aliments, règles de tarification). Cependant, la base actuelle n’a pas de tables dédiées pour stocker ou appliquer ces règles.
+- **Proposition** :
+  - **Table `bao_regle_stock`** : Pour gérer les seuils de stock des aliments.
+    ```sql
+    CREATE TABLE bao_regle_stock (
+        id_regle_stock SERIAL PRIMARY KEY,
+        id_aliment_type INTEGER,
+        seuil_min DECIMAL(10,2), -- Seuil minimum en kg
+        seuil_max DECIMAL(10,2), -- Seuil maximum en kg
+        FOREIGN KEY (id_aliment_type) REFERENCES bao_aliment_type(id_aliment_type)
+    );
+    ```
+  - **Table `bao_regle_prix`** : Pour les règles de tarification (ex. prix d’achat/vente).
+    ```sql
+    CREATE TABLE bao_regle_prix (
+        id_regle_prix SERIAL PRIMARY KEY,
+        type_regle VARCHAR(20) CHECK (type_regle IN ('achat', 'vente')),
+        multiplicateur DECIMAL(5,2), -- Ex. multiplicateur pour ajuster les prix
+        date_debut DATE,
+        date_fin DATE
+    );
+    ```
+  - **Table `bao_regle_portee`** : Pour les règles sur les portées (ex. âge d’abattage, poids minimum).
+    ```sql
+    CREATE TABLE bao_regle_portee (
+        id_regle_portee SERIAL PRIMARY KEY,
+        age_abattage INTEGER, -- Âge en jours pour abattage
+        poids_min_vente DECIMAL(10,2) -- Poids minimum en kg pour vente
+    );
+    ```
+- **Utilité** : Ces tables permettront à Lu berri d’implémenter la logique métier (ex. alertes sur les stocks bas, calculs automatiques des prix).
+
+##### b) Gestion détaillée des tâches (Tsiory)
+- **Problème** : Les tables `bao_tache` et `bao_tache_employe` existent, mais elles sont basiques et ne permettent pas une gestion avancée des tâches (ex. types de tâches, planification, suivi). Des tâches spécifiques comme "pesée" ou "nourrir les animaux" ne sont pas clairement supportées.
+- **Proposition** :
+  - **Table `bao_tache_type`** : Pour catégoriser les tâches.
+    ```sql
+    CREATE TABLE bao_tache_type (
+        id_tache_type SERIAL PRIMARY KEY,
+        nom_tache_type VARCHAR(50) -- Ex. "Nourrir", "Peser", "Nettoyer"
+    );
+    ```
+  - **Modification de `bao_tache`** : Ajouter des champs pour une gestion avancée.
+    ```sql
+    ALTER TABLE bao_tache
+    ADD COLUMN id_tache_type INTEGER,
+    ADD COLUMN date_debut DATE,
+    ADD COLUMN date_fin DATE,
+    ADD COLUMN recurrence VARCHAR(20) CHECK (recurrence IN ('quotidien', 'hebdomadaire', 'mensuel')),
+    ADD FOREIGN KEY (id_tache_type) REFERENCES bao_tache_type(id_tache_type);
+    ```
+  - **Modification de `bao_tache_employe`** : Ajouter un suivi détaillé.
+    ```sql
+    ALTER TABLE bao_tache_employe
+    ADD COLUMN date_completion DATE;
+    ```
+- **Tâches possibles** : Voici une liste de tâches pertinentes pour le projet :
+  1. **Nourrir les animaux** : Distribuer les aliments aux truies/portées.
+  2. **Peser les porcs** : Enregistrer le poids des truies ou portées.
+  3. **Nettoyer les enclos** : Maintenir l’hygiène des enclos.
+  4. **Vérifier l’état de santé** : Observer les animaux pour détecter des symptômes.
+  5. **Enregistrer les naissances** : Documenter les accouchements.
+  6. **Gérer les stocks d’aliments** : Vérifier et ajuster les stocks.
+  7. **Préparer les commandes** : Organiser les porcs pour la livraison.
+  8. **Effectuer les vaccinations** : Administrer les vaccins planifiés.
+  9. **Surveiller les gestations** : Suivre les truies gestantes.
+
+##### c) Autres fonctionnalités manquantes
+- **Authentification (Nekena)** : Les tables `bao_utilisateur` et `bao_utilisateur_role` existent, mais il manque une gestion des sessions ou des tokens pour sécuriser les connexions.
+  - **Proposition** : Ajouter une table `bao_session`.
+    ```sql
+    CREATE TABLE bao_session (
+        id_session SERIAL PRIMARY KEY,
+        id_utilisateur INTEGER,
+        token VARCHAR(100),
+        date_creation TIMESTAMP,
+        date_expiration TIMESTAMP,
+        FOREIGN KEY (id_utilisateur) REFERENCES bao_utilisateur(id_utilisateur)
+    );
+    ```
+- **Calendriers (Riana)** : La table `bao_sante_calendrier` est présente, mais elle est limitée aux événements de santé. Il faut un calendrier global pour toutes les tâches et événements.
+  - **Proposition** : Créer une table `bao_evenement`.
+    ```sql
+    CREATE TABLE bao_evenement (
+        id_evenement SERIAL PRIMARY KEY,
+        type_evenement VARCHAR(50), -- Ex. "Tâche", "Reproduction", "Visite"
+        date_evenement DATE,
+        description TEXT
+    );
+    ```
+- **Simulations (Ioty)** : Aucune table pour les simulations (ex. calculs de bénéfices).
+  - **Proposition** : Ajouter une table `bao_simulation`.
+    ```sql
+    CREATE TABLE bao_simulation (
+        id_simulation SERIAL PRIMARY KEY,
+        date TIMESTAMP,
+        parametres TEXT, -- Ex. JSON avec nombre de porcs, durée
+        resultats TEXT  -- Ex. JSON avec bénéfices estimés
+    );
+    ```
+- **Budget (Raphael)** : Pas de tables pour les finances.
+  - **Proposition** : Ajouter `bao_budget`, `bao_depense`, `bao_recette`.
+    ```sql
+    CREATE TABLE bao_budget (
+        id_budget SERIAL PRIMARY KEY,
+        annee INTEGER,
+        montant_prevu DECIMAL(10,2)
+    );
+    CREATE TABLE bao_depense (
+        id_depense SERIAL PRIMARY KEY,
+        id_budget INTEGER,
+        montant DECIMAL(10,2),
+        date_depense DATE,
+        description TEXT,
+        FOREIGN KEY (id_budget) REFERENCES bao_budget(id_budget)
+    );
+    CREATE TABLE bao_recette (
+        id_recette SERIAL PRIMARY KEY,
+        id_budget INTEGER,
+        montant DECIMAL(10,2),
+        date_recette DATE,
+        description TEXT,
+        FOREIGN KEY (id_budget) REFERENCES bao_budget(id_budget)
+    );
+    ```
+- **Pesée (tâche spécifique)** : Aucune table pour enregistrer les pesées des porcs.
+  - **Proposition** : Ajouter une table `bao_pesee`.
+    ```sql
+    CREATE TABLE bao_pesee (
+        id_pesee SERIAL PRIMARY KEY,
+        id_truie INTEGER,
+        id_portee INTEGER,
+        date_pesee DATE,
+        poids DECIMAL(10,2),
+        note TEXT,
+        FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie),
+        FOREIGN KEY (id_portee) REFERENCES bao_portee(id_portee)
+    );
+    ```
+
+#### 2. Incohérences et améliorations
+- **Table `bao_enclos_portee`** :
+  - **Problème** : Le champ `poids_estimation` n’est pas clair (poids par porc ou total ?).
+  - **Solution** : Ajouter un champ `poids_total` pour la clarté.
+    ```sql
+    ALTER TABLE bao_enclos_portee
+    ADD COLUMN poids_total DECIMAL(10,2);
+    ```
+- **Table `bao_commande`** :
+  - **Problème** : Le champ `quantite` n’est pas explicitement lié à `bao_enclos_portee.quantite_portee` pour mettre à jour le stock.
+  - **Solution** : Ajouter une contrainte ou un trigger pour synchroniser les quantités.
+- **Table `bao_sante_evenement`** :
+  - **Problème** : Le champ `id_enclos` ne permet pas un suivi par truie ou portée.
+  - **Solution** : Ajouter `id_truie` ou `id_portee`.
+    ```sql
+    ALTER TABLE bao_sante_evenement
+    ADD COLUMN id_truie INTEGER,
+    ADD COLUMN id_portee INTEGER,
+    ADD FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie),
+    ADD FOREIGN KEY (id_portee) REFERENCES bao_portee(id_portee);
+    ```
+
+#### 3. Résumé des propositions
+- **Règles de gestion** : Ajouter `bao_regle_stock`, `bao_regle_prix`, `bao_regle_portee`.
+- **Tâches** : Ajouter `bao_tache_type`, enrichir `bao_tache` et `bao_tache_employe` avec planification et suivi.
+- **Fonctionnalités** : Ajouter des tables pour l’authentification (`bao_session`), les calendriers (`bao_evenement`), les simulations (`bao_simulation`),
+ le budget (`bao_budget`, etc.), et les pesées (`bao_pesee`).
+- **Corrections** : Clarifier les champs et ajouter des liens pour une meilleure cohérence.
+
+---
+
+### Conclusion
+La base de données actuelle est une bonne fondation, mais elle manque de tables pour les règles de gestion et une gestion avancée des tâches (ex. pesée, nourrissage).
+ Les tâches proposées (nourrir, peser, nettoyer, etc.) peuvent être intégrées via une table `bao_tache_type`. En ajoutant les tables et ajustements proposés, la base supportera pleinement les besoins du projet décrits dans "TACHES-ET-RÉPARTITION.docx". Si vous avez 
+besoin d’aide pour implémenter ces changements ou d’autres précisions, n’hésitez pas à demander !

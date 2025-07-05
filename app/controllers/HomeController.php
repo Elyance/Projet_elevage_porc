@@ -16,6 +16,7 @@ class HomeController
             'title' => 'Gestion Porc - Accueil',
             'links' => [
                 'Accueil' => '/',
+                'Taches' => '/taches',
                 'Reproduction' => '/reproduction',
                 'Alimentation' => '/alimentation',
                 'Animaux' => '/animaux',
