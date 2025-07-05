@@ -11,7 +11,7 @@ class BudgetController
     {
         $annee = Flight::request()->query['annee'] ?? date('Y');
         $budgetParMois = Budget::getBudgetParMois($annee);
-        $budgetParAn = Budget::getBudgetParAn($annee);
+        $budgetParAn = Budget::getBudgetParAn();
 
         $data = [
             'budgetParMois' => $budgetParMois,
