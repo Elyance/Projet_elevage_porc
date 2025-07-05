@@ -2,6 +2,10 @@
 namespace app\models;
 
 use Flight;
+use DateTime;
+use DateInterval;
+use DatePeriod;
+use Exception;
 
 class PresenceModel
 {
@@ -105,5 +109,61 @@ class PresenceModel
             $data["date_presence"] ?? "",
             $data["statut"] ?? "absent"
         );
+    }
+    public static function insertDailyPresences(int $id_employe, string $start_date, string $end_date, string $statut = "present"): bool
+    {
+        $conn = Flight::db();
+        $conn->beginTransaction();
+
+        try {
+            // Validate and log input dates
+            echo "Step 1: Validating dates - Start: $start_date, End: $end_date<br>";
+            $start = new DateTime($start_date);
+            $end = new DateTime($end_date);
+            if ($start > $end) {
+                throw new Exception("Start date ($start_date) is after end date ($end_date)");
+            }
+            $end->modify('+1 day'); // Include end date in the range
+            echo "Step 2: Adjusted end date to: " . $end->format('Y-m-d') . "<br>";
+
+            $interval = new DateInterval('P1D');
+            $dateRange = new DatePeriod($start, $interval, $end);
+            echo "Step 3: Date range created with " . iterator_count($dateRange) . " days<br>";
+
+            $inserted = 0;
+            foreach ($dateRange as $date) {
+                $dateStr = $date->format('Y-m-d');
+                echo "Step 4: Attempting to insert for date: $dateStr<br>";
+                error_log("Attempting to insert: id_employe=$id_employe, date_presence=$dateStr, statut=$statut");
+
+                $stmt = $conn->prepare("INSERT INTO bao_presence (id_employe, date_presence, statut) 
+                                       VALUES (:id_employe, :date_presence::date, :statut)
+                                       ");
+                $success = $stmt->execute([
+                    ":id_employe" => $id_employe,
+                    ":date_presence" => $dateStr,
+                    ":statut" => $statut
+                ]);
+                if ($success) {
+                    $inserted++;
+                    echo "Step 5: Successfully inserted/updated: $dateStr<br>";
+                    error_log("Successfully inserted/updated: $dateStr");
+                } else {
+                    echo "Step 6: Failed to insert $dateStr<br>";
+                    $errorInfo = $stmt->errorInfo();
+                    error_log("Failed to insert $dateStr: " . json_encode($errorInfo));
+                }
+            }
+
+            $conn->commit();
+            echo "Step 7: Transaction committed, total insertions/updates: $inserted<br>";
+            error_log("Total insertions/updates: $inserted");
+            return $inserted > 0;
+        } catch (Exception $e) {
+            $conn->rollBack();
+            echo "Step 8: Error occurred - " . $e->getMessage() . "<br>";
+            error_log("Error inserting daily presences: " . $e->getMessage());
+            return false;
+        }
     }
 }

@@ -2,12 +2,13 @@
 namespace app\models;
 
 use Flight;
+use PDO;
 
 class SalaireModel
 {
     public int $id_salaire;
     public int $id_employe;
-    public string $date_salaire;
+    public string $date_salaire; // Kept as string
     public float $montant;
     public string $statut;
 
@@ -20,7 +21,7 @@ class SalaireModel
         $this->statut = $statut;
     }
 
-    public static function getAll(array $conditions = [])
+    public static function getAll(array $conditions = []): array
     {
         $conn = Flight::db();
         $query = "SELECT * FROM bao_salaire";
@@ -30,8 +31,8 @@ class SalaireModel
             $where = [];
             foreach ($conditions as $key => $value) {
                 if ($key === "date_salaire LIKE") {
-                    $where[] = "date_salaire LIKE :date_salaire";
-                    $params[":date_salaire"] = $value;
+                    $where[] = "TO_CHAR(date_salaire, 'YYYY-MM-DD') LIKE :date_salaire";
+                    $params[':date_salaire'] = $value . '%'; // e.g., '2025-07%' for month filtering
                 } else {
                     $where[] = "$key = :$key";
                     $params[":$key"] = $value;
@@ -50,10 +51,10 @@ class SalaireModel
     {
         $conn = Flight::db();
         $stmt = $conn->prepare("INSERT INTO bao_salaire (id_employe, date_salaire, montant, statut) 
-                               VALUES (:id_employe, :date_salaire, :montant, :statut)");
+                               VALUES (:id_employe, :date_salaire::date, :montant, :statut)");
         return $stmt->execute([
             ":id_employe" => $id_employe,
-            ":date_salaire" => $date_salaire,
+            ":date_salaire" => $date_salaire, // Expecting YYYY-MM-DD format
             ":montant" => $montant,
             ":statut" => $statut
         ]);
@@ -71,7 +72,7 @@ class SalaireModel
         return new SalaireModel(
             $data["id_salaire"] ?? 0,
             $data["id_employe"] ?? 0,
-            $data["date_salaire"] ?? "",
+            $data["date_salaire"] ?? "", // Directly use string, no format needed
             $data["montant"] ?? 0.0,
             $data["statut"] ?? "non payé"
         );

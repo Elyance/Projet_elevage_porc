@@ -21,8 +21,9 @@ CREATE TABLE bao_utilisateur (
 );
 
 INSERT INTO bao_utilisateur_role (nom_role) VALUES ('admin'), ('emp');
-INSERT INTO bao_utilisateur (nom_utilisateur, mot_de_passe, id_utilisateur_role)
-VALUES ('admin', 'admin', 1), ('emp', 'emp', 2);
+INSERT INTO bao_utilisateur (id_utilisateur,nom_utilisateur, mot_de_passe, id_utilisateur_role)
+VALUES (0,'admin', 'admin', 1), (1,'emp', 'emp', 2);
+SELECT setval('bao_utilisateur_id_utilisateur_seq', 2, true);
 
 -- 2. TABLES ENCLOS ET TRUIES
 CREATE TABLE bao_enclos_type (
@@ -221,6 +222,55 @@ CREATE TABLE bao_employe (
     FOREIGN KEY (id_employe_poste) REFERENCES bao_employe_poste(id_employe_poste)
         ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
+----------- 5a/ GESTION SALAIRE EMPLOYÉ
+CREATE TABLE bao_salaire (
+    id_salaire SERIAL PRIMARY KEY,
+    id_employe INTEGER,
+    date_salaire DATE, -- date de paiement du salaire
+    montant DECIMAL(10,2), -- montant du salaire
+    statut VARCHAR(20),
+    FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
+);
+
+----------- 5b/ GESTION PRESENCE EMPLOYÉ
+CREATE TABLE bao_presence (
+    id_presence SERIAL PRIMARY KEY,
+    id_employe INTEGER,
+    date_presence DATE,
+    statut VARCHAR(20) CHECK (statut IN ('present', 'absent')),
+    FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
+);
+
+----------- 5c/ GESTION CONGES EMPLOYÉ
+CREATE TABLE bao_conge (
+    id_conge SERIAL PRIMARY KEY,
+    id_employe INTEGER,
+    date_debut DATE, -- date de debut du conge
+    date_fin DATE, -- date de fin du conge
+    motif VARCHAR(100), -- motif du conge
+    statut VARCHAR(20), -- statut du conge
+    FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
+);
+
+----------- 6/ GESTION TACHES EMPLOYÉ
+CREATE TABLE bao_tache (
+    id_tache SERIAL PRIMARY KEY,
+    id_employe_poste INTEGER, -- les taches sont liees a un poste specifique
+    nom_tache VARCHAR(100), -- titre de la tache
+    description TEXT,
+    FOREIGN KEY (id_employe_poste) REFERENCES bao_employe_poste(id_employe_poste)
+);
+
+CREATE TABLE bao_tache_employe (
+    id_tache_employe SERIAL PRIMARY KEY,
+    id_tache INTEGER,
+    id_employe INTEGER,
+    date_attribution DATE,
+    statut VARCHAR(20) CHECK (statut IN ('non commencer', 'terminee')),
+    FOREIGN KEY (id_tache) REFERENCES bao_tache(id_tache),
+    FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
+);
+
 
 -- DONNEES
 INSERT INTO bao_enclos_type (nom_enclos_type) VALUES ('Truie'), ('Portee'), ('Quarantaine');

@@ -42,8 +42,8 @@ class SalaireController
         $salaire_final = $salaire_brut * $taux;
 
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $montant = $_POST["salaire_final"];
-            $date_salaire = "$year-$month-01";
+            $montant = floatval($_POST["salaire_final"]);
+            $date_salaire = "$year-$month-01"; // Use first day of the month
             SalaireModel::create((int)$id, $date_salaire, $montant, "payé");
             Flight::redirect("/salaire?mois=$month&annee=$year");
         }
@@ -63,7 +63,8 @@ class SalaireController
     {
         $employe_id = $_GET["employe"] ?? null;
         $year = $_GET["annee"] ?? date("Y");
-        $salaires = SalaireModel::getAll($employe_id ? ["id_employe" => $employe_id] : []);
+        $conditions = $employe_id ? ["id_employe" => $employe_id] : [];
+        $salaires = SalaireModel::getAll($conditions);
         $employes = EmployeModel::getAll();
 
         $data = [];

@@ -1,3 +1,4 @@
+<!-- app/views/employe/index.php -->
 <h1>Gestion des Employés</h1>
 <div>
     <a href="/salaire">Gestion Salaire</a> | 
@@ -10,7 +11,6 @@
         <th>Nom</th>
         <th>Rôle</th>
         <th>Date Recrutement</th>
-        <th>Statut</th>
         <th>Action</th>
     </tr>
     <?php foreach ($employes as $employe): ?>
@@ -18,11 +18,8 @@
         <td><?= htmlspecialchars($employe->nom_employe . ' ' . $employe->prenom_employe) ?></td>
         <td><?= htmlspecialchars($employe->nom_poste) ?></td>
         <td><?= htmlspecialchars($employe->date_recrutement) ?></td>
-        <td><?= htmlspecialchars($employe->statut) ?></td>
         <td>
-            <?php if ($employe->statut === 'actif'): ?>
-                <a href="/employe/congedier/<?= $employe->id_employe ?>">Congédier</a>
-            <?php endif; ?>
+            <a href="/conge/add?id_employe=<?= $employe->id_employe ?>">Demande de Congé</a>
         </td>
     </tr>
     <?php endforeach; ?>

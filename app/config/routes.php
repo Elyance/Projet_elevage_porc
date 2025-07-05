@@ -17,6 +17,7 @@ use app\controllers\AddEmployeController;
 use app\controllers\AlimentController;
 use app\controllers\NourrirController;
 use app\controllers\ReapproController;
+use app\controllers\SimulationEnclosController;
 
 use flight\net\Router;
 use flight\Engine;
@@ -136,3 +137,22 @@ $router->group('/aliments', function () use ($router) {
 
 });
 
+$simul = new SimulationEnclosController();
+
+$router->get('/simulation', [ $simul, 'index' ]); 
+$router->get('/statistique', [ 'app\controllers\StatVenteController', 'index' ]); 
+
+
+$router->get('/simulation/enclos', [ $simul, 'showForm' ]); 
+$router->post('/simulation/enclos', [ $simul, 'simulate' ]); 
+Flight::route('GET /simulation/benefice', ['app\controllers\SimulationBeneficeController', 'showForm']);
+Flight::route('POST /simulation/benefice', ['app\controllers\SimulationBeneficeController', 'simulate']);
+
+
+Flight::route('GET /statistiques/aliments', ['app\controllers\StatAlimentController', 'showForm']);
+Flight::route('POST /statistiques/aliments', ['app\controllers\StatAlimentController', 'showStats']);
+Flight::route('GET /statistiques/ventes', ['app\controllers\StatVenteController', 'showForm']);
+Flight::route('POST /statistiques/ventes', ['app\controllers\StatVenteController', 'showStats']);
+
+Flight::route('GET /conge/add', ['app\controllers\CongeController', 'addForm']);
+Flight::route('POST /conge/add', ['app\controllers\CongeController', 'add']);

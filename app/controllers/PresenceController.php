@@ -28,12 +28,16 @@ class PresenceController
         $presences = PresenceModel::getAll(["date_presence" => $date]);
         $employes = EmployeModel::getAll();
         $present = array_filter($presences, fn($p) => $p->statut === "present");
-        $present_employes = array_map(fn($p) => array_filter($employes, fn($e) => $e->id_employe == $p->id_employe)[0], $present);
+        
+        $present_employes = array_map(function ($p) use ($employes) {
+            $matching_employes = array_filter($employes, fn($e) => $e->id_employe == $p->id_employe);
+            return !empty($matching_employes) ? array_values($matching_employes)[0] : null;
+        }, $present);
 
         Flight::render("presence/detail_jour", [
             "date" => $date,
             "present_employes" => $present_employes,
-            "conge_payes" => [] // Placeholder
+            "conge_payes" => []
         ]);
     }
 
