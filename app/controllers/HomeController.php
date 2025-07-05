@@ -16,7 +16,7 @@ class HomeController
             'title' => 'Gestion Porc - Accueil',
             'links' => [
                 'Accueil' => Flight::get('flight.base_url'),
-                'Taches' => Flight::get('flight.base_url').'/taches',
+                // 'Taches' => Flight::get('flight.base_url').'/taches',
                 'Reproduction' => Flight::get('flight.base_url').'/reproduction',
                 'Alimentation' => Flight::get('flight.base_url').'/alimentation',
                 'Animaux' => Flight::get('flight.base_url').'/animaux',

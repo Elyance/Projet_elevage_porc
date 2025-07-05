@@ -9,14 +9,16 @@ class User
     private int $idUser;
     private string $username;
     private string $password;
-    private string $role;
+    private string $nomrole;
+    private int $role;
 
-    public function __construct(int $idUser = 0, string $username = '', string $password = '', string $role = '')
+    public function __construct(int $idUser = 0, string $username = '', string $password = '', string $nomrole = '' , int $role=2)
     {
         $this->idUser = $idUser;
         $this->username = $username;
         $this->password = $password;
         $this->role = $role;
+        $this->nomrole = $nomrole;
     }
 
     public function getIdUser(): int {
@@ -43,12 +45,20 @@ class User
         $this->password = $password;
     }
 
-    public function getRole(): string {
+    public function getRole() {
         return $this->role;
     }
 
-    public function setRole(string $role): void {
+    public function setRole(int $role): void {
         $this->role = $role;
+    }
+
+    public function getNomRole() {
+        return $this->nomrole;
+    }
+
+    public function setNomRole(string $role): void {
+        $this->nomrole = $role;
     }
 
     public function __toString(): string {
@@ -57,7 +67,7 @@ class User
 
     function loginUser(string $username, string $password): ?User {
         $sql = "
-            SELECT u.id_utilisateur, u.nom_utilisateur, u.mot_de_passe, r.nom_role
+            SELECT u.id_utilisateur, u.nom_utilisateur, u.mot_de_passe, r.nom_role, r.id_utilisateur_role id_role
             FROM bao_utilisateur u
             JOIN bao_utilisateur_role r ON u.id_utilisateur_role = r.id_utilisateur_role
             WHERE u.nom_utilisateur = :username
@@ -81,7 +91,8 @@ class User
                 (int)$row['id_utilisateur'],
                 $row['nom_utilisateur'],
                 $row['mot_de_passe'],
-                $row['nom_role']
+                $row['nom_role'],
+                $row['id_role'] 
             );
         }
         return null; // identifiants invalides
