@@ -23,6 +23,24 @@
                     <p class="card-text"><strong>Stockage :</strong> <?php echo $enclos['stockage']; ?></p>
                 </div>
             </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="card-text"><strong>Nombre de porc :</strong> <?php echo $enclos['quantite_portee'] ?? 0; ?></p>
+                </div>
+                <div class="col-md-6">
+                    <p class="card-text"><strong>Poids estimé :</strong> <?php echo $enclos['poids_estimation'] ?? 0; ?></p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="card-text"><strong>Status :</strong> <?php echo $enclos['statut_vente'] ?? "Aucun"; ?></p>
+                </div>
+                <div class="col-md-6">
+                    <p class="card-text"><strong>Nombre de jours ecoulé :</strong> <?php echo $enclos['nombre_jour_ecoule'] ?? "Aucun"; ?></p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

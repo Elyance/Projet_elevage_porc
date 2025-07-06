@@ -34,7 +34,7 @@ class EnclosModel
 
     public static function findByIdJoined($id)
     {
-        $stmt = \Flight::db()->prepare('SELECT * FROM bao_enclos JOIN bao_enclos_type ON bao_enclos_type.id_enclos_type = bao_enclos.enclos_type  WHERE id_enclos = ?');
+        $stmt = \Flight::db()->prepare('SELECT * FROM bao_enclos_portee ep RIGHT JOIN bao_enclos e ON ep.id_enclos = e.id_enclos JOIN bao_enclos_type et ON et.id_enclos_type = e.enclos_type WHERE e.id_enclos = ?');
         $stmt->execute([$id]);
         $result = $stmt->fetch();
 
