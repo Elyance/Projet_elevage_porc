@@ -19,10 +19,7 @@ CREATE TABLE bao_utilisateur (
         ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
 
--- Insert user roles and users
-INSERT INTO bao_utilisateur_role (nom_role) VALUES ('admin'), ('emp');
-INSERT INTO bao_utilisateur (nom_utilisateur, mot_de_passe, id_utilisateur_role)
-VALUES ('admin', 'admin', 1), ('emp', 'emp', 2);
+
 
 -- 2. TABLES FOR PIG MANAGEMENT
 -- Table for pig enclosure types
@@ -298,10 +295,6 @@ CREATE TABLE bao_sante_type_evenement (
     prix DECIMAL(10,2)
 );
 
-INSERT INTO bao_sante_type_evenement(nom_type_evenement, prix)
-VALUES ('Vaccination', 50.00),
-       ('Consultation vétérinaire', 100.00),
-       ('Insemination', 75.00);
 
 CREATE TABLE bao_sante_evenement (
     id_sante_evenement SERIAL PRIMARY KEY,
@@ -365,6 +358,15 @@ CREATE TABLE bao_diagnostic (
 
 
 -- DONNEES
+-- Insert user roles and users
+INSERT INTO bao_utilisateur_role (nom_role) VALUES ('admin'), ('emp');
+INSERT INTO bao_utilisateur (nom_utilisateur, mot_de_passe, id_utilisateur_role)
+VALUES ('admin', 'admin', 1), ('emp', 'emp', 2);
+
+INSERT INTO bao_sante_type_evenement(nom_type_evenement, prix)
+VALUES ('Vaccination', 50.00),
+       ('Consultation vétérinaire', 100.00),
+       ('Insemination', 75.00);
 
 INSERT INTO bao_employe_poste (nom_poste, salaire_base) VALUES
 ('Technicien reproduction', 1200),
@@ -387,7 +389,12 @@ INSERT INTO bao_type_porc (nom_type, age_min, age_max, poids_min, poids_max, esp
 VALUES 
 ('Truie', 12, 36, 100.00, 200.00, 10.00),  -- 1 enclosure type for sows
 ('Portee', 0, 12, 0.50, 50.00, 5.00),      -- 1 enclosure type for litters
-('Quarantaine', 0, 12, 0.50, 50.00, 5.00); -- 1 enclosure type for quarantine (added as per your list)
+('Quarantaine', 0, 12, 0.50, 50.00, 5.00); 
+('Porcelet', 0, 60, 1.5, 20.0, 0.5),
+('Jeune', 61, 120, 20.1, 50.0, 1.0),
+('Engraissement', 121, 180, 50.1, 100.0, 1.5),
+('Adulte', 181, 240, 100.1, 150.0, 2.0),
+('Reproducteur', 241, 365, 150.1, 250.0, 2.5);-- 1 enclosure type for quarantine (added as per your list)
 
 -- Insert enclosures (1 Truie + 3 Portee)
 INSERT INTO bao_enclos (enclos_type, surface)
@@ -397,9 +404,14 @@ VALUES
 (2, 15),  -- Enclos 3: Portee type
 (2, 15);  -- Enclos 4: Portee type
 
--- Insert breeds
-INSERT INTO races_porcs (nom_race, description, besoins_nutritionnels, duree_engraissement_jours)
-VALUES ('Large White', 'Common pig breed', 'High protein', 180);
+
+-- Insertion des races de porcs
+INSERT INTO races_porcs (nom_race, description, besoins_nutritionnels, duree_engraissement_jours) VALUES
+('Large White', 'Race blanche très répandue, croissance rapide', 'Besoin élevé en protéines (16-18%)', 180),
+('Landrace', 'Race blanche allongée, bonne qualité de viande', 'Nécessite des acides aminés équilibrés', 190),
+('Duroc', 'Race rouge, viande persillée de qualité', 'Alimentation riche en énergie', 210),
+('Piétrain', 'Race musclée, rendement carcasse élevé', 'Attention au stress alimentaire', 170),
+('Gascon', 'Race rustique locale', 'Adaptée au pâturage', 240);
 
 -- Insert sows
 -- Insert enclos_portee (initialize all Portee enclosures and assign litters to Enclos 2)
@@ -434,3 +446,26 @@ VALUES
 (2, 3, 2, 125.0, 'non possible',339),  -- Enclos 2 with Litter 2 (4 pigs)
 (3, NULL, 0, 0.0, 'non possible',0), -- Enclos 3 initialized with no litter
 (4, NULL, 0, 0.0, 'non possible',0); -- Enclos 4 initialized with no litter
+
+-- Insertion des aliments
+INSERT INTO aliments (nom_aliment, prix_kg, stock_kg, apports_nutritionnels, contact_fournisseur, conso_journaliere_kg_par_porc) VALUES
+('Maïs grain', 0.35, 500.00, 'Energie: 3300 kcal/kg, Protéines: 8%', '0601020304', 0.8),
+('Tourteau de soja', 0.55, 300.00, 'Protéines: 45%, Lysine: 2.8%', '0602030405', 0.3),
+('Orge', 0.30, 400.00, 'Energie: 2800 kcal/kg, Fibres: 5%', '0603040506', 0.6),
+('Son de blé', 0.25, 200.00, 'Fibres: 12%, Energie modérée', '0604050607', 0.4),
+('Mélange complet', 0.60, 350.00, 'Equilibré: 16% protéines, vitamines', '0605060708', 1.0);
+-- Insertion des réapprovisionnements
+INSERT INTO reapprovisionnement_aliments (id_aliment, quantite_kg, date_reappro, cout_total) VALUES
+(1, 200.00, '2023-09-15 14:00:00', 70.00),
+(2, 150.00, '2023-09-20 11:30:00', 82.50),
+(3, 100.00, '2023-09-25 10:00:00', 30.00),
+(5, 80.00, '2023-09-28 16:45:00', 48.00);
+
+-- Insertion historique d'alimentation
+INSERT INTO historique_alimentation (id_enclos, id_aliment, quantite_kg, id_enclos_portee) VALUES
+(1, 1, 25.0, 1),
+(1, 2, 10.0, 1),
+(1, 3, 30.0, 2),
+(2, 5, 28.0, 3),
+(2, 1, 20.0, 4),
+(5, 4, 15.0, 5);

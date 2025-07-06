@@ -5,14 +5,14 @@
         <h2>🍽️ Nourrir les Porcs par Enclos</h2>
     </div>
     <?php if (isset($message)): ?>
-        <div class="alert alert-<?= $message['type'] ?>">
-            <?= $message['text']; ?>
+        <div class="alert alert-<?= htmlspecialchars($message['type']) ?>">
+            <?= htmlspecialchars($message['text']); ?>
         </div>
     <?php endif; ?>
     <div class="card-body">
         <form id="form-nourrir" action="/aliments/nourrir/action" method="POST">
-            <input type="hidden" name="id_enclos" value="<?= $selectedEnclos ?>">
-            
+            <input type="hidden" name="id_enclos" value="<?= htmlspecialchars($selectedEnclos ?? '') ?>">
+
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="id_enclos_select" class="form-label">Sélectionner un enclos</label>
@@ -21,10 +21,12 @@
                         <option value="">-- Sélectionnez un enclos --</option>
                         <?php if (!empty($enclos)): ?>
                             <?php foreach ($enclos as $enclo): ?>
-                                <option value="<?= $enclo['id_enclos'] ?>" <?= $selectedEnclos == $enclo['id_enclos'] ? 'selected' : '' ?>>
-                                    Enclos #<?= $enclo['id_enclos'] ?> (Type: <?= $enclo['enclos_type'] ?>)
+                                <option value="<?= htmlspecialchars($enclo['id_enclos']) ?>" <?= isset($selectedEnclos) && $selectedEnclos == $enclo['id_enclos'] ? 'selected' : '' ?>>
+                                    Enclos #<?= htmlspecialchars($enclo['id_enclos']) ?> (Type: <?= htmlspecialchars($enclo['enclos_type']) ?>)
                                 </option>
                             <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="" disabled>Aucun enclos disponible</option>
                         <?php endif; ?>
                     </select>
                 </div>
@@ -37,8 +39,6 @@
                         <thead>
                             <tr>
                                 <th>Race</th>
-                                <th>Mâles</th>
-                                <th>Femelles</th>
                                 <th>Total</th>
                                 <th>Besoins nutritionnels</th>
                             </tr>
@@ -47,10 +47,8 @@
                             <?php foreach ($infosNourrissage as $info): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($info['nom_race']) ?></td>
-                                    <td><?= $info['quantite_males'] ?></td>
-                                    <td><?= $info['quantite_femelles'] ?></td>
-                                    <td><?= $info['quantite_males'] + $info['quantite_femelles'] ?></td>
-                                    <td><?= htmlspecialchars($info['besoins_nutritionnels']) ?></td>
+                                    <td><?= htmlspecialchars($info['quantite_total']) ?></td>
+                                    <td><?= htmlspecialchars($info['besoins_nutritionnels'] ?? 'N/A') ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -68,6 +66,8 @@
                 <button type="submit" class="btn btn-success">
                     ✅ Enregistrer le nourrissage
                 </button>
+            <?php else: ?>
+                <p class="text-warning">Aucun porc dans l'enclos sélectionné.</p>
             <?php endif; ?>
         </form>
     </div>
@@ -75,17 +75,17 @@
 
 <!-- Template pour un nouvel aliment (caché) -->
 <div id="aliment-template" class="d-none">
-    <div class="aliment-group mb-4 border p-3 rounded">
+    <div class="aliment-group mb-4 border p-3 rounded" data-index="0"> <!-- Add data-index attribute -->
         <div class="row mb-3">
             <div class="col-md-5">
                 <label class="form-label">Aliment</label>
                 <select class="form-select aliment-select" name="aliments[]" required>
                     <option value="">-- Sélectionnez --</option>
                     <?php foreach ($aliments as $aliment): ?>
-                        <option value="<?= $aliment['id_aliment'] ?>" 
-                                data-stock="<?= $aliment['stock_kg'] ?>">
+                        <option value="<?= htmlspecialchars($aliment['id_aliment']) ?>" 
+                                data-stock="<?= htmlspecialchars($aliment['stock_kg'] ?? 0) ?>">
                             <?= htmlspecialchars($aliment['nom_aliment']) ?> 
-                            (Stock: <?= number_format($aliment['stock_kg'], 2) ?> kg)
+                            (Stock: <?= number_format($aliment['stock_kg'] ?? 0, 2) ?> kg)
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -109,10 +109,10 @@
             <h6>Répartition par race</h6>
             <?php foreach ($infosNourrissage as $info): ?>
                 <div class="mb-2">
-                    <label><?= htmlspecialchars($info['nom_race']) ?> (<?= $info['quantite_males'] + $info['quantite_femelles'] ?> porcs)</label>
+                    <label><?= htmlspecialchars($info['nom_race']) ?> (<?= htmlspecialchars($info['quantite_total']) ?> porcs)</label>
                     <input type="number" class="form-control repartition-input mb-1" 
-                           name="repartitions[<?= $info['id_enclos_portee'] ?>][]" 
-                           step="0.01" min="0">
+                           name="repartitions[{index}][<?= htmlspecialchars($info['id_enclos_portee']) ?>]" 
+                           step="0.01" min="0" data-index-placeholder="{index}">
                 </div>
             <?php endforeach; ?>
         </div>
@@ -121,19 +121,27 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    let alimentIndex = 0;
+
     // Ajouter un aliment
     document.getElementById('add-aliment').addEventListener('click', function() {
         const template = document.getElementById('aliment-template').cloneNode(true);
         template.classList.remove('d-none');
         template.removeAttribute('id');
+        template.querySelectorAll('[data-index-placeholder]').forEach(element => {
+            element.name = element.name.replace('{index}', alimentIndex);
+        });
+        template.setAttribute('data-index', alimentIndex);
         document.getElementById('aliments-container').appendChild(template);
         
         // Activer les événements pour le nouveau bloc
         initAlimentEvents(template);
+        alimentIndex++;
     });
 
     // Supprimer un aliment
     function initAlimentEvents(element) {
+        const index = element.getAttribute('data-index');
         element.querySelector('.remove-aliment').addEventListener('click', function() {
             element.remove();
         });
@@ -165,8 +173,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const quantite = parseFloat(group.querySelector('.aliment-quantity').value);
             const stock = parseFloat(group.querySelector('.stock-disponible span').textContent);
             
-            if (quantite > stock) {
-                alert('❌ La quantité demandée dépasse le stock disponible pour un aliment !');
+            if (quantite > stock || quantite <= 0) {
+                alert('❌ La quantité demandée dépasse le stock disponible ou est invalide !');
                 isValid = false;
             }
         });

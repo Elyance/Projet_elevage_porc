@@ -15,9 +15,7 @@ class NourrirModel
                 rp.id_race,
                 rp.nom_race,
                 rp.besoins_nutritionnels,
-                (ep.quantite_males + ep.quantite_femelles) AS nombre_porcs,
-                ep.quantite_males,
-                ep.quantite_femelles
+                (ep.quantite_total) AS quantite_total
             FROM bao_enclos_portee ep
             JOIN bao_portee p ON ep.id_portee = p.id_portee
             JOIN races_porcs rp ON p.id_race = rp.id_race

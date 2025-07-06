@@ -7,21 +7,22 @@ use PDO;
 class AlimentModel
 {
     public static function getAllAliments(): array
-    {
-        $conn = Flight::db();
-        $query = "
-            SELECT a.*, 
-                   (SELECT COALESCE(SUM(quantite_males + quantite_femelles), 0) 
-                    FROM bao_enclos_portee 
-                    JOIN bao_enclos ON bao_enclos_portee.id_enclos = bao_enclos.id_enclos
-                    WHERE bao_enclos.enclos_type IN (3,4)) * a.conso_journaliere_kg_par_porc 
-                   AS conso_journaliere_totale 
-            FROM aliments a
-        ";
-        $stmt = $conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+{
+    $conn = Flight::db();
+    $query = "
+        SELECT a.*, 
+               (SELECT COALESCE(SUM(bao_enclos_portee.quantite_total), 0) 
+                FROM bao_enclos_portee 
+                JOIN bao_enclos ON bao_enclos_portee.id_enclos = bao_enclos.id_enclos
+                JOIN bao_type_porc ON bao_enclos.enclos_type = bao_type_porc.id_type_porc
+                WHERE bao_type_porc.id_type_porc IN (2, 3)) * a.conso_journaliere_kg_par_porc 
+               AS conso_journaliere_totale 
+        FROM aliments a
+    ";
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     public static function getAlimentById(int $id): ?array
     {
@@ -43,6 +44,14 @@ class AlimentModel
     public static function updateStock(int $id_aliment, float $quantite_kg): bool
     {
         $conn = Flight::db();
+        // Validate that new stock won't be negative
+        $stmtCheck = $conn->prepare("SELECT stock_kg FROM aliments WHERE id_aliment = :id_aliment");
+        $stmtCheck->execute([':id_aliment' => $id_aliment]);
+        $currentStock = $stmtCheck->fetchColumn() ?: 0;
+        if ($currentStock + $quantite_kg < 0) {
+            return false;
+        }
+
         $query = "UPDATE aliments SET stock_kg = stock_kg + :quantite_kg WHERE id_aliment = :id_aliment";
         $stmt = $conn->prepare($query);
         return $stmt->execute([':quantite_kg' => $quantite_kg, ':id_aliment' => $id_aliment]);

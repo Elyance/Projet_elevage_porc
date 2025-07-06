@@ -13,7 +13,15 @@ class NourrirController
         if ($id_enclos === null) {
             $id_enclos = (int)Flight::request()->query->enclos;
         }
-        $enclos = EnclosModel::getAll();
+        // Convert EnclosModel objects to arrays
+        $enclosObjects = EnclosModel::getAll();
+        $enclos = array_map(function ($enclo) {
+            return [
+                'id_enclos' => $enclo->id_enclos,
+                'enclos_type' => $enclo->enclos_type,
+                'surface' => $enclo->surface
+            ];
+        }, $enclosObjects);
         $aliments = AlimentModel::getAllAliments();
         $infosNourrissage = $id_enclos ? NourrirModel::getInfosNourrissage($id_enclos) : [];
 
@@ -34,6 +42,12 @@ class NourrirController
         $quantites = $data->quantites ?? [];
         $repartitions = $this->parseRepartitions($data);
 
+        // Debug output
+        
+        
+        
+        
+
         try {
             NourrirModel::nourrirEnclos($id_enclos, $aliments, $quantites, $repartitions);
             $message = ['text' => 'Nourrissage enregistré avec succès !', 'type' => 'success'];
@@ -44,18 +58,41 @@ class NourrirController
     }
 
     private function parseRepartitions($data): array
-    {
-        $repartitions = [];
-        foreach ($data as $key => $value) {
-            if (strpos($key, 'repartitions') === 0) {
-                $parts = explode('[', str_replace(']', '', $key));
-                if (count($parts) >= 3) {
-                    $index = $parts[1];
-                    $id_enclos_portee = $parts[2];
-                    $repartitions[$index][$id_enclos_portee] = (float)$value;
+{
+    $repartitions = [];
+    $rawData = $data->getData(); // Access the underlying array from flight\util\Collection
+    // 
+            
+    // 
+    foreach ($rawData as $key => $value) {
+        // 
+
+        if (strpos($key, 'repartitions') === 0 && is_array($value)) {
+            // 
+            // Iterate over the outer array to get aliment indices
+            foreach ($value as $alimentIndex => $distributions) {
+                // 
+                if (is_array($distributions)) {
+                    // Iterate over the inner array to get id_enclos_portee and quantity
+                    foreach ($distributions as $id_enclos_portee => $quantity) {
+                        // 
+                        if (is_numeric($quantity)) {
+                            // 
+                            $repartitions[$alimentIndex][$id_enclos_portee] = (float)$quantity;
+                            // 
+                        } else {
+                            // 
+                        }
+                    }
+                } else {
+                    // 
                 }
             }
+        } else {
+            // 
         }
-        return $repartitions;
     }
+    // 
+    return $repartitions;
+}
 }
