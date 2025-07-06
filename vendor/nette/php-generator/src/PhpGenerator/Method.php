@@ -14,23 +14,35 @@ use Nette;
 
 /**
  * Class method.
+ *
+ * @property string|null $body
  */
 final class Method
 {
+	use Nette\SmartObject;
 	use Traits\FunctionLike;
 	use Traits\NameAware;
 	use Traits\VisibilityAware;
 	use Traits\CommentAware;
 	use Traits\AttributeAware;
 
-	public const Constructor = '__construct';
+	/** @var string|null */
+	private $body = '';
 
-	private bool $static = false;
-	private bool $final = false;
-	private bool $abstract = false;
+	/** @var bool */
+	private $static = false;
+
+	/** @var bool */
+	private $final = false;
+
+	/** @var bool */
+	private $abstract = false;
 
 
-	public static function from(string|array|\Closure $method): static
+	/**
+	 * @param  string|array  $method
+	 */
+	public static function from($method): self
 	{
 		return (new Factory)->fromMethodReflection(Nette\Utils\Callback::toReflection($method));
 	}
@@ -38,11 +50,37 @@ final class Method
 
 	public function __toString(): string
 	{
-		return (new Printer)->printMethod($this);
+		try {
+			return (new Printer)->printMethod($this);
+		} catch (\Throwable $e) {
+			if (PHP_VERSION_ID >= 70400) {
+				throw $e;
+			}
+
+			trigger_error('Exception in ' . __METHOD__ . "(): {$e->getMessage()} in {$e->getFile()}:{$e->getLine()}", E_USER_ERROR);
+			return '';
+		}
 	}
 
 
-	public function setStatic(bool $state = true): static
+	/** @return static */
+	public function setBody(?string $code, ?array $args = null): self
+	{
+		$this->body = $args === null || $code === null
+			? $code
+			: (new Dumper)->format($code, ...$args);
+		return $this;
+	}
+
+
+	public function getBody(): ?string
+	{
+		return $this->body;
+	}
+
+
+	/** @return static */
+	public function setStatic(bool $state = true): self
 	{
 		$this->static = $state;
 		return $this;
@@ -55,7 +93,8 @@ final class Method
 	}
 
 
-	public function setFinal(bool $state = true): static
+	/** @return static */
+	public function setFinal(bool $state = true): self
 	{
 		$this->final = $state;
 		return $this;
@@ -68,7 +107,8 @@ final class Method
 	}
 
 
-	public function setAbstract(bool $state = true): static
+	/** @return static */
+	public function setAbstract(bool $state = true): self
 	{
 		$this->abstract = $state;
 		return $this;
@@ -84,7 +124,7 @@ final class Method
 	/**
 	 * @param  string  $name without $
 	 */
-	public function addPromotedParameter(string $name, mixed $defaultValue = null): PromotedParameter
+	public function addPromotedParameter(string $name, $defaultValue = null): PromotedParameter
 	{
 		$param = new PromotedParameter($name);
 		if (func_num_args() > 1) {
@@ -98,14 +138,8 @@ final class Method
 	/** @throws Nette\InvalidStateException */
 	public function validate(): void
 	{
-		if ($this->abstract && ($this->final || $this->visibility === ClassLike::VisibilityPrivate)) {
+		if ($this->abstract && ($this->final || $this->visibility === ClassType::VisibilityPrivate)) {
 			throw new Nette\InvalidStateException("Method $this->name() cannot be abstract and final or private at the same time.");
 		}
-	}
-
-
-	public function __clone(): void
-	{
-		$this->parameters = array_map(fn($param) => clone $param, $this->parameters);
 	}
 }

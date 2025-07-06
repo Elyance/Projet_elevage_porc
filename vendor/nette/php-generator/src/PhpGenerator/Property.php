@@ -15,23 +15,38 @@ use Nette\Utils\Type;
 
 /**
  * Class property description.
+ *
+ * @property mixed $value
  */
 final class Property
 {
+	use Nette\SmartObject;
 	use Traits\NameAware;
 	use Traits\VisibilityAware;
 	use Traits\CommentAware;
 	use Traits\AttributeAware;
 
-	private mixed $value = null;
-	private bool $static = false;
-	private ?string $type = null;
-	private bool $nullable = false;
-	private bool $initialized = false;
-	private bool $readOnly = false;
+	/** @var mixed */
+	private $value;
+
+	/** @var bool */
+	private $static = false;
+
+	/** @var string|null */
+	private $type;
+
+	/** @var bool */
+	private $nullable = false;
+
+	/** @var bool */
+	private $initialized = false;
+
+	/** @var bool */
+	private $readOnly = false;
 
 
-	public function setValue(mixed $val): static
+	/** @return static */
+	public function setValue($val): self
 	{
 		$this->value = $val;
 		$this->initialized = true;
@@ -39,13 +54,14 @@ final class Property
 	}
 
 
-	public function &getValue(): mixed
+	public function &getValue()
 	{
 		return $this->value;
 	}
 
 
-	public function setStatic(bool $state = true): static
+	/** @return static */
+	public function setStatic(bool $state = true): self
 	{
 		$this->static = $state;
 		return $this;
@@ -58,15 +74,18 @@ final class Property
 	}
 
 
-	public function setType(?string $type): static
+	/** @return static */
+	public function setType(?string $type): self
 	{
 		$this->type = Helpers::validateType($type, $this->nullable);
 		return $this;
 	}
 
 
-	/** @return ($asObject is true ? ?Type : ?string) */
-	public function getType(bool $asObject = false): Type|string|null
+	/**
+	 * @return Type|string|null
+	 */
+	public function getType(bool $asObject = false)
 	{
 		return $asObject && $this->type
 			? Type::fromString($this->type)
@@ -74,7 +93,8 @@ final class Property
 	}
 
 
-	public function setNullable(bool $state = true): static
+	/** @return static */
+	public function setNullable(bool $state = true): self
 	{
 		$this->nullable = $state;
 		return $this;
@@ -83,11 +103,12 @@ final class Property
 
 	public function isNullable(): bool
 	{
-		return $this->nullable || ($this->initialized && $this->value === null);
+		return $this->nullable;
 	}
 
 
-	public function setInitialized(bool $state = true): static
+	/** @return static */
+	public function setInitialized(bool $state = true): self
 	{
 		$this->initialized = $state;
 		return $this;
@@ -100,7 +121,8 @@ final class Property
 	}
 
 
-	public function setReadOnly(bool $state = true): static
+	/** @return static */
+	public function setReadOnly(bool $state = true): self
 	{
 		$this->readOnly = $state;
 		return $this;

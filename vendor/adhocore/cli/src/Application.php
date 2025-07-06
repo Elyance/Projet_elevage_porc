@@ -15,20 +15,6 @@ use Ahc\Cli\Exception\InvalidArgumentException;
 use Ahc\Cli\Helper\OutputHelper;
 use Ahc\Cli\Input\Command;
 use Ahc\Cli\IO\Interactor;
-use ReflectionClass;
-use ReflectionFunction;
-use Throwable;
-
-use function array_diff_key;
-use function array_fill_keys;
-use function array_keys;
-use function count;
-use function func_num_args;
-use function in_array;
-use function is_array;
-use function is_int;
-use function method_exists;
-use function sprintf;
 
 /**
  * A cli application.
@@ -41,37 +27,49 @@ use function sprintf;
 class Application
 {
     /** @var Command[] */
-    protected array $commands = [];
+    protected $commands = [];
 
     /** @var array Raw argv sent to parse() */
-    protected array $argv = [];
+    protected $argv = [];
 
     /** @var array Command aliases [alias => cmd] */
-    protected array $aliases = [];
+    protected $aliases = [];
+
+    /** @var string */
+    protected $name;
+
+    /** @var string App version */
+    protected $version = '';
 
     /** @var string Ascii art logo */
-    protected string $logo = '';
+    protected $logo = '';
 
-    protected string $default = '__default__';
+    protected $default = '__default__';
 
-    /** @var null|Interactor */
-    protected ?Interactor $io = null;
+    /** @var Interactor */
+    protected $io;
 
     /** @var callable The callable to perform exit */
     protected $onExit;
 
-    /** @var callable The callable to catch exception, receives exception & exit code, may rethrow exception or may exit program */
-    protected $onException = null;
-
-    public function __construct(protected string $name, protected string $version = '0.0.1', ?callable $onExit = null)
+    public function __construct(string $name, string $version = '0.0.1', callable $onExit = null)
     {
-        $this->onExit = $onExit ?? static fn (int $exitCode = 0) => exit($exitCode);
+        $this->name    = $name;
+        $this->version = $version;
+
+        // @codeCoverageIgnoreStart
+        $this->onExit = $onExit ?? function ($exitCode = 0) {
+            exit($exitCode);
+        };
+        // @codeCoverageIgnoreEnd
 
         $this->command('__default__', 'Default command', '', true)->on([$this, 'showHelp'], 'help');
     }
 
     /**
      * Get the name.
+     *
+     * @return string
      */
     public function name(): string
     {
@@ -80,6 +78,8 @@ class Application
 
     /**
      * Get the version.
+     *
+     * @return string
      */
     public function version(): string
     {
@@ -102,6 +102,8 @@ class Application
 
     /**
      * Get the raw argv.
+     *
+     * @return array
      */
     public function argv(): array
     {
@@ -115,9 +117,9 @@ class Application
      *
      * @return string|self
      */
-    public function logo(?string $logo = null)
+    public function logo(string $logo = null)
     {
-        if (func_num_args() === 0) {
+        if (\func_num_args() === 0) {
             return $this->logo;
         }
 
@@ -127,7 +129,15 @@ class Application
     }
 
     /**
-     * Add a command by its name desc alias etc and return command.
+     * Add a command by its name desc alias etc.
+     *
+     * @param string $name
+     * @param string $desc
+     * @param string $alias
+     * @param bool   $allowUnknown
+     * @param bool   $default
+     *
+     * @return Command
      */
     public function command(
         string $name,
@@ -144,7 +154,13 @@ class Application
     }
 
     /**
-     * Add a prepared command and return itself.
+     * Add a prepred command.
+     *
+     * @param Command $command
+     * @param string  $alias
+     * @param bool    $default
+     *
+     * @return self
      */
     public function add(Command $command, string $alias = '', bool $default = false): self
     {
@@ -157,7 +173,7 @@ class Application
             $this->aliases[$alias] ??
             null
         ) {
-            throw new InvalidArgumentException(sprintf('Command "%s" already added', $name));
+            throw new InvalidArgumentException(\sprintf('Command "%s" already added', $name));
         }
 
         if ($alias) {
@@ -175,64 +191,18 @@ class Application
     }
 
     /**
-     * Set the default command.
-     *
-     * @param string $commandName The name of the default command
-     *
-     * @throws InvalidArgumentException If the specified command name does not exist
-     *
-     * @return self The application
-     */
-    public function defaultCommand(string $commandName): self
-    {
-        if (!isset($this->commands[$commandName])) {
-            throw new InvalidArgumentException(sprintf('Command "%s" does not exist', $commandName));
-        }
-
-        $this->default = $commandName;
-
-        return $this;
-    }
-
-    /**
-     * Get the default command.
-     *
-     * @return string|null The name of the default command, or null if not set
-     */
-    public function getDefaultCommand(): ?string
-    {
-        return $this->default;
-    }
-
-    /**
-     * Groups commands set within the callable.
-     *
-     * @param string   $group The group name
-     * @param callable $fn    The callable that recieves Application instance and adds commands.
-     *
-     * @return self
-     */
-    public function group(string $group, callable $fn): self
-    {
-        $old = array_fill_keys(array_keys($this->commands), true);
-
-        $fn($this);
-        foreach (array_diff_key($this->commands, $old) as $cmd) {
-            $cmd->inGroup($group);
-        }
-
-        return $this;
-    }
-
-    /**
      * Gets matching command for given argv.
+     *
+     * @param array $argv
+     *
+     * @return Command
      */
     public function commandFor(array $argv): Command
     {
         $argv += [null, null, null];
 
         return
-            // cmd
+             // cmd
             $this->commands[$argv[1]]
             // cmd alias
             ?? $this->commands[$this->aliases[$argv[1]] ?? null]
@@ -247,13 +217,13 @@ class Application
      *
      * @return Interactor|self
      */
-    public function io(?Interactor $io = null)
+    public function io(Interactor $io = null)
     {
         if ($io || !$this->io) {
             $this->io = $io ?? new Interactor;
         }
 
-        if (func_num_args() === 0) {
+        if (\func_num_args() === 0) {
             return $this->io;
         }
 
@@ -276,7 +246,7 @@ class Application
 
         // Eat the cmd name!
         foreach ($argv as $i => $arg) {
-            if (in_array($arg, $aliases)) {
+            if (\in_array($arg, $aliases)) {
                 unset($argv[$i]);
 
                 break;
@@ -291,24 +261,15 @@ class Application
     }
 
     /**
-     * Sets exception handler callback.
-     *
-     * The callback receives exception & exit code. It may rethrow exception
-     * or may exit the program or just log exception and do nothing else.
-     */
-    public function onException(callable $fn): self
-    {
-        $this->onException = $fn;
-
-        return $this;
-    }
-
-    /**
      * Handle the request, invoke action and call exit handler.
+     *
+     * @param array $argv
+     *
+     * @return mixed
      */
-    public function handle(array $argv): mixed
+    public function handle(array $argv)
     {
-        if ($this->default === '__default__' && count($argv) < 2) {
+        if (\count($argv) < 2) {
             return $this->showHelp();
         }
 
@@ -317,9 +278,8 @@ class Application
         try {
             $command  = $this->parse($argv);
             $result   = $this->doAction($command);
-            $exitCode = is_int($result) ? $result : 0;
-        } catch (Throwable $e) {
-            isset($this->onException) && ($this->onException)($e, $exitCode);
+            $exitCode = \is_int($result) ? $result : 0;
+        } catch (\Throwable $e) {
             $this->outputHelper()->printTrace($e);
         }
 
@@ -328,15 +288,19 @@ class Application
 
     /**
      * Get aliases for given command.
+     *
+     * @param Command $command
+     *
+     * @return array
      */
     protected function aliasesFor(Command $command): array
     {
         $aliases = [$name = $command->name()];
 
-        foreach ($this->aliases as $alias => $cmd) {
-            if (in_array($name, [$alias, $cmd], true)) {
+        foreach ($this->aliases as $alias => $command) {
+            if (\in_array($name, [$alias, $command])) {
                 $aliases[] = $alias;
-                $aliases[] = $cmd;
+                $aliases[] = $command;
             }
         }
 
@@ -345,8 +309,10 @@ class Application
 
     /**
      * Show help of all commands.
+     *
+     * @return mixed
      */
-    public function showHelp(): mixed
+    public function showHelp()
     {
         $writer = $this->io()->writer();
         $header = "{$this->name}, version {$this->version}";
@@ -370,8 +336,12 @@ class Application
 
     /**
      * Invoke command action.
+     *
+     * @param Command $command
+     *
+     * @return mixed
      */
-    protected function doAction(Command $command): mixed
+    protected function doAction(Command $command)
     {
         if ($command->name() === '__default__') {
             return $this->notFound();
@@ -380,8 +350,8 @@ class Application
         // Let the command collect more data (if missing or needs confirmation)
         $command->interact($this->io());
 
-        if (!$command->action() && !method_exists($command, 'execute')) {
-            return null;
+        if (!$command->action() && !\method_exists($command, 'execute')) {
+            return;
         }
 
         $params = [];
@@ -398,10 +368,12 @@ class Application
 
     /**
      * Command not found handler.
+     *
+     * @return mixed
      */
-    protected function notFound(): mixed
+    protected function notFound()
     {
-        $available = array_keys($this->commands() + $this->aliases);
+        $available = \array_keys($this->commands() + $this->aliases);
         $this->outputHelper()->showCommandNotFound($this->argv[1], $available);
 
         return ($this->onExit)(127);
@@ -409,9 +381,9 @@ class Application
 
     protected function getActionParameters(callable $action): array
     {
-        $reflex = is_array($action)
-            ? (new ReflectionClass($action[0]))->getMethod($action[1])
-            : new ReflectionFunction($action);
+        $reflex = \is_array($action)
+            ? (new \ReflectionClass($action[0]))->getMethod($action[1])
+            : new \ReflectionFunction($action);
 
         return $reflex->getParameters();
     }

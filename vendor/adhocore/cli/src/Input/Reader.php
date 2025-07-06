@@ -11,19 +11,6 @@
 
 namespace Ahc\Cli\Input;
 
-use function array_filter;
-use function fgets;
-use function fopen;
-use function implode;
-use function rtrim;
-use function shell_exec;
-use function stream_get_contents;
-use function stream_select;
-
-use const DIRECTORY_SEPARATOR;
-use const PHP_EOL;
-use const STDIN;
-
 /**
  * Cli Reader.
  *
@@ -42,9 +29,9 @@ class Reader
      *
      * @param string|null $path Read path. Defaults to STDIN.
      */
-    public function __construct(?string $path = null)
+    public function __construct(string $path = null)
     {
-        $this->stream = $path ? fopen($path, 'r') : STDIN;
+        $this->stream = $path ? \fopen($path, 'r') : \STDIN;
     }
 
     /**
@@ -55,9 +42,9 @@ class Reader
      *
      * @return mixed
      */
-    public function read($default = null, ?callable $fn = null): mixed
+    public function read($default = null, callable $fn = null)
     {
-        $in = rtrim(fgets($this->stream), "\r\n");
+        $in = \rtrim(\fgets($this->stream), "\r\n");
 
         if ('' === $in && null !== $default) {
             return $default;
@@ -75,9 +62,9 @@ class Reader
      *
      * @return string
      */
-    public function readAll(?callable $fn = null): string
+    public function readAll(callable $fn = null): string
     {
-        $in = stream_get_contents($this->stream);
+        $in = \stream_get_contents($this->stream);
 
         return $fn ? $fn($in) : $in;
     }
@@ -91,15 +78,15 @@ class Reader
      *
      * @return string
      */
-    public function readPiped(?callable $fn = null): string
+    public function readPiped(callable $fn = null): string
     {
         $stdin = '';
         $read  = [$this->stream];
         $write = [];
         $exept = [];
 
-        if (stream_select($read, $write, $exept, 0) === 1) {
-            while ($line = fgets($this->stream)) {
+        if (\stream_select($read, $write, $exept, 0) === 1) {
+            while ($line = \fgets($this->stream)) {
                 $stdin .= $line;
             }
         }
@@ -118,19 +105,19 @@ class Reader
      *
      * @return mixed
      */
-    public function readHidden($default = null, ?callable $fn = null): mixed
+    public function readHidden($default = null, callable $fn = null)
     {
         // @codeCoverageIgnoreStart
-        if ('\\' === DIRECTORY_SEPARATOR) {
+        if ('\\' === \DIRECTORY_SEPARATOR) {
             return $this->readHiddenWinOS($default, $fn);
         }
         // @codeCoverageIgnoreEnd
 
-        defined('RUNNING_TEST') || shell_exec('stty -echo');
+        \shell_exec('stty -echo');
         $in = $this->read($default, $fn);
-        defined('RUNNING_TEST') || shell_exec('stty echo');
+        \shell_exec('stty echo');
 
-        echo PHP_EOL;
+        echo \PHP_EOL;
 
         return $in;
     }
@@ -144,16 +131,16 @@ class Reader
      *
      * @return mixed
      */
-    protected function readHiddenWinOS($default = null, ?callable $fn = null): mixed
+    protected function readHiddenWinOS($default = null, callable $fn = null)
     {
-        $cmd = 'powershell -Command ' . implode('; ', array_filter([
+        $cmd = 'powershell -Command ' . \implode('; ', \array_filter([
             '$pword = Read-Host -AsSecureString',
             '$pword = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pword)',
             '$pword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($pword)',
             'echo $pword',
         ]));
 
-        $in = rtrim(shell_exec($cmd), "\r\n");
+        $in = \rtrim(\shell_exec($cmd), "\r\n");
 
         if ('' === $in && null !== $default) {
             return $default;

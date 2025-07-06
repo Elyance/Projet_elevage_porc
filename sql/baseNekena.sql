@@ -274,6 +274,77 @@ CREATE TABLE bao_tache_employe (
 ALTER TABLE bao_tache_employe
 ADD COLUMN precision TEXT;
 
+CREATE TABLE bao_sante_type_evenement (
+    id_type_evenement SERIAL PRIMARY KEY,
+    nom_type_evenement VARCHAR(50),
+    prix DECIMAL(10,2)
+);
+
+INSERT INTO bao_sante_type_evenement(nom_type_evenement, prix)
+VALUES ('Vaccination', 50.00),
+       ('Consultation vétérinaire', 100.00),
+       ('Insemination', 75.00);
+
+CREATE TABLE bao_sante_evenement (
+    id_sante_evenement SERIAL PRIMARY KEY,
+    id_type_evenement INTEGER,
+    id_enclos INTEGER,
+    date_evenement DATE,
+    FOREIGN KEY (id_type_evenement) REFERENCES bao_sante_type_evenement(id_type_evenement),
+    FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos)
+);
+
+CREATE TABLE bao_sante_calendrier (
+    id_sante_calendrier SERIAL PRIMARY KEY,
+    id_sante_evenement INTEGER,
+    FOREIGN KEY (id_sante_evenement) REFERENCES bao_sante_evenement(id_sante_evenement)
+);
+
+CREATE TABLE bao_deces (
+    id_deces SERIAL PRIMARY KEY,
+    id_enclos INTEGER,
+    nombre_deces INTEGER, -- nombre de porc decedes dans l'enclos
+    date_deces DATE,
+    cause_deces TEXT,
+    FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos)
+);
+
+----------- 8/ GESTION MALADIE -----------
+CREATE TABLE bao_symptome (
+    id_symptome SERIAL PRIMARY KEY,
+    nom_symptome VARCHAR(50),
+    description TEXT
+);
+
+CREATE TABLE bao_maladie (
+    id_maladie SERIAL PRIMARY KEY,
+    nom_maladie VARCHAR(50),
+    description TEXT,
+    dangerosite VARCHAR(20) CHECK (dangerosite IN ('faible', 'moderee', 'elevee'))
+);
+
+CREATE TABLE bao_maladie_symptome (
+    id_maladie INTEGER,
+    id_symptome INTEGER,
+    PRIMARY KEY (id_maladie, id_symptome),
+    FOREIGN KEY (id_maladie) REFERENCES bao_maladie(id_maladie),
+    FOREIGN KEY (id_symptome) REFERENCES bao_symptome(id_symptome)
+);
+
+CREATE TABLE bao_diagnostic (
+    id_diagnostic SERIAL PRIMARY KEY,
+    id_maladie INTEGER, -- sera utilise pour obtenir la liste des symptomes
+    id_enclos INTEGER,
+    nombre_infecte INTEGER, -- nombre de porc infecte dans l'enclos
+    date_apparition DATE,
+    date_diagnostic DATE,
+    desc_traitement TEXT, -- description du traitement prescrit pour la maladie
+    statut VARCHAR(30) CHECK (statut IN ('en quarantaine', 'en traitement', 'reussi', 'echec')), -- statut du diagnostic
+    prix_traitement DECIMAL(10,2),
+    FOREIGN KEY (id_maladie) REFERENCES bao_maladie(id_maladie),
+    FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos)
+);
+
 
 -- DONNEES
 INSERT INTO bao_enclos_type (nom_enclos_type) VALUES ('Truie'), ('Portee'), ('Quarantaine');

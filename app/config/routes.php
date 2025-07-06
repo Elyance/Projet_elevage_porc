@@ -2,7 +2,6 @@
 
 use app\controllers\ApiExampleController;
 use app\controllers\UserController;
-use app\controllers\WelcomeController;
 use app\controllers\EnclosController;
 use app\controllers\HomeController;
 use app\controllers\ReproductionController;
@@ -18,6 +17,12 @@ use app\controllers\AlimentController;
 use app\controllers\NourrirController;
 use app\controllers\ReapproController;
 use app\controllers\SimulationEnclosController;
+use app\controllers\DecesController;
+use app\controllers\WelcomeController;
+use app\controllers\SanteEvenementController;
+use app\controllers\SanteTypeEvenementController;
+use app\controllers\DiagnosticController;
+use app\controllers\MaladieController;
 
 use flight\net\Router;
 use flight\Engine;
@@ -171,4 +176,40 @@ $router->post('/tache/done', [ $Tache_Controller, 'done' ]);
 
 
 Flight::route('GET /taches/employelanding', ['app\controllers\TacheController', 'employeeLanding']);
+
+$santeevenementController = new SanteEvenementController();
+$santetypeevenementController = new SanteTypeEvenementController();
+$diagnosticController = new DiagnosticController();
+$maladieController = new MaladieController();
+$decesController = new DecesController();
+
+$router->get('/sante', [ $santeevenementController, 'home' ]); 
+$router->get('/evenement', [$santeevenementController, 'findByDate']);
+$router->get('/evenement/add', [$santeevenementController, 'formAjouterEvenement']);
+$router->post('/evenement/add', [$santeevenementController, 'ajouterEvenement']);
+
+$router->get('/typeevenement', [$santetypeevenementController, 'home']);
+$router->get('/typeevenement/edit/@id:\d+', [$santetypeevenementController, 'formUpdateTypeEvenement']);
+$router->post('/typeevenement/edit/@id:\d+', [$santetypeevenementController, 'UpdateTypeEvenement']);
+$router->get('/typeevenement/delete/@id:\d+', [$santetypeevenementController, 'deleteTypeEvenement']);
+$router->get('/typeevenement/add', [$santetypeevenementController, 'formAddTypeEvenement']);
+$router->post('/typeevenement/add', [$santetypeevenementController, 'addTypeEvenement']);
+
+$router->get('/diagnostic', [ $diagnosticController, 'home' ]); 
+$router->get('/diagnostic/add', [$diagnosticController, 'formAddDiagnostic']);
+$router->post('/diagnostic/add', [$diagnosticController, 'addDiagnostic']);
+
+$router->get('/maladie', [ $maladieController, 'home' ]); 
+$router->get('/maladie/add', [$maladieController, 'formAddMaladie']);
+$router->post('/maladie/add', [$maladieController, 'addMaladie']);
+$router->get('/maladie/edit/@id:\d+', [$maladieController, 'formUpdateMaladie']);
+$router->post('/maladie/edit/@id:\d+', [$maladieController, 'UpdateMaladie']);
+$router->get('/maladie/delete/@id:\d+', [$maladieController, 'deleteMaladie']);
+
+$router->get('/deces', [ $decesController, 'home' ]); 
+$router->get('/deces/add', [$decesController, 'formAddDeces']);
+$router->post('/deces/add', [$decesController, 'addDeces']);
+$router->get('/deces/edit/@id:\d+', [$decesController, 'formUpdateDeces']);
+$router->post('/deces/edit/@id:\d+', [$decesController, 'UpdateDeces']);
+$router->get('/deces/delete/@id:\d+', [$decesController, 'deleteDeces']);
 

@@ -21,7 +21,8 @@ class HomeController
                 'Enclos' => Flight::get('flight.base_url').'/enclos',
                 'Employés' => Flight::get('flight.base_url').'/employe',
                 'Simulation' => Flight::get('flight.base_url').'/simulation',
-                'Statistique' => Flight::get('flight.base_url').'/statistique'
+                'Statistique' => Flight::get('flight.base_url').'/statistique',
+                'Sante' => Flight::get('flight.base_url').'/sante'
             ]
         ];
 

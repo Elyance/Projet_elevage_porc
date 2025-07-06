@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace flight\net;
 
 use Exception;
+use flight\core\EventDispatcher;
 
 /**
  * The Response class represents an HTTP response. The object
@@ -426,23 +427,20 @@ class Response
             }
         }
 
+        $start = microtime(true);
         // Only for the v3 output buffering.
         if ($this->v2_output_buffering === false) {
             $this->processResponseCallbacks();
         }
 
         if ($this->headersSent() === false) {
-            // If you haven't set a Cache-Control header, we'll assume you don't want caching
-            if ($this->getHeader('Cache-Control') === null) {
-                $this->cache(false);
-            }
-
             $this->sendHeaders();
         }
 
         echo $this->body;
-
         $this->sent = true;
+
+        EventDispatcher::getInstance()->trigger('flight.response.sent', $this, microtime(true) - $start);
     }
 
     /**
