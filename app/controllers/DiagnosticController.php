@@ -179,10 +179,11 @@ class DiagnosticController
     public function recordDeath($id_diagnostic)
     {
         $data = Flight::request()->data;
-        $nombre_deces = $data['nombre_deces'];
+        $male_deces = (int)($data['male_deces'] ?? 0);
+        $female_deces = (int)($data['female_deces'] ?? 0);
         $diagnostic = new Diagnostic(Flight::db());
         try {
-            $diagnostic->recordDeath($id_diagnostic, $nombre_deces);
+            $diagnostic->recordDeath($id_diagnostic, $male_deces, $female_deces);
             Flight::redirect('/maladie/treatment?success=Décès enregistré');
         } catch (Exception $e) {
             Flight::redirect('/maladie/treatment?error=Erreur lors de l\'enregistrement du décès: ' . $e->getMessage());

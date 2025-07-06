@@ -314,7 +314,8 @@ CREATE TABLE bao_sante_calendrier (
 CREATE TABLE bao_deces (
     id_deces SERIAL PRIMARY KEY,
     id_enclos INTEGER,
-    nombre_deces INTEGER, -- nombre de porc decedes dans l'enclos
+    male_deces INTEGER, -- nombre de porc decedes dans l'enclos
+    female_deces INTEGER, -- nombre de porc decedes dans l'enclos
     date_deces DATE,
     cause_deces TEXT,
     FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos)

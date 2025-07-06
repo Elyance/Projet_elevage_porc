@@ -42,10 +42,13 @@
                                 <form action="/diagnostic/markFailure/<?= htmlspecialchars($diag['id_diagnostic']) ?>" method="post" style="display:inline;">
                                     <button type="submit" class="btn btn-warning btn-sm">Échec</button>
                                 </form>
-                                <form action="/diagnostic/recordDeath/<?= htmlspecialchars($diag['id_diagnostic']) ?>" method="post" style="display:inline;">
-                                    <input type="number" name="nombre_deces" class="form-control form-control-sm d-inline-block w-auto" min="1" max="<?= htmlspecialchars($diag['nombre_males_infectes'] + $diag['nombre_femelles_infectes']) ?>" required>
-                                    <button type="submit" class="btn btn-danger btn-sm">Décès</button>
-                                </form>
+                                <form method="post" action="/diagnostic/recordDeath/<?php echo $diag['id_diagnostic']; ?>">
+                                    <label for="male_deces">Nombre de mâles décédés:</label>
+                                    <input type="number" name="male_deces" id="male_deces" min="0" required>
+                                    <label for="female_deces">Nombre de femelles décédées:</label>
+                                    <input type="number" name="female_deces" id="female_deces" min="0" required>
+                                    <input type="submit" value="Enregistrer les décès">
+                                </form>                            
                             </td>
                         </tr>
                     <?php endforeach; ?>
