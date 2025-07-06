@@ -68,15 +68,29 @@ CREATE TABLE bao_truie (
     FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos),
     FOREIGN KEY (id_race) REFERENCES races_porcs(id_race)
 );
+-- 3. TABLE INSEMINATION (obligatoire pour cycle reproduction)
+CREATE TABLE bao_insemination (
+    id_insemination SERIAL PRIMARY KEY,
+    id_truie INTEGER,
+    date_insemination DATE,
+    resultat VARCHAR(20) CHECK (resultat IN ('succes', 'echec', 'en cours')),
+    FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
+        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
+);
 
--- Table for reproduction cycles
+-- 4. TABLES REPRODUCTION
 CREATE TABLE bao_cycle_reproduction (
     id_cycle_reproduction SERIAL PRIMARY KEY,
     id_truie INTEGER,
     date_debut_cycle DATE,
     date_fin_cycle DATE,
+    nombre_males INTEGER,
+    nombre_femelles INTEGER,
+    id_insemination INTEGER,
     etat VARCHAR(20) CHECK (etat IN ('en cours', 'termine')),
     FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
+        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED,
+    FOREIGN KEY (id_insemination) REFERENCES bao_insemination(id_insemination)
         ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
 
@@ -399,11 +413,11 @@ VALUES
 (1, 1, 145.750, '2025-06-05');  -- Truie 2
 
 -- Insert reproduction cycles
-INSERT INTO bao_cycle_reproduction (id_truie, date_debut_cycle, date_fin_cycle, etat)
+INSERT INTO bao_cycle_reproduction (id_truie, date_debut_cycle, date_fin_cycle,nombre_males,nombre_femelles, etat)
 VALUES 
-(1, '2025-06-10', '2025-07-01', 'termine'),  -- Cycle for Truie 1
-(2, '2025-06-12', '2025-07-03', 'termine'),  -- Cycle for Truie 2
-(2, '2025-06-12', '2025-07-03', 'termine');  -- Cycle for Truie 2
+(1, '2025-06-10', '2025-07-01',2,3, 'termine'),  -- Cycle for Truie 1
+(2, '2025-06-12', '2025-07-03',2,2, 'termine'),  -- Cycle for Truie 2
+(2, '2025-06-12', '2025-07-03',0,2, 'termine');  -- Cycle for Truie 2
 
 -- Insert litters
 INSERT INTO bao_portee (id_truie, id_race, nombre_males, nombre_femelles, date_naissance, id_cycle_reproduction)

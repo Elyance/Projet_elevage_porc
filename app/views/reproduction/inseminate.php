@@ -4,7 +4,7 @@
     <label>Truie: 
         <select name="truie_id" required>
             <?php foreach ($truies as $truie): ?>
-                <option value="<?= $truie->id_truie ?>"><?= htmlspecialchars($truie->poids) ?> kg</option>
+                <option value="<?= $truie->id_truie ?>">id: <?= htmlspecialchars($truie->id_truie) ?> (enclos <?= htmlspecialchars($truie->id_enclos) ?>)</option>
             <?php endforeach; ?>
         </select>
     </label><br>

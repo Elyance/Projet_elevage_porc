@@ -34,9 +34,11 @@ class ReproductionModel
             $query .= ' WHERE ' . implode(' AND ', $where);
         }
 
+        echo $query;
         $stmt = $conn->prepare($query);
         $stmt->execute($params);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        // echo print_r($result);
         return array_map(fn($item) => ReproductionModel::fromArray($item), $result);
     }
 

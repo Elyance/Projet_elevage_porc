@@ -3,14 +3,21 @@
 <?php if ($error): ?>
     <p style="color: red;">Erreur : Données invalides.</p>
 <?php endif; ?>
-<form method="POST">
+<form method="POST" action="/naissance/add">
     <input type="hidden" name="cycle_id" value="<?= htmlspecialchars($cycle_id) ?>">
     <input type="hidden" name="truie_id" value="<?= htmlspecialchars($truie_id) ?>">
-    <label>Date Naissance: <input type="date" name="date_naissance" value="<?= date('Y-m-d') ?>" required></label><br>
+    <label>Date Naissance: <input type="date" name="date_naissance" value="<?= htmlspecialchars($date_naissance ?? date('Y-m-d')) ?>" required></label><br>
+    <label>Race: 
+        <select name="id_race" required>
+            <?php foreach ($races as $race): ?>
+                <option value="<?= htmlspecialchars($race->id_race) ?>"><?= htmlspecialchars($race->nom_race) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </label><br>
     <label>Enclos: 
         <select name="enclos_id" required>
             <?php foreach ($enclos as $e): ?>
-                <option value="<?= $e->id_enclos ?>"><?= htmlspecialchars($e->stockage) ?></option>
+                <option value="<?= htmlspecialchars($e->id_enclos) ?>">ecnlos:<?= htmlspecialchars($e->id_enclos) ?> <?= htmlspecialchars($e->surface) ?> m²</option>
             <?php endforeach; ?>
         </select>
     </label><br>

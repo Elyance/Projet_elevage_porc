@@ -22,7 +22,7 @@ class ReproductionController {
                 $insemination = ReproductionModel::getAll(['id_insemination' => $id_insemination])[0];
                 $gestation_period = 115;
                 $date_fin_cycle = date('Y-m-d', strtotime($insemination->date_insemination . ' + ' . $gestation_period . ' days'));
-                CycleModel::create($insemination->id_truie, $insemination->date_insemination, $date_fin_cycle, 0, $id_insemination);
+                CycleModel::create($insemination->id_truie, $insemination->date_insemination, $date_fin_cycle, 0,0, $id_insemination);
             }
 
             Flight::redirect('reproduction');

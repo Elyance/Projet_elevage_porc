@@ -395,7 +395,7 @@ class EnclosController
                 $joursEcoules = $sourcePortee['nombre_jour_ecoule'] ?? 334;
 
                 $destinationPortee = $this->getEnclosPorteeByEnclos($id_enclos);
-                // if (!$destinationPortee) {
+                if (!$destinationPortee) {
                     $stmt = $conn->prepare("
                         INSERT INTO bao_enclos_portee (id_enclos, id_portee, quantite_total, poids_estimation, nombre_jour_ecoule, statut_vente)
                         VALUES (:id_enclos, NULL, :quantity, :poids, :jours_ecoules, 'possible')
@@ -408,11 +408,11 @@ class EnclosController
                     ]);
                     echo "eto3";
                     $destinationId = $conn->lastInsertId();
-                    // } else {
-                        //     $destinationId = $destinationPortee['id_enclos_portee'];
-                        //     $newQuantity = ($destinationPortee['quantite_total'] ?? 0) + $quantity;
-                        //     $this->updateEnclosPorteeDetails($destinationId, $newQuantity, $poids, $joursEcoules);
-                        // }
+                    } else {
+                            $destinationId = $destinationPortee['id_enclos_portee'];
+                            $newQuantity = ($destinationPortee['quantite_total'] ?? 0) + $quantity;
+                            $this->updateEnclosPorteeDetails($destinationId, $newQuantity, $poids, $joursEcoules);
+                        }
 
                     for ($i = 0; $i < $quantity; $i++) {
                         $stmt = $conn->prepare("
