@@ -17,5 +17,6 @@
     </select><br>
     <label>Description :</label><br>
     <textarea name="description" required><?= isset($tache) ? htmlspecialchars($tache['description']) : '' ?></textarea><br>
+    <label>Date d'attribution :</label>
     <button type="submit">Soumettre</button>
 </form>

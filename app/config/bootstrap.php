@@ -57,6 +57,7 @@ $router = $app->router();
  */ 
 require('services.php');
 require('routes.php');
+
 // At this point, your app should have all the instructions it needs and it'll
 // "start" processing everything. This is where the magic happens.
 $app->start();

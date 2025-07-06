@@ -170,4 +170,5 @@ $router->get('/taches/employe/@id_employe', [ $Tache_Controller, 'employeTaches'
 $router->post('/tache/done', [ $Tache_Controller, 'done' ]);
 
 
-Flight::route('GET /taches/employelanding/@id_employe', ['app\controllers\TacheController', 'employeeLanding']);
+Flight::route('GET /taches/employelanding', ['app\controllers\TacheController', 'employeeLanding']);
+

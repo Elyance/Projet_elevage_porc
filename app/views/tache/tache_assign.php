@@ -189,6 +189,9 @@
                 <label>Precision :</label>
                 <input type="text" name="precision">
             </div>
+                <input type="hidden" name="date_attribution" value="<?= date('Y-m-d') ?>" required><br>
+                <input type="hidden" name="statut" value="en cours" required><br>
+
             
             <div class="form-group">
                 <label>Sélection de la tâche :</label>

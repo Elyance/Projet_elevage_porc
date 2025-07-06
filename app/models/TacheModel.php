@@ -68,12 +68,17 @@ class TacheModel
     }
 
     public static function getTachesEmploye(int $id_employe) {
-        $conn = Flight::db();
-        $stmt = $conn->prepare("SELECT t.*, te.date_echeance, te.precision 
-                               FROM bao_tache t 
-                               JOIN bao_tache_employe te ON t.id_tache = te.id_tache 
-                               WHERE te.id_employe = :id_employe");
-        $stmt->execute([':id_employe' => $id_employe]);
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    $conn = Flight::db();
+    $stmt = $conn->prepare("SELECT t.*, te.date_echeance, te.precision 
+                           FROM bao_tache t 
+                           JOIN bao_tache_employe te ON t.id_tache = te.id_tache 
+                           WHERE te.id_employe = :id_employe");
+    $stmt->execute([':id_employe' => $id_employe]);
+    $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    // Normalize date_echeance to Y-m-d if it's a DATETIME
+    foreach ($results as &$row) {
+        $row['date_echeance'] = date('Y-m-d', strtotime($row['date_echeance']));
     }
+    return $results;
+}
 }

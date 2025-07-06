@@ -98,22 +98,9 @@ class TacheController {
         Flight::redirect('/taches');
     }
 
-    public function employeeLanding($id_employe = null) {
+    public function employeeLanding() {
         // Fallback to query parameter if route param is missing
-        if ($id_employe === null || !is_numeric($id_employe)) {
-            $id_employe = Flight::request()->query->id_employe;
-            if ($id_employe === null || !is_numeric($id_employe)) {
-                Flight::halt(400, "ID d'employé manquant ou invalide");
-                return;
-            }
-        }
-
-        // Cast to integer and validate
-        $id_employe = (int)$id_employe;
-        if ($id_employe < 0) {
-            Flight::halt(400, "ID d'employé invalide");
-            return;
-        }
+        $id_employe = $_SESSION['employeid'];
 
         $flash = $_SESSION['flash'] ?? null;
         unset($_SESSION['flash']);
@@ -121,12 +108,12 @@ class TacheController {
         $currentMonth = date('m');
         $currentYear = date('Y');
         $tasks = TacheModel::getTachesEmploye($id_employe);
-
+        
         $calendar = [];
         $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
         $firstDay = new DateTime("$currentYear-$currentMonth-01");
         $dayOfWeek = $firstDay->format('w');
-
+        
         for ($i = 0; $i < ($dayOfWeek + $daysInMonth); $i++) {
             $day = $i - $dayOfWeek + 1;
             $dateKey = $currentYear . '-' . str_pad($currentMonth, 2, '0', STR_PAD_LEFT) . '-' . str_pad($day, 2, '0', STR_PAD_LEFT);
@@ -135,7 +122,8 @@ class TacheController {
                 'tasks' => array_filter($tasks, fn($t) => $t['date_echeance'] === $dateKey) ?: []
             ];
         }
-
+        $tasks = TacheModel::getTachesEmploye($id_employe);
+        
         Flight::render('tache/employee_landing', [
             'calendar' => $calendar,
             'currentMonth' => $currentMonth,
@@ -143,7 +131,8 @@ class TacheController {
             'id_employe' => $id_employe,
             'flash' => $flash,
             'daysInMonth' => $daysInMonth,
-            'dayOfWeek' => $dayOfWeek
+            'dayOfWeek' => $dayOfWeek,
+            'tasks' => $tasks
         ]);
     }
 
