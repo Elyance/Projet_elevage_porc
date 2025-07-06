@@ -36,7 +36,7 @@
                             <td><?= htmlspecialchars($diag['nombre_femelles_infectes']) ?></td>
                             <td><?= htmlspecialchars($diag['date_apparition']) ?></td>
                             <td>
-                                <form action="/diagnostic/markSuccess/<?= htmlspecialchars($diag['id_diagnostic']) ?>" method="post" style="display:inline;">
+                                <form action="/diagnostic/markSuccess/<?= htmlspecialchars($diag['id_diagnostic']) ?>" method="get" style="display:inline;">
                                     <button type="submit" class="btn btn-success btn-sm">Succès</button>
                                 </form>
                                 <form action="/diagnostic/markFailure/<?= htmlspecialchars($diag['id_diagnostic']) ?>" method="post" style="display:inline;">

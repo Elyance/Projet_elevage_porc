@@ -66,7 +66,7 @@ class EnclosModel
 
     public static function getAllTsyArray()
     {
-        $stmt = \Flight::db()->query('select * from bao_enclos JOIN bao_enclos_type on bao_enclos.enclos_type = bao_enclos_type.id_enclos_type');
+        $stmt = \Flight::db()->query('select * from bao_enclos JOIN bao_type_porc on bao_enclos.enclos_type = bao_type_porc.id_type_porc');
 
         return $stmt->fetchAll();
     }

@@ -211,10 +211,10 @@ Flight::route('GET /sante/listTreatment', function() {
     Flight::diagnostic()->listTreatment();
 });
 
-// Route for marking treatment success
-Flight::route('POST /diagnostic/markSuccess/@id_diagnostic', function($id_diagnostic) {
-    Flight::diagnostic()->markSuccess($id_diagnostic);
-});
+// // Route for marking treatment success
+// Flight::route('POST /diagnostic/markSuccess/@id_diagnostic', function($id_diagnostic) {
+//     Flight::diagnostic()->markSuccess($id_diagnostic);
+// });
 
 // Route for marking treatment failure
 Flight::route('POST /diagnostic/markFailure/@id_diagnostic', function($id_diagnostic) {

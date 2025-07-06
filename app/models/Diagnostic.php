@@ -77,10 +77,14 @@ class Diagnostic{
     public function markSuccess($id_diagnostic, $id_enclos_destination)
     {
         $diagnostic = $this->findById($id_diagnostic);
+        if (!$diagnostic) {
+            throw new Exception("Diagnostic non trouvé");
+        }
+
         $id_enclos_portee_quarantine = $diagnostic['id_enclos_portee'];
         $total_infected = $diagnostic['nombre_males_infectes'] + $diagnostic['nombre_femelles_infectes'];
 
-        // Move pigs to the selected enclosure
+        // Move pigs to the user-selected enclosure
         $enclosController = new EnclosController();
         $enclosController->movePorteeManually(
             $id_enclos_portee_quarantine,
@@ -89,8 +93,8 @@ class Diagnostic{
             $diagnostic['nombre_femelles_infectes']
         );
 
-        // Update status
-        // $this->updateStatus($id_diagnostic, 'reussi');
+        // Update status to 'reussi'
+        $this->updateStatus($id_diagnostic, 'reussi');
     }
 
     public function markFailure($id_diagnostic)

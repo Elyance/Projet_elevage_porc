@@ -199,41 +199,41 @@ class EnclosController
 
         try {
             $source = $this->getEnclosPortee($id_enclos_portee_source);
-            echo print_r($source);
             if (!$source || $source['quantite_total'] < ($quantite_males + $quantite_femelles) || $source['id_portee'] === null) {
                 throw new Exception('Quantité insuffisante ou source invalide dans la source');
             }
 
-            // $total_moved = $quantite_males + $quantite_femelles;
-            // $portee = $this->getPorteeById($source['id_portee']);
-            // if ($portee['nombre_males'] < $quantite_males || $portee['nombre_femelles'] < $quantite_femelles) {
-            //     throw new Exception('Quantité de mâles ou femelles insuffisante dans la portée');
-            // }
+            $total_moved = $quantite_males + $quantite_femelles;
+            $portee = $this->getPorteeById($source['id_portee']);
+            if ($portee['nombre_males'] < $quantite_males || $portee['nombre_femelles'] < $quantite_femelles) {
+                throw new Exception('Quantité de mâles ou femelles insuffisante dans la portée');
+            }
 
-            // // Create a new bao_portee for the moved pigs
-            // $new_portee_id = $this->createNewPortee($portee, $quantite_males, $quantite_femelles);
+            // Create a new bao_portee for the moved pigs
+            $new_portee_id = $this->createNewPortee($portee, $quantite_males, $quantite_femelles);
 
-            // // Update the original bao_portee
-            // $new_source_males = $portee['nombre_males'] - $quantite_males;
-            // $new_source_femelles = $portee['nombre_femelles'] - $quantite_femelles;
-            // $this->updatePorteeGender($source['id_portee'], $new_source_males, $new_source_femelles);
+            // Update the original bao_portee
+            $new_source_males = $portee['nombre_males'] - $quantite_males;
+            $new_source_femelles = $portee['nombre_femelles'] - $quantite_femelles;
+            $this->updatePorteeGender($source['id_portee'], $new_source_males, $new_source_femelles);
 
-            // // Update source enclosure
-            // $new_source_total = $source['quantite_total'] - $total_moved;
-            // $this->updateEnclosPorteeDetails($id_enclos_portee_source, $new_source_total, $source['poids_estimation'], $source['nombre_jour_ecoule']);
+            // Update source enclosure
+            $new_source_total = $source['quantite_total'] - $total_moved;
+            $this->updateEnclosPorteeDetails($id_enclos_portee_source, $new_source_total, $source['poids_estimation'], $source['nombre_jour_ecoule']);
 
-            // // Create new enclosure-portee link for destination
-            // $destinationId = $this->createEnclosPortee(
-            //     $id_enclos_destination,
-            //     $new_portee_id,
-            //     $total_moved,
-            //     $source['poids_estimation'],
-            //     $source['nombre_jour_ecoule']
-            // );
+            // Create new enclosure-portee link for destination
+            $destinationId = $this->createEnclosPortee(
+                $id_enclos_destination,
+                $new_portee_id,
+                $total_moved,
+                $source['poids_estimation'],
+                $source['nombre_jour_ecoule']
+            );
 
-            // $this->recordMovement($id_enclos_portee_source, $destinationId, $quantite_males, $quantite_femelles);
+            $this->recordMovement($id_enclos_portee_source, $destinationId, $quantite_males, $quantite_femelles);
 
             $conn->commit();
+            return $destinationId;
         } catch (Exception $e) {
             $conn->rollBack();
             throw $e;
@@ -479,25 +479,20 @@ class EnclosController
                 $poids = $sourcePortee['poids_estimation'] ?? 150.000;
                 $joursEcoules = $sourcePortee['nombre_jour_ecoule'] ?? 334;
 
-                $destinationPortee = $this->getEnclosPorteeByEnclos($id_enclos);
-                if (!$destinationPortee) {
-                    $stmt = $conn->prepare("
-                        INSERT INTO bao_enclos_portee (id_enclos, id_portee, quantite_total, poids_estimation, nombre_jour_ecoule, statut_vente)
-                        VALUES (:id_enclos, NULL, :quantity, :poids, :jours_ecoules, 'possible')
-                    ");
-                    $stmt->execute([
-                        ':id_enclos' => $id_enclos,
-                        ':quantity' => $quantity,
-                        ':poids' => $poids,
-                        ':jours_ecoules' => $joursEcoules
-                    ]);
-                    $destinationId = $conn->lastInsertId();
-                } else {
-                    $destinationId = $destinationPortee['id_enclos_portee'];
-                    $newQuantity = ($destinationPortee['quantite_total'] ?? 0) + $quantity;
-                    $this->updateEnclosPorteeDetails($destinationId, $newQuantity, $poids, $joursEcoules);
-                }
+                // Always create a new bao_enclos_portee for the Truie enclosure
+                $stmt = $conn->prepare("
+                    INSERT INTO bao_enclos_portee (id_enclos, id_portee, quantite_total, poids_estimation, nombre_jour_ecoule, statut_vente)
+                    VALUES (:id_enclos, NULL, :quantity, :poids, :jours_ecoules, 'possible')
+                ");
+                $stmt->execute([
+                    ':id_enclos' => $id_enclos,
+                    ':quantity' => $quantity,
+                    ':poids' => $poids,
+                    ':jours_ecoules' => $joursEcoules
+                ]);
+                $destinationId = $conn->lastInsertId();
 
+                // Add a new bao_truie record for each converted female
                 for ($i = 0; $i < $quantity; $i++) {
                     $stmt = $conn->prepare("
                         INSERT INTO bao_truie (id_enclos, id_race, poids, date_entree)
@@ -509,6 +504,7 @@ class EnclosController
                     ]);
                 }
 
+                // Update the source bao_enclos_portee with reduced quantity
                 $newSourceQuantity = $sourcePortee['quantite_total'] - $quantity;
                 $this->updateEnclosPorteeDetails($sourcePortee['id_enclos_portee'], $newSourceQuantity, $poids, $joursEcoules);
 
@@ -516,17 +512,18 @@ class EnclosController
                 $new_portee_femelles = $portee['nombre_femelles'] - $quantity;
                 $this->updatePorteeGender($id_portee, $portee['nombre_males'], $new_portee_femelles);
 
+                // Record the movement
                 $this->recordMovement($sourcePortee['id_enclos_portee'], $destinationId, 0, $quantity);
 
                 $conn->commit();
             } else {
                 $_SESSION['flash'] = ['type' => 'error', 'message' => 'Quantité invalide ou insuffisante dans la portée.'];
-                \Flight::redirect('/enclos/convert-femelles');
+                \Flight::redirect('/enclos/convert-females');
             }
         } catch (Exception $e) {
             $conn->rollBack();
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'Erreur lors de la conversion: ' . $e->getMessage()];
-            \Flight::redirect('/enclos/convert-femelles');
+            \Flight::redirect('/enclos/convert-females');
         }
     }
 

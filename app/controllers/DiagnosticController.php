@@ -87,8 +87,8 @@ class DiagnosticController
             $id_enclos_destination = Flight::request()->data->id_enclos_destination;
 
             if ($id_enclos_destination === null) {
-                // Flight::redirect('/maladie/signale?error=Enclos de quarantaine non sélectionné');
-                // return;
+                Flight::redirect('/maladie/signale?error=Enclos de quarantaine non sélectionné');
+                return;
             }
 
             $enclosController = new EnclosController();
@@ -96,22 +96,22 @@ class DiagnosticController
             // $conn->beginTransaction();
 
             try {
-                $enclosController->movePorteeManually(
+                $id_tena_izy = $enclosController->movePorteeManually(
                     $moveData['id_enclos_portee_original'],
                     $id_enclos_destination,
                     $moveData['nombre_males_infectes'],
                     $moveData['nombre_femelles_infectes']
                 );
-                $diagnostic->updateStatusAndEnclos($id_diagnostic, 'en quarantaine', $moveData['id_enclos_portee_original'], $id_enclos_destination);
+                $diagnostic->updateStatusAndEnclos($id_diagnostic, 'en quarantaine', $moveData['id_enclos_portee_original'], $id_tena_izy);
                 // $conn->commit();
-                // Flight::redirect('/maladie/signale?success=Mis en quarantaine');
+                Flight::redirect('/maladie/signale?success=Mis en quarantaine');
             } catch (Exception $e) {
                 // $conn->rollBack();
                 echo $e;
-                // Flight::redirect('/maladie/signale?error=Erreur lors du déplacement: ' . $e->getMessage());
+                Flight::redirect('/maladie/signale?error=Erreur lors du déplacement: ' . $e->getMessage());
             }
         } else {
-            // Flight::redirect('/diagnostic/moveToQuarantine/' . $id_diagnostic);
+            Flight::redirect('/diagnostic/moveToQuarantine/' . $id_diagnostic);
         }
     }
 
@@ -150,10 +150,10 @@ class DiagnosticController
                 // $conn->beginTransaction();
                 $diagnostic->markSuccess($id_diagnostic, $id_enclos_destination);
                 // $conn->commit();
-                // Flight::redirect('/maladie/treatment?success=Traitement réussi');
+                Flight::redirect('/maladie/treatment?success=Traitement réussi');
             } catch (Exception $e) {
                 // $conn->rollBack();
-                // Flight::redirect('/maladie/treatment?error=Erreur lors de la marque de succès: ' . $e->getMessage());
+                Flight::redirect('/maladie/treatment?error=Erreur lors de la marque de succès: ' . $e->getMessage());
             }
         } else {
             $diagnosticData = $diagnostic->findById($id_diagnostic);
