@@ -23,7 +23,7 @@ class Tache {
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
+ 
     // Créer une tâche
     public function create($data) {
         $db = Flight::db();
@@ -102,5 +102,12 @@ class Tache {
         foreach ($ids as $id) {
             $stmt->execute(['terminee', $id]);
         }
+    }
+    public function setTachesDone2($ids,$date) {
+        $db = Flight::db();
+        $stmt = $db->prepare('UPDATE bao_tache_employe SET statut = ? WHERE id_tache = ? AND date_echeance = ?');
+        
+        $stmt->execute(['termine', $ids,$date]);
+        
     }
 }

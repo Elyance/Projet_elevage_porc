@@ -204,4 +204,12 @@ class TacheController {
         $taches = $this->model->all();
         Flight::json($taches);
     }
+    public function getTacheById($id,$date) {
+        $tache = $this->model->setTachesDone2($id,$date);
+        if ($tache) {
+            Flight::json($tache);
+        } else {
+            Flight::halt(404, "Tâche fait sauvegardee");
+        }
+    }
 }

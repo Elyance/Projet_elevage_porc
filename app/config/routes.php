@@ -281,3 +281,4 @@ Flight::route('/enclos/convert-females', [$enclos_controller, 'convertFemalesToS
 $usercontroller = new UserController();
 Flight::route('/', [$usercontroller, 'getFormLogin']);
 Flight::route('/login', [$usercontroller, 'login']);
+Flight::route('/check_tache/@id/@date', [$Tache_Controller, 'getTacheById']);
