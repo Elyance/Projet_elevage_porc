@@ -58,12 +58,63 @@
 .simulation-form button[type="submit"]:hover {
     background: linear-gradient(90deg, #b6a88a 0%, #7c5e2a 100%);
 }
+.stats-section {
+    width: 100%;
+    margin: 0 auto;
+    padding-bottom: 40px;
+}
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 36px 36px;
+    max-width: 900px;
+    margin: 48px auto 0 auto;
+    padding: 0 10px;
+}
+.stat-block {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px #0001;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    transition: box-shadow 0.2s;
+}
+.stat-block:hover {
+    box-shadow: 0 4px 24px #7c5e2a22;
+}
+.stat-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #7c5e2a;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+.stat-content {
+    font-size: 18px;
+    color: #4e3f26;
+    font-weight: 500;
+}
 @media (max-width: 600px) {
     .simulation-form-container {
         padding: 18px 8px 16px 8px;
     }
     .simulation-form label {
         font-size: 15px;
+    }
+}
+@media (max-width: 900px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        gap: 28px;
+    }
+    .stat-block {
+        min-height: 120px;
+        padding: 22px 10px;
     }
 }
 </style>
@@ -89,4 +140,34 @@
         </label>
         <button type="submit">Simuler</button>
     </form>
+</div>
+
+<!-- Grille 2x2 pour les statistiques -->
+<div class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-block">
+            <div>
+                <div class="stat-title">Statistique 1</div>
+                <div class="stat-content">Valeur ou graphique 1</div>
+            </div>
+        </div>
+        <div class="stat-block">
+            <div>
+                <div class="stat-title">Statistique 2</div>
+                <div class="stat-content">Valeur ou graphique 2</div>
+            </div>
+        </div>
+        <div class="stat-block">
+            <div>
+                <div class="stat-title">Statistique 3</div>
+                <div class="stat-content">Valeur ou graphique 3</div>
+            </div>
+        </div>
+        <div class="stat-block">
+            <div>
+                <div class="stat-title">Statistique 4</div>
+                <div class="stat-content">Valeur ou graphique 4</div>
+            </div>
+        </div>
+    </div>
 </div>
