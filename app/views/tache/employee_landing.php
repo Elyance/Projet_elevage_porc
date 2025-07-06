@@ -69,7 +69,7 @@
             if ($cell['day']) {
                 echo $cell['day'];
                 foreach ($cell['tasks'] as $task) {
-                    $href = '#'; // Default href
+                    $href = '/check_tache/'.$task['id_tache'].'/'.$task['date_echeance']; // Default href
                     switch ($task['nom_tache']) {
                         case 'Peser les porcs':
                             $href = '/tache_peser';
@@ -83,7 +83,7 @@
                         // Add additional cases for other tasks with specific routes
                     }
                     echo "<div class='task'>";
-                    echo "<a href='" . htmlspecialchars($href) . "'>" . htmlspecialchars($task['nom_tache']) . "</a>";
+                    echo "<a href='" . htmlspecialchars($href) . "' onclick=\"return confirm('Terminer la tache ?')\">" . htmlspecialchars($task['nom_tache']) . "</a>";
                     if ($task['precision']) {
                         echo "<div class='precision'>" . htmlspecialchars($task['precision']) . "</div>";
                     }

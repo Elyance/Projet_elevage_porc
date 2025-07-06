@@ -71,17 +71,17 @@
         },
         {
             "name": "flightphp/core",
-            "version": "v3.15.3",
-            "version_normalized": "3.15.3.0",
+            "version": "v3.16.0",
+            "version_normalized": "3.16.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/flightphp/core.git",
-                "reference": "5df28007533e825b8691d089e1df7509b9d131cf"
+                "reference": "d43f2e9db51a3801752e35957d6856d949e60e4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/flightphp/core/zipball/5df28007533e825b8691d089e1df7509b9d131cf",
-                "reference": "5df28007533e825b8691d089e1df7509b9d131cf",
+                "url": "https://api.github.com/repos/flightphp/core/zipball/d43f2e9db51a3801752e35957d6856d949e60e4e",
+                "reference": "d43f2e9db51a3801752e35957d6856d949e60e4e",
                 "shasum": ""
             },
             "require": {
@@ -109,7 +109,7 @@
                 "phpstan/phpstan": "PHP Static Analyzer",
                 "tracy/tracy": "Tracy debugger"
             },
-            "time": "2025-06-17T13:54:46+00:00",
+            "time": "2025-06-28T23:08:26+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -144,7 +144,7 @@
             "homepage": "http://flightphp.com",
             "support": {
                 "issues": "https://github.com/flightphp/core/issues",
-                "source": "https://github.com/flightphp/core/tree/v3.15.3"
+                "source": "https://github.com/flightphp/core/tree/v3.16.0"
             },
             "install-path": "../flightphp/core"
         },
