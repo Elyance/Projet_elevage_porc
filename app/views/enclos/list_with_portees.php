@@ -8,6 +8,7 @@
                 <table class="table table-striped table-bordered">
                     <thead class="table-dark">
                         <tr>
+                            <th>ID Enclos Portée</th>
                             <th>ID Portée</th>
                             <th>Truie ID</th>
                             <th>Race ID</th>
@@ -24,6 +25,7 @@
                     <tbody>
                         <?php foreach ($enclos['portees'] as $portee): ?>
                             <tr>
+                                <td><?= $portee['id_enclos_portee'] ?? 'N/A' ?></td>
                                 <td><?= $portee['id_portee'] ?? 'N/A' ?></td>
                                 <td><?= $portee['id_truie'] ?? 'N/A' ?></td>
                                 <td><?= $portee['id_race'] ?? 'N/A' ?></td>

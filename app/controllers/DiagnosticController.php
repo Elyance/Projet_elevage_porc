@@ -87,12 +87,14 @@ class DiagnosticController
             $id_enclos_destination = Flight::request()->data->id_enclos_destination;
 
             if ($id_enclos_destination === null) {
-                Flight::redirect('/maladie/signale?error=Enclos de quarantaine non sélectionné');
-                return;
+                // Flight::redirect('/maladie/signale?error=Enclos de quarantaine non sélectionné');
+                // return;
             }
 
-            // Use EnclosController's movePorteeManually logic
             $enclosController = new EnclosController();
+            $conn = \Flight::db();
+            // $conn->beginTransaction();
+
             try {
                 $enclosController->movePorteeManually(
                     $moveData['id_enclos_portee_original'],
@@ -100,15 +102,14 @@ class DiagnosticController
                     $moveData['nombre_males_infectes'],
                     $moveData['nombre_femelles_infectes']
                 );
+                $diagnostic->updateStatusAndEnclos($id_diagnostic, 'en quarantaine', $moveData['id_enclos_portee_original'], $id_enclos_destination);
+                // $conn->commit();
+                // Flight::redirect('/maladie/signale?success=Mis en quarantaine');
             } catch (Exception $e) {
+                // $conn->rollBack();
                 echo $e;
                 // Flight::redirect('/maladie/signale?error=Erreur lors du déplacement: ' . $e->getMessage());
-                // return;
             }
-
-            // Update diagnostic status and enclosure
-            $diagnostic->updateStatusAndEnclos($id_diagnostic, 'en quarantaine', $id_enclos_destination, $moveData['id_enclos_portee_original']);
-            // Flight::redirect('/maladie/signale?success=Mis en quarantaine');
         } else {
             // Flight::redirect('/diagnostic/moveToQuarantine/' . $id_diagnostic);
         }
@@ -135,18 +136,32 @@ class DiagnosticController
     public function listTreatment()
     {
         $diagnostic = new Diagnostic(Flight::db());
-        $diagnostics = $diagnostic->findByStatus('en traitement');
+        $diagnostics = $diagnostic->findByStatuses(['en traitement', 'echec']);
         Flight::render('maladie/listTreatment', ['diagnostics' => $diagnostics]);
     }
 
     public function markSuccess($id_diagnostic)
     {
         $diagnostic = new Diagnostic(Flight::db());
-        try {
-            $diagnostic->markSuccess($id_diagnostic);
-            Flight::redirect('/maladie/treatment?success=Traitement réussi');
-        } catch (Exception $e) {
-            Flight::redirect('/maladie/treatment?error=Erreur lors de la marque de succès: ' . $e->getMessage());
+        if (Flight::request()->method == 'POST') {
+            $id_enclos_destination = Flight::request()->data->id_enclos_destination;
+            try {
+                $conn = Flight::db();
+                // $conn->beginTransaction();
+                $diagnostic->markSuccess($id_diagnostic, $id_enclos_destination);
+                // $conn->commit();
+                // Flight::redirect('/maladie/treatment?success=Traitement réussi');
+            } catch (Exception $e) {
+                // $conn->rollBack();
+                // Flight::redirect('/maladie/treatment?error=Erreur lors de la marque de succès: ' . $e->getMessage());
+            }
+        } else {
+            $diagnosticData = $diagnostic->findById($id_diagnostic);
+            $enclosList = \app\models\EnclosModel::getAllTsyArray(); // Fetch all enclosures with type details
+            Flight::render('maladie/selectEnclosForHealedPigs', [
+                'diagnostic' => $diagnosticData,
+                'enclosList' => $enclosList
+            ]);
         }
     }
 

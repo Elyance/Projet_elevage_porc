@@ -225,6 +225,7 @@ Flight::route('POST /diagnostic/markFailure/@id_diagnostic', function($id_diagno
 Flight::route('POST /diagnostic/recordDeath/@id_diagnostic', function($id_diagnostic) {
     Flight::diagnostic()->recordDeath($id_diagnostic);
 });
+Flight::route('GET|POST /diagnostic/markSuccess/@id_diagnostic', ['app\controllers\DiagnosticController', 'markSuccess']);
 
 $router->get('/sante', [ $santeevenementController, 'home' ]); 
 $router->get('/soin', [ $diagnosticController, 'soin' ]); 
