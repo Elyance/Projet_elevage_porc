@@ -344,16 +344,19 @@ CREATE TABLE bao_maladie_symptome (
 
 CREATE TABLE bao_diagnostic (
     id_diagnostic SERIAL PRIMARY KEY,
-    id_maladie INTEGER, -- sera utilise pour obtenir la liste des symptomes
-    id_enclos INTEGER,
-    nombre_infecte INTEGER, -- nombre de porc infecte dans l'enclos
+    id_maladie INTEGER, -- used to obtain the list of symptoms
+    id_enclos_portee INTEGER, -- Reference to specific litter enclosure
+    id_enclos_portee_original INTEGER, -- Original litter enclosure reference (e.g., before movement)
+    nombre_males_infectes INTEGER, -- Number of infected males
+    nombre_femelles_infectes INTEGER, -- Number of infected females
     date_apparition DATE,
     date_diagnostic DATE,
-    desc_traitement TEXT, -- description du traitement prescrit pour la maladie
-    statut VARCHAR(30) CHECK (statut IN ('en quarantaine', 'en traitement', 'reussi', 'echec')), -- statut du diagnostic
+    desc_traitement TEXT, -- Description of the prescribed treatment for the disease
+    statut VARCHAR(30) CHECK (statut IN ('signale', 'en quarantaine', 'en traitement', 'reussi', 'echec')), -- Status of the diagnostic
     prix_traitement DECIMAL(10,2),
     FOREIGN KEY (id_maladie) REFERENCES bao_maladie(id_maladie),
-    FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos)
+    FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee),
+    FOREIGN KEY (id_enclos_portee_original) REFERENCES bao_enclos_portee(id_enclos_portee)
 );
 
 
@@ -402,7 +405,9 @@ VALUES
 (1, 20),  -- Enclos 1: Truie type
 (2, 15),  -- Enclos 2: Portee type
 (2, 15),  -- Enclos 3: Portee type
-(2, 15);  -- Enclos 4: Portee type
+(2, 15),  -- Enclos 4: Portee type
+(3, 15),  -- Enclos 4: Portee type
+(3, 15);  -- Enclos 4: Portee type
 
 
 -- Insertion des races de porcs
@@ -445,7 +450,9 @@ VALUES
 (2, 2, 4, 125.0, 'non possible',336),  -- Enclos 2 with Litter 2 (4 pigs)
 (2, 3, 2, 125.0, 'non possible',339),  -- Enclos 2 with Litter 2 (4 pigs)
 (3, NULL, 0, 0.0, 'non possible',0), -- Enclos 3 initialized with no litter
-(4, NULL, 0, 0.0, 'non possible',0); -- Enclos 4 initialized with no litter
+(4, NULL, 0, 0.0, 'non possible',0), -- Enclos 4 initialized with no litter
+(5, NULL, 0, 0.0, 'non possible',0), -- Enclos 3 initialized with no litter
+(6, NULL, 0, 0.0, 'non possible',0); -- Enclos 4 initialized with no litter
 
 -- Insertion des aliments
 INSERT INTO aliments (nom_aliment, prix_kg, stock_kg, apports_nutritionnels, contact_fournisseur, conso_journaliere_kg_par_porc) VALUES
@@ -460,6 +467,60 @@ INSERT INTO reapprovisionnement_aliments (id_aliment, quantite_kg, date_reappro,
 (2, 150.00, '2023-09-20 11:30:00', 82.50),
 (3, 100.00, '2023-09-25 10:00:00', 30.00),
 (5, 80.00, '2023-09-28 16:45:00', 48.00);
+
+-- Insert into bao_symptome
+INSERT INTO bao_symptome (nom_symptome, description) VALUES
+('Fièvre', 'Elévation anormale de la température corporelle'),
+('Diarrhée', 'Selles fréquentes et liquides'),
+('Toux', 'Rales ou toux persistante'),
+('Perte d appétit', 'Réduction ou absence de prise alimentaire'),
+('Léthargie', 'Faiblesse ou manque d énergie');
+
+-- Insert into bao_maladie
+INSERT INTO bao_maladie (nom_maladie, description, dangerosite) VALUES
+('Grippe Porcine', 'Infection respiratoire virale chez les porcs', 'moderee'),
+('Dysenterie Porcine', 'Infection bactérienne causant des diarrhées sévères', 'elevee'),
+('Peste Porcine', 'Maladie virale hautement contagieuse et mortelle', 'elevee'),
+('Anémie Infectieuse', 'Affection causant une anémie due à un parasite', 'faible');
+
+-- Insert into bao_maladie_symptome
+INSERT INTO bao_maladie_symptome (id_maladie, id_symptome) VALUES
+(1, 1), -- Grippe Porcine -> Fièvre
+(1, 3), -- Grippe Porcine -> Toux
+(2, 2), -- Dysenterie Porcine -> Diarrhée
+(2, 4), -- Dysenterie Porcine -> Perte d'appétit
+(3, 1), -- Peste Porcine -> Fièvre
+(3, 2), -- Peste Porcine -> Diarrhée
+(3, 5), -- Peste Porcine -> Léthargie
+(4, 4), -- Anémie Infectieuse -> Perte d'appétit
+(4, 5); -- Anémie Infectieuse -> Léthargie
+
+INSERT INTO bao_diagnostic (
+    id_diagnostic,
+    id_maladie,
+    id_enclos_portee,
+    id_enclos_portee_original,
+    nombre_males_infectes,
+    nombre_femelles_infectes,
+    date_apparition,
+    date_diagnostic,
+    desc_traitement,
+    statut,
+    prix_traitement
+) VALUES (
+    1,
+    1,
+    3,
+    3,
+    2,
+    2,
+    '2025-07-07',
+    '2025-07-08',
+    'sida be',
+    'signale',
+    50.00
+);
+
 
 -- Insertion historique d'alimentation
 INSERT INTO historique_alimentation (id_enclos, id_aliment, quantite_kg, id_enclos_portee) VALUES

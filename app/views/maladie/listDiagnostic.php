@@ -19,16 +19,18 @@
             <table>
                 <tr>
                     <th>Nom maladie</th>
-                    <th>Enclos</th>
+                    <th>Enclos Portée</th>
                     <th>Statut</th>
-                    <th>Nombre infecté</th>
+                    <th>Mâles infectés</th>
+                    <th>Femelles infectées</th>
                 </tr>
                 <?php foreach ($diagnostics as $diagnostic) { ?>
                     <tr>
-                        <td><?= htmlspecialchars($diagnostic['nom_maladie']) ?></td>
-                        <td><?= htmlspecialchars($diagnostic['id_enclos']) ?></td>
+                        <td><?= htmlspecialchars($diagnostic['id_maladie']) ?></td>
+                        <td><?= htmlspecialchars($diagnostic['id_enclos_portee']) ?></td>
                         <td><?= htmlspecialchars($diagnostic['statut']) ?></td>
-                        <td><?= htmlspecialchars($diagnostic['nombre_infecte']) ?></td>
+                        <td><?= htmlspecialchars($diagnostic['nombre_males_infectes']) ?></td>
+                        <td><?= htmlspecialchars($diagnostic['nombre_femelles_infectes']) ?></td>
                     </tr>
                 <?php } ?>
             </table>

@@ -12,18 +12,18 @@ class Deces{
     }
 
     public function findAll() {
-        $query = "SELECT * from bao_deces";
+        $query = "SELECT * FROM bao_deces";
         return $this->db->fetchAll($query);
     }
 
     public function findById($id) {
-        $query = "SELECT * from bao_deces where id_deces = ?";
+        $query = "SELECT * FROM bao_deces WHERE id_deces = ?";
         return $this->db->fetchRow($query, [$id]);
     }
 
     public function addDeces($data)
     {
-        $sql = "INSERT INTO bao_deces (id_enclos,nombre_deces, date_deces, cause_deces)
+        $sql = "INSERT INTO bao_deces (id_enclos, nombre_deces, date_deces, cause_deces)
                 VALUES (?, ?, ?, ?)";
         $params = [
             $data['id_enclos'],
@@ -41,7 +41,6 @@ class Deces{
         } catch (\Throwable $th) {
             throw $th;
         }
-
     }
 
     public function updateDeces($id, $data)

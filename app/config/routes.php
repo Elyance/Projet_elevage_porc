@@ -176,7 +176,58 @@ $diagnosticController = new DiagnosticController();
 $maladieController = new MaladieController();
 $decesController = new DecesController();
 
+// routes.php or similar configuration file
+
+// Route for listing signalé diagnostics
+Flight::route('GET /sante/listDiagnostic', function() {
+    Flight::diagnostic()->listDiagnostic();
+});
+Flight::route('GET /sante/listSignale', function() {
+    Flight::diagnostic()->listSignale();
+});
+
+// Route for moving to quarantine
+Flight::route('POST /diagnostic/moveToQuarantine/@id_diagnostic', function($id_diagnostic) {
+    Flight::diagnostic()->moveToQuarantine($id_diagnostic);
+});
+
+// Route for listing quarantine diagnostics
+Flight::route('GET /sante/listQuarantine', function() {
+    Flight::diagnostic()->listQuarantine();
+});
+
+// Route for starting treatment
+Flight::route('POST /diagnostic/startTreatment/@id_diagnostic', function($id_diagnostic) {
+    Flight::diagnostic()->startTreatment($id_diagnostic);
+});
+
+// Route for listing treatment diagnostics
+Flight::route('GET /sante/listTreatment', function() {
+    Flight::diagnostic()->listTreatment();
+});
+
+// Route for marking treatment success
+Flight::route('POST /diagnostic/markSuccess/@id_diagnostic', function($id_diagnostic) {
+    Flight::diagnostic()->markSuccess($id_diagnostic);
+});
+
+// Route for marking treatment failure
+Flight::route('POST /diagnostic/markFailure/@id_diagnostic', function($id_diagnostic) {
+    Flight::diagnostic()->markFailure($id_diagnostic);
+});
+
+// Route for recording death
+Flight::route('POST /diagnostic/recordDeath/@id_diagnostic', function($id_diagnostic) {
+    Flight::diagnostic()->recordDeath($id_diagnostic);
+});
+
 $router->get('/sante', [ $santeevenementController, 'home' ]); 
+$router->get('/soin', [ $diagnosticController, 'soin' ]); 
+
+// Map the diagnostic controller
+Flight::map('diagnostic', function() {
+    return new \app\controllers\DiagnosticController();
+});
 $router->get('/evenement', [$santeevenementController, 'findByDate']);
 $router->get('/evenement/add', [$santeevenementController, 'formAjouterEvenement']);
 $router->post('/evenement/add', [$santeevenementController, 'ajouterEvenement']);

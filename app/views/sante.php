@@ -124,6 +124,7 @@
             <li><a href="typeevenement">Liste type evenement</a></li>
             <li><a href="evenement/add">Ajouter evenement</a></li>
             <li><a href="deces">Gestion décès</a></li>
+            <li><a href="soin">Soin</a></li>
         </ul>
     </div>
     <div class="calendar">

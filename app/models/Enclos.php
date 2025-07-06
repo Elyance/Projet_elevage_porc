@@ -14,4 +14,8 @@ class Enclos {
         $query = "SELECT * from bao_enclos";
         return $this->db->fetchAll($query);
     }
+    public function findAllEnclosPortee() {
+        $query = "SELECT * from bao_enclos_portee";
+        return $this->db->fetchAll($query);
+    }
 }
