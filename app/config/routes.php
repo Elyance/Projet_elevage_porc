@@ -3,7 +3,6 @@
 use app\controllers\ApiExampleController;
 use app\controllers\UserController;
 use app\controllers\EnclosController;
-use app\controllers\HomeController;
 use app\controllers\ReproductionController;
 use app\controllers\CycleController;
 use app\controllers\NaissanceController;
@@ -24,8 +23,8 @@ use app\controllers\SanteTypeEvenementController;
 use app\controllers\DiagnosticController;
 use app\controllers\MaladieController;
 
-use flight\net\Router;
 use flight\Engine;
+use flight\net\Router;
 
 /**
  * @var Router $router
@@ -36,13 +35,7 @@ use flight\Engine;
 	$app->render('welcome', [ 'message' => 'It works!!' ]);
 });*/
 
-$UserController = new UserController();
-$router->get('/',[$UserController, 'getFormLogin']);
-$router->post('/login',[$UserController, 'login']);
 
-
-$Home_Controller = new HomeController();
-$router->get("/home", [$Home_Controller, "home"]);
 
 $router->get("/hello-world/@name", function($name) {
     echo "<h1>Hello world! Oh hey " . $name . "!</h1>";
@@ -88,15 +81,15 @@ $router->group("/typePorc", function () use ($router) {
     $router->post("/edit", [$typePorcController, "update"]);
 });
 
-$router->group("/enclos", function () use ($router) {
-    $enclosController = new EnclosController();
-    $router->get("/", [$enclosController, "list"]);
-    $router->get("/add", [$enclosController, "form"]);
-    $router->post("/add", [$enclosController, "save"]);
-    $router->get("/delete", [$enclosController, "delete"]);
-    $router->get("/edit", [$enclosController, "form"]);
-    $router->post("/edit", [$enclosController, "update"]);
-});
+// $router->group("/enclos", function () use ($router) {
+//     $enclosController = new EnclosController();
+//     $router->get("/", [$enclosController, "list"]);
+//     $router->get("/add", [$enclosController, "form"]);
+//     $router->post("/add", [$enclosController, "save"]);
+//     $router->get("/delete", [$enclosController, "delete"]);
+//     $router->get("/edit", [$enclosController, "form"]);
+//     $router->post("/edit", [$enclosController, "update"]);
+// });
 
 // Employee Routes
 $Employe_Controller = new EmployeController();
@@ -213,3 +206,21 @@ $router->get('/deces/edit/@id:\d+', [$decesController, 'formUpdateDeces']);
 $router->post('/deces/edit/@id:\d+', [$decesController, 'UpdateDeces']);
 $router->get('/deces/delete/@id:\d+', [$decesController, 'deleteDeces']);
 
+$enclos_controller = new EnclosController();
+
+$router->get('/enclos', [$enclos_controller, 'listWithPortees']);
+$router->get('/enclos/move', [$enclos_controller, 'movePortee']);
+$router->post('/enclos/move', [$enclos_controller, 'movePortee']);
+// $router->get('/enclos/ajouter', [$enclos_controller, 'create']);
+// $router->post('/enclos/ajouter', [$enclos_controller, 'create']);
+// $router->get('/enclos/show/@id', [$enclos_controller, 'show']);
+// $router->get('/enclos/delete/@id', [$enclos_controller, 'delete']);
+
+// $router->get('/enclos/deplacer', [$enclos_controller, 'deplacer']);
+// $router->post('/enclos/deplacer', [$enclos_controller, 'deplacer']);
+// $router->get('/enclos', [$enclos_controller, 'index']);
+Flight::route('/enclos/convert-females', [$enclos_controller, 'convertFemalesToSows']);
+
+$usercontroller = new UserController();
+Flight::route('/', [$usercontroller, 'getFormLogin']);
+Flight::route('/login', [$usercontroller, 'login']);

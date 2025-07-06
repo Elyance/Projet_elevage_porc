@@ -7,13 +7,13 @@ class EnclosModel
 {
     public int $id_enclos;
     public ?int $enclos_type;
-    public ?int $stockage;
+    public ?int $surface;
 
-    public function __construct(int $id_enclos, ?int $enclos_type, ?int $stockage)
+    public function __construct(int $id_enclos, ?int $enclos_type, ?int $surface)
     {
         $this->id_enclos = $id_enclos;
         $this->enclos_type = $enclos_type;
-        $this->stockage = $stockage;
+        $this->surface = $surface;
     }
 
     public static function getAll(): array
@@ -40,7 +40,53 @@ class EnclosModel
         return new self(
             $data['id_enclos'] ?? 0,
             $data['enclos_type'] ?? null,
-            $data['stockage'] ?? null
+            $data['surface'] ?? null
         );
     }
+
+    public static function delete($id)
+    {
+        $stmt = \Flight::db()->prepare('DELETE FROM bao_enclos WHERE id_enclos = ?');
+
+        return $stmt->execute([$id]);
+    }
+
+    public static function update($id, $enclos_type, $surface)
+    {
+        $stmt = \Flight::db()->prepare('UPDATE bao_enclos SET enclos_type = ?, surface = ? WHERE id_enclos = ?');
+
+        return $stmt->execute([$enclos_type, $surface, $id]);
+    }
+
+    public static function getAllTsyArray()
+    {
+        $stmt = \Flight::db()->query('select * from bao_enclos JOIN bao_enclos_type on bao_enclos.enclos_type = bao_enclos_type.id_enclos_type');
+
+        return $stmt->fetchAll();
+    }
+
+    public static function create($type_enclos, $surface)
+    {
+        $stmt = \Flight::db()->prepare('INSERT INTO bao_enclos(enclos_type, surface) VALUES (?,?)');
+
+        return $stmt->execute([$type_enclos, $surface]);
+    }
+
+    public static function findByIdJoined($id)
+    {
+        $stmt = \Flight::db()->prepare('SELECT * FROM bao_enclos JOIN bao_enclos_type ON bao_enclos_type.id_enclos_type = bao_enclos.enclos_type  WHERE id_enclos = ?');
+        $stmt->execute([$id]);
+        $result = $stmt->fetch();
+
+        return $result;
+    }
+
+    // public static function findById($id)
+    // {
+    //     $stmt = \Flight::db()->prepare('SELECT * FROM bao_enclos WHERE id_enclos = ?');
+    //     $stmt->execute([$id]);
+    //     $result = $stmt->fetch();
+
+    //     return $result;
+    // }
 }
