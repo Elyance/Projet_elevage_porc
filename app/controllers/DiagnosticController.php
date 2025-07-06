@@ -9,7 +9,6 @@ use app\controllers\EnclosController;
 use Exception;
 use Flight;
 use DateTime;
-use flight\util\Collection;
 
 class DiagnosticController
 {
@@ -87,23 +86,31 @@ class DiagnosticController
             $moveData = $diagnostic->moveToQuarantine($id_diagnostic);
             $id_enclos_destination = Flight::request()->data->id_enclos_destination;
 
-            // Use flight\util\Collection for request data with array syntax
-            $requestData = new Collection();
-            $requestData['id_enclos_portee_source'] = $moveData['id_enclos_portee_original'];
-            $requestData['id_enclos_destination'] = $id_enclos_destination;
-            $requestData['quantite_males'] = $moveData['nombre_males_infectes'];
-            $requestData['quantite_femelles'] = $moveData['nombre_femelles_infectes'];
-            Flight::request()->data = $requestData;
+            if ($id_enclos_destination === null) {
+                Flight::redirect('/maladie/signale?error=Enclos de quarantaine non sélectionné');
+                return;
+            }
 
-            // Use EnclosController's movePortee logic
+            // Use EnclosController's movePorteeManually logic
             $enclosController = new EnclosController();
-            $enclosController->movePortee();
+            try {
+                $enclosController->movePorteeManually(
+                    $moveData['id_enclos_portee_original'],
+                    $id_enclos_destination,
+                    $moveData['nombre_males_infectes'],
+                    $moveData['nombre_femelles_infectes']
+                );
+            } catch (Exception $e) {
+                echo $e;
+                // Flight::redirect('/maladie/signale?error=Erreur lors du déplacement: ' . $e->getMessage());
+                // return;
+            }
 
             // Update diagnostic status and enclosure
             $diagnostic->updateStatusAndEnclos($id_diagnostic, 'en quarantaine', $id_enclos_destination, $moveData['id_enclos_portee_original']);
-            Flight::redirect('/maladie/signale?success=Mis en quarantaine');
+            // Flight::redirect('/maladie/signale?success=Mis en quarantaine');
         } else {
-            Flight::redirect('/diagnostic/moveToQuarantine/' . $id_diagnostic);
+            // Flight::redirect('/diagnostic/moveToQuarantine/' . $id_diagnostic);
         }
     }
 

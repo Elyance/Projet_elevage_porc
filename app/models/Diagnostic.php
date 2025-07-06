@@ -106,7 +106,7 @@ class Diagnostic{
         $this->db->runQuery($sql, [$status, $id_diagnostic]);
     }
 
-    private function updateStatusAndEnclos($id_diagnostic, $status, $id_enclos, $id_enclos_portee_original)
+    public function updateStatusAndEnclos($id_diagnostic, $status, $id_enclos, $id_enclos_portee_original)
     {
         $sql = "UPDATE bao_diagnostic SET statut = ?, id_enclos_portee = ?, id_enclos_portee_original = ? WHERE id_diagnostic = ?";
         $this->db->runQuery($sql, [$status, $id_enclos, $id_enclos_portee_original, $id_diagnostic]);

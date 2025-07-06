@@ -182,15 +182,20 @@ $decesController = new DecesController();
 Flight::route('GET /sante/listDiagnostic', function() {
     Flight::diagnostic()->listDiagnostic();
 });
+// Route for listing signaled diagnostics
 Flight::route('GET /sante/listSignale', function() {
     Flight::diagnostic()->listSignale();
 });
 
-// Route for moving to quarantine
+// Route for displaying the quarantine selection form
+Flight::route('GET /diagnostic/formMoveToQuarantine/@id_diagnostic', function($id_diagnostic) {
+    Flight::diagnostic()->formMoveToQuarantine($id_diagnostic);
+});
+
+// Route for moving to quarantine (process the selection)
 Flight::route('POST /diagnostic/moveToQuarantine/@id_diagnostic', function($id_diagnostic) {
     Flight::diagnostic()->moveToQuarantine($id_diagnostic);
 });
-
 // Route for listing quarantine diagnostics
 Flight::route('GET /sante/listQuarantine', function() {
     Flight::diagnostic()->listQuarantine();

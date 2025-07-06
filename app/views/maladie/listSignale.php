@@ -36,9 +36,7 @@
                             <td><?= htmlspecialchars($diag['nombre_femelles_infectes']) ?></td>
                             <td><?= htmlspecialchars($diag['date_apparition']) ?></td>
                             <td>
-                                <form action="/diagnostic/moveToQuarantine/<?= htmlspecialchars($diag['id_diagnostic']) ?>" method="post" style="display:inline;">
-                                    <button type="submit" class="btn btn-primary btn-sm">Mettre en quarantaine</button>
-                                </form>
+                                <a href="/diagnostic/formMoveToQuarantine/<?= htmlspecialchars($diag['id_diagnostic']) ?>" class="btn btn-primary btn-sm">Mettre en quarantaine</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
