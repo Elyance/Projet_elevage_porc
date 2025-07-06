@@ -113,6 +113,7 @@ $router->get("/tache", [$Tache_Controller, "index"]);
 
 $AddEmploye_Controller = new AddEmployeController();
 $router->get("/add_employe", [$AddEmploye_Controller, "index"]);
+$router->post("/add_employe", [$AddEmploye_Controller, "add"]);
 
 $router->group('/aliments', function () use ($router) {
     // Aliments

@@ -10,6 +10,7 @@ use app\models\NourrirModel;
 use app\models\ReapproModel;
 use app\models\RaceModel;
 use app\models\AlimentModel;
+use app\models\EmployerModel;
 
 
 /** 
@@ -56,7 +57,9 @@ Flight::map('nourrir', function() {
 Flight::map('reappro', function() {
     return new ReapproModel(Flight::db());
 });
-
+Flight::map('EmployerModel', function () {
+    return new EmployerModel(Flight::db());
+});
 Flight::map('race', function() {
     return new RaceModel(Flight::db());
 });
