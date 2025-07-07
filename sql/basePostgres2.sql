@@ -317,4 +317,35 @@ ALTER TABLE bao_cycle_reproduction ADD CONSTRAINT fk_insemination FOREIGN KEY (i
 -- ALTER TABLE bao_insemination
 -- DROP CHECK `bao_insemination.resultat`;
 -- Re-enable foreign key checks
+
+
+
+CREATE TABLE reapprovisionnement_aliments (
+    id_reappro SERIAL PRIMARY KEY,
+    id_aliment INT REFERENCES aliments(id_aliment),
+    quantite_kg DECIMAL(10, 2) NOT NULL,
+    date_reappro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    cout_total DECIMAL(10, 2) NOT NULL
+);
+
+
+CREATE TABLE aliments (
+    id_aliment SERIAL PRIMARY KEY,
+    nom_aliment VARCHAR(50) NOT NULL,
+    prix_kg DECIMAL(10, 2) NOT NULL,
+    stock_kg DECIMAL(10, 2) NOT NULL,
+    apports_nutritionnels TEXT,
+    contact_fournisseur VARCHAR(20),
+    conso_journaliere_kg_par_porc DECIMAL(5, 2)
+);
+
+
+CREATE TABLE bao_regle_gestion_porc(
+    id SERIAL PRIMARY KEY,
+    idRace INTEGER,
+    prix_unitaire DECIMAL(10,2)
+);
+
+
+
 SET session_replication_role = DEFAULT;
