@@ -1,18 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Gestion Porc</title>
-    <style>
-        .menu { display: flex; gap: 10px; }
-        .menu a { text-decoration: none; color: blue; }
-    </style>
-</head>
-<body>
+<?php
+require_once __DIR__ . '/partials/header.php'; ?>
 
-    <div class="menu">
-        <?php foreach ($links as $title => $url): ?>
-            <a href="<?= $url ?>"><?= $title ?></a>
-        <?php endforeach; ?>
-    </div>
-</body>
-</html>
+<h1 class="text-2xl mb-4">Bienvenue dans le système de gestion porcin</h1>
+<p>Utilisez le menu pour naviguer.</p>
+<?php require_once __DIR__ . '/partials/footer.php'; ?>

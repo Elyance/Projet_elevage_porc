@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --primary: #141f2b;
+    --secondary: #17bebb;
+    --accent1: #f1556c;
+    --accent2: #fde8e9;
+    --light: #ffffff;
+    --dark: #0e141b;
+}
+
+@layer base {
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: var(--dark);
+        color: var(--light);
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        line-height: 1.6;
+    }
+}
+
+.bg-primary { background-color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-accent1 { color: var(--accent1); }
+.hover\:text-accent1:hover { color: var(--accent1); }
+.hover\:bg-secondary:hover { background-color: var(--secondary); }
+.hover\:text-white:hover { color: var(--light); }
+.transition-all { transition: all 0.3s ease-in-out; }
+
+.header {
+    animation: slideDown 0.5s ease-out;
+}
+
+.sidebar {
+    background-color: var(--primary);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.footer {
+    border-top: 1px solid var(--secondary);
+}
+
+.menu a {
+    text-decoration: none;
+    font-weight: 500;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.menu a:hover {
+    transform: scale(1.05);
+    color: var(--accent1);
+}
+
+/* Animations */
+@keyframes slideDown {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+}
+
+@keyframes pulse-slow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.animate-pulse-slow {
+    animation: pulse-slow 2s infinite;
+}
+
+.animate-fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0 !important;
+        padding: 1rem;
+    }
+    .sidebar {
+        top: 4rem;
+        height: calc(100% - 4rem);
+    }
+}
+@layer base {
+    .main-content {
+        z-index: 10; /* Ensure main content is below sidebar */
+    }
+}
