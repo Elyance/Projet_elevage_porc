@@ -140,6 +140,9 @@ CREATE TABLE bao_commande (
     FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee)
 );
 
+
+
+
 ----------- 5/ EMPLOYEE -----------
 CREATE TABLE bao_employe_poste (
     id_employe_poste SERIAL PRIMARY KEY,

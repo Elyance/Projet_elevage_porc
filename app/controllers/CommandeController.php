@@ -12,6 +12,7 @@ class CommandeController
             Commande::create(
                 Flight::request()->data['nomClient'],
                 Flight::request()->data['id_enclos_portee'],
+                Flight::request()->data['id_race'], // ✅ ajouté
                 Flight::request()->data['quantite'],
                 Flight::request()->data['date_commande'],
                 Flight::request()->data['adresse_livraison'],
@@ -40,9 +41,12 @@ class CommandeController
     {
         $clients = Flight::db()->query('SELECT * FROM bao_client')->fetchAll();
         $enclos_portees = Flight::db()->query('SELECT * FROM bao_enclos_portee')->fetchAll();
+        $races = Flight::db()->query('SELECT * FROM races_porcs')->fetchAll(); // ✅ ajouté pour lister les races
+
         $data = [
             'clients' => $clients,
             'enclos_portees' => $enclos_portees,
+            'races' => $races, // ✅ ajouté
             'page' => 'commande/commande'
         ];
         Flight::render('commande/commande', $data);
@@ -72,6 +76,7 @@ class CommandeController
                 $id,
                 $command->nomClient,
                 $command->id_enclos_portee,
+                $command->id_race, // ✅ ajouté
                 $command->quantite,
                 $command->date_commande,
                 $command->adresse_livraison,
@@ -120,4 +125,3 @@ class CommandeController
         Flight::render('commande/recette', $data);
     }
 }
-?>

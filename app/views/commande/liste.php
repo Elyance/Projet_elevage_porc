@@ -4,6 +4,7 @@
         <th>ID Commande</th>
         <th>Client</th>
         <th>Enclos/Portée</th>
+        <th>Race</th> <!-- ✅ Ajout -->
         <th>Quantité</th>
         <th>Date Commande</th>
         <th>Adresse Livraison</th>
@@ -16,6 +17,7 @@
             <td><?= htmlspecialchars($command->id_commande) ?></td>
             <td><?= htmlspecialchars($command->nomClient ?? 'Inconnu') ?></td>
             <td><?= htmlspecialchars($command->id_enclos_portee) ?></td>
+            <td><?= htmlspecialchars($command->id_race ?? 'Non défini') ?></td> <!-- ✅ Ajout -->
             <td><?= htmlspecialchars($command->quantite) ?></td>
             <td><?= htmlspecialchars($command->date_commande) ?></td>
             <td><?= htmlspecialchars($command->adresse_livraison) ?></td>

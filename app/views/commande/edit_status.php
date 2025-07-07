@@ -1,6 +1,7 @@
 <h2>Modifier le statut de la commande #<?= htmlspecialchars($command->id_commande) ?></h2>
 <p><strong>Client:</strong> <?= htmlspecialchars($command->nomClient ?? 'Inconnu') ?></p>
 <p><strong>Enclos numero:</strong> <?= htmlspecialchars($command->id_enclos_portee) ?></p>
+<p><strong>Race:</strong> <?= htmlspecialchars($command->id_race ?? 'Non défini') ?></p>
 <p><strong>Quantité:</strong> <?= htmlspecialchars($command->quantite) ?></p>
 <p><strong>Date Commande:</strong> <?= htmlspecialchars($command->date_commande) ?></p>
 <p><strong>Adresse Livraison:</strong> <?= htmlspecialchars($command->adresse_livraison) ?></p>

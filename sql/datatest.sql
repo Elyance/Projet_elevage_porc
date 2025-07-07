@@ -5,6 +5,79 @@ INSERT INTO bao_enclos(enclos_type, stockage) VALUES
 (2, 20), -- Portee
 (3, 0); -- Quarantaine
 
+INSERT INTO races_porcs (nom_race, description, besoins_nutritionnels, duree_engraissement_jours) VALUES
+('Large White', 'Race très répandue, à croissance rapide.', 'Aliment riche en protéines, complément minéral.', 180),
+('Landrace', 'Race réputée pour sa prolificité.', 'Besoin en céréales et protéines végétales.', 170),
+('Duroc', 'Race robuste, viande de bonne qualité.', 'Ration équilibrée, riche en énergie.', 190),
+('Pietrain', 'Race très musclée.', 'Aliment protéiné, supplément minéral.', 185),
+('Berkshire', 'Race traditionnelle, chair savoureuse.', 'Nutrition modérée, aliments naturels.', 200);
+
+INSERT INTO aliments (
+    nom_aliment,
+    prix_kg,
+    stock_kg,
+    apports_nutritionnels,
+    contact_fournisseur,
+    conso_journaliere_kg_par_porc
+) VALUES (
+    'Maïs',
+    1500.00,
+    2000.00,
+    'Riche en amidon, source principale d energie pour les porcs.',
+    '0341234567',
+    1.50
+);
+
+INSERT INTO aliments (
+    nom_aliment,
+    prix_kg,
+    stock_kg,
+    apports_nutritionnels,
+    contact_fournisseur,
+    conso_journaliere_kg_par_porc
+) VALUES (
+    'Son de riz',
+    1200.00,
+    1500.00,
+    'Fibres alimentaires, améliore la digestion et équilibre la ration.',
+    '0347654321',
+    1.20
+);
+
+INSERT INTO aliments (
+    nom_aliment,
+    prix_kg,
+    stock_kg,
+    apports_nutritionnels,
+    contact_fournisseur,
+    conso_journaliere_kg_par_porc
+) VALUES (
+    'Tourteau de soja',
+    2500.00,
+    800.00,
+    'Apport en protéines végétales, favorise la croissance musculaire.',
+    '0339876543',
+    0.80
+);
+
+INSERT INTO aliments (
+    nom_aliment,
+    prix_kg,
+    stock_kg,
+    apports_nutritionnels,
+    contact_fournisseur,
+    conso_journaliere_kg_par_porc
+) VALUES (
+    'Farine de poisson',
+    3500.00,
+    500.00,
+    'Protéine animale de haute qualité, stimule la prise de poids.',
+    '0321122334',
+    0.50
+);
+
+
+
 -- Créer des truies
 INSERT INTO bao_truie(id_enclos, poids, date_entree) VALUES
 (1, 200.50, '2024-06-01'),
