@@ -76,6 +76,14 @@ INSERT INTO aliments (
     0.50
 );
 
+INSERT INTO bao_prix_vente_porc (id_race, prix_unitaire) VALUES
+(1, 250000.00), -- Large White
+(2, 240000.00), -- Landrace
+(3, 260000.00), -- Duroc
+(4, 270000.00), -- Pietrain
+(5, 280000.00); -- Berkshire
+
+
 
 
 -- Créer des truies
