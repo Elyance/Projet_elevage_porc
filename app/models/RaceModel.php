@@ -30,7 +30,7 @@ class RaceModel
         $conn = Flight::db();
         $stmt = $conn->query("SELECT * FROM races_porcs");
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        return array_map(fn($item) => RaceModel::fromArray($item), $result);
+        return array_map(fn($item) => self::fromArray($item), $result);
     }
 
     /**
@@ -45,7 +45,7 @@ class RaceModel
         $stmt = $conn->prepare("SELECT * FROM races_porcs WHERE id_race = :id");
         $stmt->execute([':id' => $id]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result ? RaceModel::fromArray($result) : null;
+        return $result ? self::fromArray($result) : null;
     }
 
     /**
