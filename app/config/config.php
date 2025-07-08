@@ -1,8 +1,10 @@
 <?php
-// Définir la base URL de l'application AVANT tout le reste
-if (!defined('BASE_URL')) {
-    define('BASE_URL', 'http://localhost/Projet_elevage_porc');
-}
+
+$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'];
+$projectPath = dirname($_SERVER['SCRIPT_NAME']);
+define('BASE_URL', $protocol . '://' . $host . $projectPath);
+define('STATIC_URL', $protocol . '://' . $host . $projectPath . '/public');
 
 use flight\debug\tracy\TracyExtensionLoader;
 use Tracy\Debugger;
@@ -36,7 +38,7 @@ $app->path(__DIR__ . $ds . '..' . $ds . '..');
 $app->path(__DIR__ . $ds . '..' . $ds . 'controllers');
 
 // This is where you can set some flight config variables. 
-$app->set('flight.base_url', ''); // if this is in a subdirectory, you'll need to change this
+$app->set('flight.base_url', '/'); // if this is in a subdirectory, you'll need to change this
 $app->set('flight.case_sensitive', false); // if you want case sensitive routes, set this to true
 $app->set('flight.log_errors', true); // if you want to log errors, set this to true
 $app->set('flight.handle_errors', false); // if you want flight to handle errors, set this to true, otherwise Tracy will handle them
@@ -96,7 +98,7 @@ return [
 		 'host' => 'localhost',
 		 'dbname' => 'gestion_porc',
 		 'username' => 'postgres',
-		 'password' => 'postgres',
+		 'password' => 'snow',
 
 		// uncomment the following line for sqlite
 		// 'file_path' => __DIR__ . $ds . '..' . $ds . 'database.sqlite'
