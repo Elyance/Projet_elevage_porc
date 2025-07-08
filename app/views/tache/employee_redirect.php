@@ -1,6 +1,6 @@
 <?php // Fallback to query parameter if route param is missing
     use app\models\TacheModel;
-        $id_employe = $userid;
+        $id_employe = $_SESSION['user_id'];
 
         $flash = $_SESSION['flash'] ?? null;
         unset($_SESSION['flash']);

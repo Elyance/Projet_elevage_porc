@@ -100,7 +100,7 @@ class TacheController {
 
     public function employeeLanding() {
         // Fallback to query parameter if route param is missing
-        $id_employe = $_SESSION['employeid'];
+        $id_employe = $_SESSION['user_id'];
 
         $flash = $_SESSION['flash'] ?? null;
         unset($_SESSION['flash']);
