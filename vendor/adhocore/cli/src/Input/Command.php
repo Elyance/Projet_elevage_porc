@@ -17,7 +17,18 @@ use Ahc\Cli\Exception\RuntimeException;
 use Ahc\Cli\Helper\InflectsString;
 use Ahc\Cli\Helper\OutputHelper;
 use Ahc\Cli\IO\Interactor;
+use Ahc\Cli\Output\ProgressBar;
 use Ahc\Cli\Output\Writer;
+use Closure;
+
+use function array_filter;
+use function array_keys;
+use function end;
+use function explode;
+use function func_num_args;
+use function sprintf;
+use function str_contains;
+use function strstr;
 
 /**
  * Parser aware Command for the cli (based on tj/commander.js).
@@ -27,39 +38,23 @@ use Ahc\Cli\Output\Writer;
  *
  * @link    https://github.com/adhocore/cli
  */
-class Command extends Parser
+class Command extends Parser implements Groupable
 {
     use InflectsString;
 
-    /** @var callable */
-    protected $_action;
+    protected $_action = null;
 
-    /** @var string */
-    protected $_version;
+    protected string $_group;
 
-    /** @var string */
-    protected $_name;
+    protected string $_version = '';
 
-    /** @var string */
-    protected $_desc;
+    protected string $_usage = '';
 
-    /** @var string Usage examples */
-    protected $_usage;
+    protected ?string $_alias = null;
 
-    /** @var string Command alias */
-    protected $_alias;
+    private array $_events = [];
 
-    /** @var App The cli app this command is bound to */
-    protected $_app;
-
-    /** @var callable[] Events for options */
-    private $_events = [];
-
-    /** @var bool Whether to allow unknown (not registered) options */
-    private $_allowUnknown = false;
-
-    /** @var bool If the last seen arg was variadic */
-    private $_argVariadic = false;
+    private bool $_argVariadic = false;
 
     /**
      * Constructor.
@@ -69,46 +64,34 @@ class Command extends Parser
      * @param bool   $allowUnknown
      * @param App    $app
      */
-    public function __construct(string $name, string $desc = '', bool $allowUnknown = false, App $app = null)
-    {
-        $this->_name         = $name;
-        $this->_desc         = $desc;
-        $this->_allowUnknown = $allowUnknown;
-        $this->_app          = $app;
-
+    public function __construct(
+        protected string $_name,
+        protected string $_desc = '',
+        protected bool $_allowUnknown = false,
+        protected ?App $_app = null
+    ) {
         $this->defaults();
+        $this->inGroup(str_contains($_name, ':') ? strstr($_name, ':', true) : '');
     }
 
     /**
      * Sets default options, actions and exit handler.
-     *
-     * @return self
      */
     protected function defaults(): self
     {
         $this->option('-h, --help', 'Show help')->on([$this, 'showHelp']);
         $this->option('-V, --version', 'Show version')->on([$this, 'showVersion']);
-        $this->option('-v, --verbosity', 'Verbosity level', null, 0)->on(function () {
-            $this->set('verbosity', ($this->verbosity ?? 0) + 1);
+        $this->option('-v, --verbosity', 'Verbosity level', null, 0)->on(
+            fn () => $this->set('verbosity', ($this->verbosity ?? 0) + 1) && false
+        );
 
-            return false;
-        });
-
-        // @codeCoverageIgnoreStart
-        $this->onExit(function ($exitCode = 0) {
-            exit($exitCode);
-        });
-        // @codeCoverageIgnoreEnd
+        $this->onExit(static fn ($exitCode = 0) => exit($exitCode));
 
         return $this;
     }
 
     /**
      * Sets version.
-     *
-     * @param string $version
-     *
-     * @return self
      */
     public function version(string $version): self
     {
@@ -119,8 +102,6 @@ class Command extends Parser
 
     /**
      * Gets command name.
-     *
-     * @return string
      */
     public function name(): string
     {
@@ -129,8 +110,6 @@ class Command extends Parser
 
     /**
      * Gets command description.
-     *
-     * @return string
      */
     public function desc(): string
     {
@@ -138,23 +117,35 @@ class Command extends Parser
     }
 
     /**
-     * Get the app this command belongs to.
-     *
-     * @return null|App
+     * Sets command group.
      */
-    public function app()
+    public function inGroup(string $group): self
+    {
+        $this->_group = $group;
+
+        return $this;
+    }
+
+    /**
+     * Gets command group.
+     */
+    public function group(): string
+    {
+        return $this->_group;
+    }
+
+    /**
+     * Get the app this command belongs to.
+     */
+    public function app(): ?App
     {
         return $this->_app;
     }
 
     /**
      * Bind command to the app.
-     *
-     * @param App|null $app
-     *
-     * @return self
      */
-    public function bind(App $app = null): self
+    public function bind(?App $app = null): self
     {
         $this->_app = $app;
 
@@ -163,14 +154,10 @@ class Command extends Parser
 
     /**
      * Registers argument definitions (all at once). Only last one can be variadic.
-     *
-     * @param string $definitions
-     *
-     * @return self
      */
     public function arguments(string $definitions): self
     {
-        $definitions = \explode(' ', $definitions);
+        $definitions = explode(' ', $definitions);
 
         foreach ($definitions as $raw) {
             $this->argument($raw);
@@ -181,12 +168,6 @@ class Command extends Parser
 
     /**
      * Register an argument.
-     *
-     * @param string $raw
-     * @param string $desc
-     * @param mixed  $default
-     *
-     * @return self
      */
     public function argument(string $raw, string $desc = '', $default = null): self
     {
@@ -207,15 +188,8 @@ class Command extends Parser
 
     /**
      * Registers new option.
-     *
-     * @param string        $raw
-     * @param string        $desc
-     * @param callable|null $filter
-     * @param mixed         $default
-     *
-     * @return self
      */
-    public function option(string $raw, string $desc = '', callable $filter = null, $default = null): self
+    public function option(string $raw, string $desc = '', ?callable $filter = null, $default = null): self
     {
         $option = new Option($raw, $desc, $default, $filter);
 
@@ -226,8 +200,6 @@ class Command extends Parser
 
     /**
      * Gets user options (i.e without defaults).
-     *
-     * @return array
      */
     public function userOptions(): array
     {
@@ -245,9 +217,9 @@ class Command extends Parser
      *
      * @return string|self
      */
-    public function usage(string $usage = null)
+    public function usage(?string $usage = null)
     {
-        if (\func_num_args() === 0) {
+        if (func_num_args() === 0) {
             return $this->_usage;
         }
 
@@ -263,9 +235,9 @@ class Command extends Parser
      *
      * @return string|self
      */
-    public function alias(string $alias = null)
+    public function alias(?string $alias = null)
     {
-        if (\func_num_args() === 0) {
+        if (func_num_args() === 0) {
             return $this->_alias;
         }
 
@@ -276,27 +248,18 @@ class Command extends Parser
 
     /**
      * Sets event handler for last (or given) option.
-     *
-     * @param callable $fn
-     * @param string   $option
-     *
-     * @return self
      */
-    public function on(callable $fn, string $option = null): self
+    public function on(callable $fn, ?string $option = null): self
     {
-        $names = \array_keys($this->allOptions());
+        $names = array_keys($this->allOptions());
 
-        $this->_events[$option ?? \end($names)] = $fn;
+        $this->_events[$option ?? end($names)] = $fn;
 
         return $this;
     }
 
     /**
      * Register exit handler.
-     *
-     * @param callable $fn
-     *
-     * @return self
      */
     public function onExit(callable $fn): self
     {
@@ -308,18 +271,18 @@ class Command extends Parser
     /**
      * {@inheritdoc}
      */
-    protected function handleUnknown(string $arg, string $value = null)
+    protected function handleUnknown(string $arg, ?string $value = null): mixed
     {
         if ($this->_allowUnknown) {
             return $this->set($this->toCamelCase($arg), $value);
         }
 
-        $values = \array_filter($this->values(false));
+        $values = array_filter($this->values(false));
 
         // Has some value, error!
         if ($values) {
             throw new RuntimeException(
-                \sprintf('Option "%s" not registered', $arg)
+                sprintf('Option "%s" not registered', $arg)
             );
         }
 
@@ -329,10 +292,8 @@ class Command extends Parser
 
     /**
      * Shows command help then aborts.
-     *
-     * @return mixed
      */
-    public function showHelp()
+    public function showHelp(): mixed
     {
         $io     = $this->io();
         $helper = new OutputHelper($io->writer());
@@ -354,10 +315,8 @@ class Command extends Parser
 
     /**
      * Shows command version then aborts.
-     *
-     * @return mixed
      */
-    public function showVersion()
+    public function showVersion(): mixed
     {
         $this->writer()->bold($this->_version, true);
 
@@ -367,7 +326,7 @@ class Command extends Parser
     /**
      * {@inheritdoc}
      */
-    public function emit(string $event, $value = null)
+    public function emit(string $event, $value = null): mixed
     {
         if (empty($this->_events[$event])) {
             return null;
@@ -378,24 +337,16 @@ class Command extends Parser
 
     /**
      * Tap return given object or if that is null then app instance. This aids for chaining.
-     *
-     * @param mixed $object
-     *
-     * @return mixed
      */
-    public function tap($object = null)
+    public function tap(?object $object = null)
     {
         return $object ?? $this->_app;
     }
 
     /**
      * Performs user interaction if required to set some missing values.
-     *
-     * @param Interactor $io
-     *
-     * @return void
      */
-    public function interact(Interactor $io)
+    public function interact(Interactor $io): void
     {
         // Subclasses will do the needful.
     }
@@ -407,21 +358,19 @@ class Command extends Parser
      *
      * @return callable|self If $action provided then self, otherwise the preset action.
      */
-    public function action(callable $action = null)
+    public function action(?callable $action = null)
     {
-        if (\func_num_args() === 0) {
+        if (func_num_args() === 0) {
             return $this->_action;
         }
 
-        $this->_action = $action instanceof \Closure ? \Closure::bind($action, $this) : $action;
+        $this->_action = $action instanceof Closure ? Closure::bind($action, $this) : $action;
 
         return $this;
     }
 
     /**
      * Get a writer instance.
-     *
-     * @return Writer
      */
     protected function writer(): Writer
     {
@@ -430,11 +379,17 @@ class Command extends Parser
 
     /**
      * Get IO instance.
-     *
-     * @return Interactor
      */
     protected function io(): Interactor
     {
         return $this->_app ? $this->_app->io() : new Interactor;
+    }
+
+    /**
+     * Get ProgressBar instance.
+     */
+    protected function progress(?int $total = null): ProgressBar
+    {
+        return new ProgressBar($total, $this->writer());
     }
 }

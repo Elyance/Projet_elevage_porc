@@ -11,6 +11,11 @@
 
 namespace Ahc\Cli\Input;
 
+use function preg_match;
+use function preg_split;
+use function str_replace;
+use function strpos;
+
 /**
  * Cli Option.
  *
@@ -21,37 +26,33 @@ namespace Ahc\Cli\Input;
  */
 class Option extends Parameter
 {
-    /** @var string Short name */
-    protected $short = '';
+    protected string $short = '';
 
-    /** @var string Long name */
-    protected $long = '';
+    protected string $long = '';
 
     /**
      * {@inheritdoc}
      */
-    protected function parse(string $raw)
+    protected function parse(string $raw): void
     {
-        if (\strpos($raw, '-with-') !== false) {
+        if (strpos($raw, '-with-') !== false) {
             $this->default = false;
-        } elseif (\strpos($raw, '-no-') !== false) {
+        } elseif (strpos($raw, '-no-') !== false) {
             $this->default = true;
         }
 
-        $parts = \preg_split('/[\s,\|]+/', $raw);
+        $parts = preg_split('/[\s,\|]+/', $raw);
 
         $this->short = $this->long = $parts[0];
         if (isset($parts[1])) {
             $this->long = $parts[1];
         }
 
-        $this->name = \str_replace(['--', 'no-', 'with-'], '', $this->long);
+        $this->name = str_replace(['--', 'no-', 'with-'], '', $this->long);
     }
 
     /**
      * Get long name.
-     *
-     * @return string
      */
     public function long(): string
     {
@@ -60,8 +61,6 @@ class Option extends Parameter
 
     /**
      * Get short name.
-     *
-     * @return string
      */
     public function short(): string
     {
@@ -70,10 +69,6 @@ class Option extends Parameter
 
     /**
      * Test if this option matches given arg.
-     *
-     * @param string $arg
-     *
-     * @return bool
      */
     public function is(string $arg): bool
     {
@@ -82,11 +77,9 @@ class Option extends Parameter
 
     /**
      * Check if the option is boolean type.
-     *
-     * @return bool
      */
     public function bool(): bool
     {
-        return \preg_match('/\-no-|\-with-/', $this->long) > 0;
+        return preg_match('/\-no-|\-with-/', $this->long) > 0;
     }
 }

@@ -5,7 +5,17 @@ function init() {
 		document.addEventListener(
 			'click',
 			(e) => {
-				e.target.closest('a[href^="editor:"]')?.setAttribute('target', '_blank');
+				let el = e.target;
+				while (el && el !== document) {
+					if (el.tagName === 'A') {
+						const href = el.getAttribute('href');
+						if (href && href.startsWith('editor:')) {
+							el.setAttribute('target', '_blank');
+						}
+						break;
+					}
+					el = el.parentNode;
+				}
 			},
 			true,
 		);

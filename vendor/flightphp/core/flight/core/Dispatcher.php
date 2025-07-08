@@ -52,10 +52,8 @@ class Dispatcher
     /**
      * Sets the dependency injection container handler.
      *
-     * @param ContainerInterface|(callable(class-string<T> $classString, array<int, mixed> $params): ?T) $containerHandler
+     * @param ContainerInterface|(callable(string $classString, array<int, mixed> $params): (null|object)) $containerHandler
      * Dependency injection container.
-     *
-     * @template T of object
      *
      * @throws InvalidArgumentException If $containerHandler is not a `callable` or instance of `Psr\Container\ContainerInterface`.
      */
@@ -233,7 +231,7 @@ class Dispatcher
 
             if ($parametersNumber === 1) {
                 /** @disregard &$params in after filters are deprecated. */
-                $callback = fn(array &$params, &$output) => $callback($output);
+                $callback = fn (array &$params, &$output) => $callback($output);
             }
         }
 
@@ -439,12 +437,11 @@ class Dispatcher
     public function resolveContainerClass(string $class, array &$params)
     {
         // PSR-11
-        if (is_a($this->containerHandler, '\Psr\Container\ContainerInterface')) {
-            try {
-                return $this->containerHandler->get($class);
-            } catch (Throwable $exception) {
-                return null;
-            }
+        if (
+            is_a($this->containerHandler, '\Psr\Container\ContainerInterface')
+            && $this->containerHandler->has($class)
+        ) {
+            return $this->containerHandler->get($class);
         }
 
         // Just a callable where you configure the behavior (Dice, PHP-DI, etc.)

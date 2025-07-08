@@ -104,10 +104,7 @@ class Bridge
 			return null;
 		}
 
-		$trace = $e->getTrace();
-		do {
-			$loc = array_shift($trace);
-		} while (($loc['class'] ?? null) === Nette\Utils\ObjectHelpers::class);
+		$loc = $e->getTrace()[$e instanceof Nette\MemberAccessException ? 1 : 0];
 		if (!isset($loc['file'])) {
 			return null;
 		}

@@ -13,6 +13,22 @@ namespace Ahc\Cli\IO;
 
 use Ahc\Cli\Input\Reader;
 use Ahc\Cli\Output\Writer;
+use Throwable;
+
+use function array_keys;
+use function array_map;
+use function count;
+use function explode;
+use function func_get_args;
+use function in_array;
+use function is_string;
+use function ltrim;
+use function max;
+use function method_exists;
+use function range;
+use function str_pad;
+use function str_replace;
+use function strtolower;
 
 /**
  * Cli Interactor.
@@ -163,8 +179,8 @@ use Ahc\Cli\Output\Writer;
  */
 class Interactor
 {
-    protected $reader;
-    protected $writer;
+    protected Reader $reader;
+    protected Writer $writer;
 
     /**
      * Constructor.
@@ -172,7 +188,7 @@ class Interactor
      * @param string|null $input  Input stream path.
      * @param string|null $output Output steam path.
      */
-    public function __construct(string $input = null, string $output = null)
+    public function __construct(?string $input = null, ?string $output = null)
     {
         $this->reader = new Reader($input);
         $this->writer = new Writer($output);
@@ -210,7 +226,7 @@ class Interactor
     {
         $choice = $this->choice($text, ['y', 'n'], $default, false);
 
-        return \strtolower($choice[0] ?? $default) === 'y';
+        return strtolower($choice[0] ?? $default) === 'y';
     }
 
     /**
@@ -223,7 +239,7 @@ class Interactor
      *
      * @return mixed User input or default.
      */
-    public function choice(string $text, array $choices, $default = null, bool $case = false)
+    public function choice(string $text, array $choices, $default = null, bool $case = false): mixed
     {
         $this->writer->yellow($text);
 
@@ -244,7 +260,7 @@ class Interactor
      *
      * @return mixed User input or default.
      */
-    public function choices(string $text, array $choices, $default = null, bool $case = false)
+    public function choices(string $text, array $choices, $default = null, bool $case = false): mixed
     {
         $this->writer->yellow($text);
 
@@ -252,8 +268,8 @@ class Interactor
 
         $choice = $this->reader->read($default);
 
-        if (\is_string($choice)) {
-            $choice = \explode(',', \str_replace(' ', '', $choice));
+        if (is_string($choice)) {
+            $choice = explode(',', str_replace(' ', '', $choice));
         }
 
         $valid = [];
@@ -278,17 +294,17 @@ class Interactor
      *
      * @return mixed
      */
-    public function prompt(string $text, $default = null, callable $fn = null, int $retry = 3)
+    public function prompt(string $text, $default = null, ?callable $fn = null, int $retry = 3): mixed
     {
         $error  = 'Invalid value. Please try again!';
-        $hidden = \func_get_args()[4] ?? false;
+        $hidden = func_get_args()[4] ?? false;
         $readFn = ['read', 'readHidden'][(int) $hidden];
 
         $this->writer->yellow($text)->comment(null !== $default ? " [$default]: " : ': ');
 
         try {
             $input = $this->reader->{$readFn}($default, $fn);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $input = '';
             $error = $e->getMessage();
         }
@@ -312,7 +328,7 @@ class Interactor
      *
      * @return mixed
      */
-    public function promptHidden(string $text, callable $fn = null, int $retry = 3)
+    public function promptHidden(string $text, ?callable $fn = null, int $retry = 3): mixed
     {
         return $this->prompt($text, null, $fn, $retry, true);
     }
@@ -332,37 +348,32 @@ class Interactor
             return $this->promptOptions($choices, $default);
         }
 
-        $maxLen = \max(\array_map('strlen', \array_keys($choices)));
+        $maxLen = max(array_map('strlen', array_keys($choices)));
 
         foreach ($choices as $choice => $desc) {
-            $this->writer->eol()->cyan(\str_pad("  [$choice]", $maxLen + 6))->comment($desc);
+            $this->writer->eol()->cyan(str_pad("  [$choice]", $maxLen + 6))->comment($desc);
         }
 
         $label = $multi ? 'Choices (comma separated)' : 'Choice';
 
         $this->writer->eol()->yellow($label);
 
-        return $this->promptOptions(\array_keys($choices), $default);
+        return $this->promptOptions(array_keys($choices), $default);
     }
 
     /**
      * Show prompt with possible options.
-     *
-     * @param array $choices
-     * @param mixed $default
-     *
-     * @return self
      */
-    protected function promptOptions(array $choices, $default): self
+    protected function promptOptions(array $choices, mixed $default): self
     {
         $options = '';
 
         foreach ($choices as $choice) {
-            $style    = \in_array($choice, (array) $default) ? 'boldCyan' : 'cyan';
+            $style    = in_array($choice, (array) $default) ? 'boldCyan' : 'cyan';
             $options .= "/<$style>$choice</end>";
         }
 
-        $options = \ltrim($options, '/');
+        $options = ltrim($options, '/');
 
         $this->writer->colors(" ($options): ");
 
@@ -371,17 +382,11 @@ class Interactor
 
     /**
      * Check if user choice is one of possible choices.
-     *
-     * @param string $choice  User choice.
-     * @param array  $choices Possible choices.
-     * @param bool   $case    If input is case sensitive.
-     *
-     * @return bool
      */
-    protected function isValidChoice($choice, array $choices, bool $case)
+    protected function isValidChoice(string $choice, array $choices, bool $case): bool
     {
         if ($this->isAssocChoice($choices)) {
-            $choices = \array_keys($choices);
+            $choices = array_keys($choices);
         }
 
         $fn = ['\strcasecmp', '\strcmp'][(int) $case];
@@ -397,27 +402,18 @@ class Interactor
 
     /**
      * Check if the choices array is associative.
-     *
-     * @param array $array Choices
-     *
-     * @return bool
      */
-    protected function isAssocChoice(array $array)
+    protected function isAssocChoice(array $array): bool
     {
-        return !empty($array) && \array_keys($array) != \range(0, \count($array) - 1);
+        return !empty($array) && array_keys($array) != range(0, count($array) - 1);
     }
 
     /**
      * Channel method calls to reader/writer.
-     *
-     * @param string $method
-     * @param array  $arguments
-     *
-     * @return mixed
      */
     public function __call(string $method, array $arguments)
     {
-        if (\method_exists($this->reader, $method)) {
+        if (method_exists($this->reader, $method)) {
             return $this->reader->{$method}(...$arguments);
         }
 

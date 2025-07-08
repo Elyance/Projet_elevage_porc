@@ -21,8 +21,11 @@ class PdoQueryCapture extends \flight\database\PdoWrapper {
 	 * @param string|null $username username
 	 * @param string|null $password password
 	 * @param array       $options  options
-	 */
-	public function __construct(string $dsn, ?string $username = null, ?string $password = null, array $options = []) {
+	*/
+	
+	public function __construct(string $dsn, string $username = null, string $password = null, array $options = []) {
+		// $username = 'root';
+		// $password = '';
 		parent::__construct($dsn, $username, $password, $options);
 		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [PdoQueryCaptureStatement::class, [$this]]);
 	}
@@ -36,6 +39,7 @@ class PdoQueryCapture extends \flight\database\PdoWrapper {
 	 * @param array  $ctorargs   Arguments of custom class constructor when the mode parameter is set to PDO::FETCH_CLASS
 	 * @return void
 	 */
+	
 	public function query(string $query, int|null $fetchMode = null, mixed ...$fetch_mode_args): PDOStatement|false
 	{
 		$start_time = microtime(true);

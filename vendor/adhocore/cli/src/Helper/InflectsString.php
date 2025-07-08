@@ -11,6 +11,11 @@
 
 namespace Ahc\Cli\Helper;
 
+use function lcfirst;
+use function str_replace;
+use function trim;
+use function ucwords;
+
 /**
  * Performs inflection on strings.
  *
@@ -23,31 +28,23 @@ trait InflectsString
 {
     /**
      * Convert a string to camel case.
-     *
-     * @param string $string
-     *
-     * @return string
      */
     public function toCamelCase(string $string): string
     {
-        $words = \str_replace(['-', '_'], ' ', $string);
+        $words = str_replace(['-', '_'], ' ', $string);
 
-        $words = \str_replace(' ', '', \ucwords($words));
+        $words = str_replace(' ', '', ucwords($words));
 
-        return \lcfirst($words);
+        return lcfirst($words);
     }
 
     /**
      * Convert a string to capitalized words.
-     *
-     * @param string $string
-     *
-     * @return string
      */
     public function toWords(string $string): string
     {
-        $words = \trim(\str_replace(['-', '_'], ' ', $string));
+        $words = trim(str_replace(['-', '_'], ' ', $string));
 
-        return \ucwords($words);
+        return ucwords($words);
     }
 }

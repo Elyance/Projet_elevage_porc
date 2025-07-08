@@ -11,6 +11,22 @@
 
 namespace Ahc\Cli\Output;
 
+use Ahc\Cli\Helper\Terminal;
+
+use function fopen;
+use function fwrite;
+use function max;
+use function method_exists;
+use function str_repeat;
+use function stripos;
+use function strlen;
+use function strpos;
+use function ucfirst;
+
+use const PHP_EOL;
+use const STDERR;
+use const STDOUT;
+
 /**
  * Cli Writer.
  *
@@ -164,36 +180,50 @@ class Writer
     /** @var resource Error output file handle */
     protected $eStream;
 
-    /** @var string Write method to be relayed to Colorizer */
-    protected $method;
+    protected ?string $method = null;
 
-    /** @var Color */
-    protected $colorizer;
+    protected Color $colorizer;
 
-    /** @var Cursor */
-    protected $cursor;
+    protected Cursor $cursor;
 
-    public function __construct(string $path = null, Color $colorizer = null)
+    protected Terminal $terminal;
+
+    public function __construct(?string $path = null, ?Color $colorizer = null)
     {
         if ($path) {
-            $path = \fopen($path, 'w');
+            $path = fopen($path, 'w');
         }
 
-        $this->stream  = $path ?: \STDOUT;
-        $this->eStream = $path ?: \STDERR;
+        $this->stream  = $path ?: STDOUT;
+        $this->eStream = $path ?: STDERR;
 
         $this->cursor    = new Cursor;
         $this->colorizer = $colorizer ?? new Color;
+        $this->terminal  = new Terminal();
     }
 
     /**
      * Get Colorizer.
-     *
-     * @return Color
      */
     public function colorizer(): Color
     {
         return $this->colorizer;
+    }
+
+    /**
+     * Get Cursor.
+     */
+    public function cursor(): Cursor
+    {
+        return $this->cursor;
+    }
+
+    /**
+     * Get Terminal.
+     */
+    public function terminal(): Terminal
+    {
+        return $this->terminal;
     }
 
     /**
@@ -205,8 +235,8 @@ class Writer
      */
     public function __get(string $name): self
     {
-        if (\strpos($this->method, $name) === false) {
-            $this->method .= $this->method ? \ucfirst($name) : $name;
+        if ($this->method === null || strpos($this->method, $name) === false) {
+            $this->method .= $this->method ? ucfirst($name) : $name;
         }
 
         return $this;
@@ -214,21 +244,16 @@ class Writer
 
     /**
      * Write the formatted text to stdout or stderr.
-     *
-     * @param string $text
-     * @param bool   $eol
-     *
-     * @return self
      */
     public function write(string $text, bool $eol = false): self
     {
-        list($method, $this->method) = [$this->method ?: 'line', ''];
+        [$method, $this->method] = [$this->method ?: 'line', ''];
 
         $text  = $this->colorizer->{$method}($text, []);
-        $error = \stripos($method, 'error') !== false;
+        $error = stripos($method, 'error') !== false;
 
         if ($eol) {
-            $text .= \PHP_EOL;
+            $text .= PHP_EOL;
         }
 
         return $this->doWrite($text, $error);
@@ -236,40 +261,26 @@ class Writer
 
     /**
      * Really write to the stream.
-     *
-     * @param string $text
-     * @param bool   $error
-     *
-     * @return self
      */
     protected function doWrite(string $text, bool $error = false): self
     {
         $stream = $error ? $this->eStream : $this->stream;
 
-        \fwrite($stream, $text);
+        fwrite($stream, $text);
 
         return $this;
     }
 
     /**
      * Write EOL n times.
-     *
-     * @param int $n
-     *
-     * @return self
      */
     public function eol(int $n = 1): self
     {
-        return $this->doWrite(\str_repeat(PHP_EOL, \max($n, 1)));
+        return $this->doWrite(str_repeat(PHP_EOL, max($n, 1)));
     }
 
     /**
      * Write raw text (as it is).
-     *
-     * @param string $text
-     * @param bool   $error
-     *
-     * @return self
      */
     public function raw($text, bool $error = false): self
     {
@@ -292,6 +303,43 @@ class Writer
     }
 
     /**
+     * writes a key/value set to two columns in a row.
+     *
+     * @example PHP Version ............................................................. 8.1.4
+     *
+     * @param string      $first   The text to write in left side
+     * @param string|null $second  The text to write in right side
+     * @param array       $options Options to use when writing Eg: ['fg' => Color::GREEN, 'bold' => 1, 'sep' => '-']
+     *
+     * @return self
+     */
+    public function justify(string $first, ?string $second = null, array $options = []): self
+    {
+        $options = [
+            'first'  => ($options['first'] ?? []) + ['bg' => null, 'fg' => Color::WHITE, 'bold' => 0],
+            'second' => ($options['second'] ?? []) + ['bg' => null, 'fg' => Color::WHITE, 'bold' => 1],
+            'sep'    => $options['sep'] ?? '.',
+        ];
+
+        $second        = (string) $second;
+        $terminalWidth = $this->terminal->width() ?? 80;
+        $dashWidth     = $terminalWidth - (strlen($first) + strlen($second));
+        // remove left and right margins because we're going to add 1 space on each side (after/before the text).
+        // if we don't have a second element, we just remove the left margin
+        $dashWidth -= $second === '' ? 1 : 2;
+
+        $first = $this->colorizer->line($first, $options['first']);
+        if ($second !== '') {
+            $second = $this->colorizer->line($second, $options['second']);
+        }
+
+        $sep = $dashWidth >= 0 ? str_repeat((string) $options['sep'], $dashWidth) : '';
+        $this->write($first . ' ' . $sep . ' ' . $second);
+
+        return $this->eol();
+    }
+
+    /**
      * Write to stdout or stderr magically.
      *
      * @param string $method
@@ -301,7 +349,7 @@ class Writer
      */
     public function __call(string $method, array $arguments): self
     {
-        if (\method_exists($this->cursor, $method)) {
+        if (method_exists($this->cursor, $method)) {
             return $this->doWrite($this->cursor->{$method}(...$arguments));
         }
 

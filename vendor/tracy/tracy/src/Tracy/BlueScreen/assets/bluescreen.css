@@ -6,7 +6,6 @@ html.tracy-bs-visible,
 html.tracy-bs-visible body {
 	display: block;
 	overflow: auto;
-	position: static;
 }
 
 #tracy-bs {
@@ -269,7 +268,8 @@ html.tracy-bs-visible body {
 
 /* source code */
 #tracy-bs pre.tracy-code > div {
-	min-width: fit-content;
+	min-width: 100%;
+	float: left;
 	white-space: pre;
 }
 
