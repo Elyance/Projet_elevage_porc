@@ -388,12 +388,13 @@ INSERT INTO bao_client (nom_client, type_profil, adresse, contact_telephone, con
 
 -- Insert initial data
 
+select * from bao_type_porc;
 -- Insert enclosure types into bao_type_porc (replacing bao_enclos_type)
 INSERT INTO bao_type_porc (nom_type, age_min, age_max, poids_min, poids_max, espace_requis)
 VALUES 
 ('Truie', 12, 36, 100.00, 200.00, 10.00),  -- 1 enclosure type for sows
 ('Portee', 0, 12, 0.50, 50.00, 5.00),      -- 1 enclosure type for litters
-('Quarantaine', 0, 12, 0.50, 50.00, 5.00); 
+('Quarantaine', 0, 12, 0.50, 50.00, 5.00), 
 ('Porcelet', 0, 60, 1.5, 20.0, 0.5),
 ('Jeune', 61, 120, 20.1, 50.0, 1.0),
 ('Engraissement', 121, 180, 50.1, 100.0, 1.5),
@@ -425,6 +426,7 @@ INSERT INTO bao_enclos_portee (id_enclos, id_portee, quantite_total, poids_estim
 VALUES 
 (1, NULL, 1, 150.500, 'non possible',334),  -- Enclos 2 with Litter 1 (5 pigs)
 (1, NULL, 1, 145.750, 'non possible',334);  -- Enclos 2 with Litter 2 (4 pigs)
+
 INSERT INTO bao_truie (id_enclos, id_race, poids, date_entree)
 VALUES 
 (1, 1, 150.500, '2025-06-01'),  -- Truie 1
@@ -497,37 +499,25 @@ INSERT INTO bao_maladie_symptome (id_maladie, id_symptome) VALUES
 (4, 5); -- Anémie Infectieuse -> Léthargie
 
 INSERT INTO bao_diagnostic (
-    id_diagnostic,
-    id_maladie,
-    id_enclos_portee,
-    id_enclos_portee_original,
-    nombre_males_infectes,
-    nombre_femelles_infectes,
-    date_apparition,
-    date_diagnostic,
-    desc_traitement,
-    statut,
-    prix_traitement
+    id_diagnostic, id_maladie,
+    id_enclos_portee, id_enclos_portee_original,
+    nombre_males_infectes, nombre_femelles_infectes,
+    date_apparition, date_diagnostic,
+    desc_traitement, statut, prix_traitement
 ) VALUES (
-    1,
-    1,
-    3,
-    3,
-    2,
-    2,
-    '2025-07-07',
-    '2025-07-08',
-    'sida be',
-    'signale',
-    50.00
+    1, 1,
+    3, 3,
+    2, 2,
+    '2025-07-07', '2025-07-08',
+    'sida be', 'signale', 50.00
 );
 
 
 -- Insertion historique d'alimentation
-INSERT INTO historique_alimentation (id_enclos, id_aliment, quantite_kg, id_enclos_portee) VALUES
-(1, 1, 25.0, 1),
-(1, 2, 10.0, 1),
-(1, 3, 30.0, 2),
-(2, 5, 28.0, 3),
-(2, 1, 20.0, 4),
-(5, 4, 15.0, 5);
+-- INSERT INTO historique_alimentation (id_enclos, id_aliment, quantite_kg, id_enclos_portee) VALUES
+-- (1, 1, 25.0, 1),
+-- (1, 2, 10.0, 1),
+-- (1, 3, 30.0, 2),
+-- (2, 5, 28.0, 3),
+-- (2, 1, 20.0, 4),
+-- (5, 4, 15.0, 5);
