@@ -1,6 +1,7 @@
 <?php
 
-use app\controllers\ApiExampleController;
+// use app\controllers\ApiExampleController;
+// use app\controllers\WelcomeController;
 use app\controllers\UserController;
 use app\controllers\EnclosController;
 use app\controllers\ReproductionController;
@@ -17,7 +18,6 @@ use app\controllers\NourrirController;
 use app\controllers\ReapproController;
 use app\controllers\SimulationEnclosController;
 use app\controllers\DecesController;
-use app\controllers\WelcomeController;
 use app\controllers\SanteEvenementController;
 use app\controllers\SanteTypeEvenementController;
 use app\controllers\DiagnosticController;
@@ -35,14 +35,55 @@ use flight\net\Router;
 	$app->render('welcome', [ 'message' => 'It works!!' ]);
 });*/
 
+// $router->get("/hello-world/@name", function($name) {
+//     echo "<h1>Hello world! Oh hey " . $name . "!</h1>";
+// });
+
+//?======= Our controllers
+//*--- User
+$usercontroller = new UserController();
+
+//*--- Porcs - Enclos
+$typePorcController = new TypePorcController();
+$enclos_controller = new EnclosController();
+
+//*--- Employe
+$Employe_Controller = new EmployeController();
+$AddEmploye_Controller = new AddEmployeController();
+$Salaire_Controller = new SalaireController();
+$Presence_Controller = new PresenceController();
+
+//*--- Aliment
+$AlimentController = new AlimentController();
+$NourrirController = new NourrirController();
+$ReapproController = new ReapproController();
+
+//*--- Tache
+$Tache_controller = new TacheController();
+
+//*--- Simulation
+$simul = new SimulationEnclosController();
+
+//*--- Reprod
+$Reproduction_Controller = new ReproductionController();
+$Cycle_Controller = new CycleController();
+$Naissance_Controller = new NaissanceController();
+
+//*--- Health
+$santeevenementController = new SanteEvenementController();
+$santetypeevenementController = new SanteTypeEvenementController();
+$diagnosticController = new DiagnosticController();
+$maladieController = new MaladieController();
+$decesController = new DecesController();
+
+//?======= User Routes
+Flight::route('/', [$usercontroller, 'getFormLogin']);
+Flight::route('/login', [$usercontroller, 'login']);
+Flight::route('/check_tache/@id/@date', [$Tache_Controller, 'getTacheById']);
 
 
-$router->get("/hello-world/@name", function($name) {
-    echo "<h1>Hello world! Oh hey " . $name . "!</h1>";
-});
-
-$router->group('/typePorc', function () use ($router) {
-    $typePorcController = new TypePorcController();
+//?======= Type Porc routes
+$router->group('/typePorc', function () use ($router, $typePorcController) {
     $router->get('/', [$typePorcController, 'list']);
     $router->get('/add', [$typePorcController, 'form']);
     $router->post('/add', [$typePorcController, 'save']);
@@ -51,104 +92,64 @@ $router->group('/typePorc', function () use ($router) {
     $router->post('/edit', [$typePorcController, 'update']);
 });
 
-$Tache_controller = new TacheController();
-$router->get("/taches", [$Tache_controller, "index"]);
-$router->get("/tache_peser", [$Tache_controller, "peserPorcs"]);
-$router->post("/tache_peser_submit", [$Tache_controller, "submitPesee"]);
+//?======= Enclos routes
+$router->get('/enclos', [$enclos_controller, 'listWithPortees']);
+$router->get('/enclos/move', [$enclos_controller, 'movePortee']);
+$router->post('/enclos/move', [$enclos_controller, 'movePortee']);
+Flight::route('/enclos/convert-females', [$enclos_controller, 'convertFemalesToSows']);
 
-$Reproduction_Controller = new ReproductionController();
+//?======= Food Management Routes
+$router->group('/aliments', function () use ($router, $AlimentController, $NourrirController, $ReapproController) {
+    //*--- Food list
+    $router->get('/', [$AlimentController, 'index']);
+    $router->get('/@id:[0-9]+', [$AlimentController, 'show']);
+    //*--- Give Food
+    $router->group('/nourrir', function () use ($router, $NourrirController) {
+        $router->get('/', [$NourrirController, 'index']);
+        $router->post('/action', [$NourrirController, 'nourrir']);
+    });
+    //*--- Replenish Food
+    $router->get('/reappro', [$ReapproController, 'index']);
+    $router->post('/reappro/action', [$ReapproController, 'reapprovisionner']);
+});
+
+
+//?======= Reproduction-Cycles-Birth management routes
+//*--- Reproduction
 $router->get("/reproduction", [$Reproduction_Controller, "index"]);
 $router->get("/reproduction/inseminate", [$Reproduction_Controller, "inseminate"]);
 $router->post("/reproduction/inseminate", [$Reproduction_Controller, "inseminate"]);
-
-$Cycle_Controller = new CycleController();
+//*--- Cycle
 $router->get("/cycle", [$Cycle_Controller, "index"]);
 $router->get("/cycle/add", [$Cycle_Controller, "add"]);
 $router->post("/cycle/add", [$Cycle_Controller, "add"]);
 $router->get("/cycle/details/@id", [$Cycle_Controller, "details"]);
-
-$Naissance_Controller = new NaissanceController();
+//*--- Birth
 $router->get("/naissance/add", [$Naissance_Controller, "add"]);
 $router->post("/naissance/add", [$Naissance_Controller, "add"]);
 
-$router->group("/typePorc", function () use ($router) {
-    $typePorcController = new TypePorcController();
-    $router->get("/", [$typePorcController, "list"]);
-    $router->get("/add", [$typePorcController, "form"]);
-    $router->post("/add", [$typePorcController, "save"]);
-    $router->get("/delete", [$typePorcController, "delete"]);
-    $router->get("/edit", [$typePorcController, "form"]);
-    $router->post("/edit", [$typePorcController, "update"]);
-});
 
-
-
-// Employee Routes
-$Employe_Controller = new EmployeController();
+//?======= Employee congedier-salaire-presence Management Routes
+//*--- Congedier
 $router->get("/employe", [$Employe_Controller, "index"]);
 $router->get("/employe/congedier/@id", [$Employe_Controller, "congedier"]);
-
-$Salaire_Controller = new SalaireController();
+$router->get("/add_employe", [$AddEmploye_Controller, "index"]);
+//*--- Salaire
 $router->get("/salaire", [$Salaire_Controller, "index"]);
 $router->get("/salaire/payer/@id", [$Salaire_Controller, "payer"]);
 $router->post("/salaire/payer/@id", [$Salaire_Controller, "payer"]);
 $router->get("/salaire/historique_paie", [$Salaire_Controller, "historiquePaie"]);
-
-$Presence_Controller = new PresenceController();
+//*--- Presence
 $router->get("/presence", [$Presence_Controller, "index"]);
 $router->get("/presence/detail_jour/@date", [$Presence_Controller, "detailJour"]);
 $router->get("/presence/add_presence", [$Presence_Controller, "addPresence"]);
 $router->post("/presence/add_presence", [$Presence_Controller, "addPresence"]);
 
-$Tache_Controller = new TacheController();
+
+//?======= Task management routes
 $router->get("/tache", [$Tache_Controller, "index"]);
-
-$AddEmploye_Controller = new AddEmployeController();
-$router->get("/add_employe", [$AddEmploye_Controller, "index"]);
-
-$router->group('/aliments', function () use ($router) {
-    // Aliments
-    $AlimentController = new AlimentController();
-    $router->get('/', [$AlimentController, 'index']);
-    $router->get('/@id:[0-9]+', [$AlimentController, 'show']);
-
-    // Nourrir
-    $router->group('/nourrir', function () use ($router) {
-        $NourrirController = new NourrirController();
-        $router->get('/', [$NourrirController, 'index']);
-        $router->post('/action', [$NourrirController, 'nourrir']);
-    });
-    
-
-    // Réapprovisionnement
-    $ReapproController = new ReapproController();
-    $router->get('/reappro', [$ReapproController, 'index']);
-    $router->post('/reappro/action', [$ReapproController, 'reapprovisionner']);
-
-});
-
-$simul = new SimulationEnclosController();
-
-$router->get('/simulation', [ $simul, 'index' ]); 
-$router->get('/statistique', [ 'app\controllers\StatVenteController', 'index' ]); 
-
-
-$router->get('/simulation/enclos', [ $simul, 'showForm' ]); 
-$router->post('/simulation/enclos', [ $simul, 'simulate' ]); 
-Flight::route('GET /simulation/benefice', ['app\controllers\SimulationBeneficeController', 'showForm']);
-Flight::route('POST /simulation/benefice', ['app\controllers\SimulationBeneficeController', 'simulate']);
-
-
-Flight::route('GET /statistiques/aliments', ['app\controllers\StatAlimentController', 'showForm']);
-Flight::route('POST /statistiques/aliments', ['app\controllers\StatAlimentController', 'showStats']);
-Flight::route('GET /statistiques/ventes', ['app\controllers\StatVenteController', 'showForm']);
-Flight::route('POST /statistiques/ventes', ['app\controllers\StatVenteController', 'showStats']);
-
-Flight::route('GET /conge/add', ['app\controllers\CongeController', 'addForm']);
-Flight::route('POST /conge/add', ['app\controllers\CongeController', 'add']);
-
-$Tache_Controller = new TacheController();
-$router->get('/taches', [ $Tache_Controller, 'index' ]);
+$router->get("/tache_peser", [$Tache_controller, "peserPorcs"]);
+$router->post("/tache_peser_submit", [$Tache_controller, "submitPesee"]);
 $router->get('/tache/create', [ $Tache_Controller, 'form' ]);
 $router->post('/tache/save', [ $Tache_Controller, 'save' ]);
 $router->get('/tache/edit/@id', [ $Tache_Controller, 'form' ]);
@@ -158,90 +159,64 @@ $router->post('/tache/assign', [ $Tache_Controller, 'assignForm' ]);
 $router->post('/tache/assign/save', [ $Tache_Controller, 'assignSave' ]);
 $router->get('/taches/employe/@id_employe', [ $Tache_Controller, 'employeTaches' ]);
 $router->post('/tache/done', [ $Tache_Controller, 'done' ]);
-
-
 Flight::route('GET /taches/employelanding', ['app\controllers\TacheController', 'employeeLanding']);
 
-$santeevenementController = new SanteEvenementController();
-$santetypeevenementController = new SanteTypeEvenementController();
-$diagnosticController = new DiagnosticController();
-$maladieController = new MaladieController();
-$decesController = new DecesController();
+
+//?======= Simulations-Stats Routes
+$router->get('/simulation', [ $simul, 'index' ]); 
+$router->get('/simulation/enclos', [ $simul, 'showForm' ]); 
+$router->post('/simulation/enclos', [ $simul, 'simulate' ]); 
+Flight::route('GET /simulation/benefice', ['app\controllers\SimulationBeneficeController', 'showForm']);
+Flight::route('POST /simulation/benefice', ['app\controllers\SimulationBeneficeController', 'simulate']);
+
+//?======= Statistics Routes
+$router->get('/statistique', [ 'app\controllers\StatVenteController', 'index' ]); 
+Flight::route('GET /statistiques/aliments', ['app\controllers\StatAlimentController', 'showForm']);
+Flight::route('POST /statistiques/aliments', ['app\controllers\StatAlimentController', 'showStats']);
+Flight::route('GET /statistiques/ventes', ['app\controllers\StatVenteController', 'showForm']);
+Flight::route('POST /statistiques/ventes', ['app\controllers\StatVenteController', 'showStats']);
+
+//?======= Conge Management Routes
+Flight::route('GET /conge/add', ['app\controllers\CongeController', 'addForm']);
+Flight::route('POST /conge/add', ['app\controllers\CongeController', 'add']);
 
 
-// Route for listing signalé diagnostics
-Flight::route('GET /sante/listDiagnostic', function() {
-    Flight::diagnostic()->listDiagnostic();
-});
-// Route for listing signaled diagnostics
-Flight::route('GET /sante/listSignale', function() {
-    Flight::diagnostic()->listSignale();
-});
-
-// Route for displaying the quarantine selection form
-Flight::route('GET /diagnostic/formMoveToQuarantine/@id_diagnostic', function($id_diagnostic) {
-    Flight::diagnostic()->formMoveToQuarantine($id_diagnostic);
-});
-
-// Route for moving to quarantine (process the selection)
-Flight::route('POST /diagnostic/moveToQuarantine/@id_diagnostic', function($id_diagnostic) {
-    Flight::diagnostic()->moveToQuarantine($id_diagnostic);
-});
-// Route for listing quarantine diagnostics
-Flight::route('GET /sante/listQuarantine', function() {
-    Flight::diagnostic()->listQuarantine();
-});
-
-// Route for starting treatment
-Flight::route('POST /diagnostic/startTreatment/@id_diagnostic', function($id_diagnostic) {
-    Flight::diagnostic()->startTreatment($id_diagnostic);
-});
-
-// Route for listing treatment diagnostics
-Flight::route('GET /sante/listTreatment', function() {
-    Flight::diagnostic()->listTreatment();
-});
-
-// Route for marking treatment failure
-Flight::route('POST /diagnostic/markFailure/@id_diagnostic', function($id_diagnostic) {
-    Flight::diagnostic()->markFailure($id_diagnostic);
-});
-
-// Route for recording death
-Flight::route('POST /diagnostic/recordDeath/@id_diagnostic', function($id_diagnostic) {
-    Flight::diagnostic()->recordDeath($id_diagnostic);
-});
-Flight::route('GET|POST /diagnostic/markSuccess/@id_diagnostic', ['app\controllers\DiagnosticController', 'markSuccess']);
-
-$router->get('/sante', [ $santeevenementController, 'home' ]); 
-$router->get('/soin', [ $diagnosticController, 'soin' ]); 
-
-// Map the diagnostic controller
-Flight::map('diagnostic', function() {
-    return new \app\controllers\DiagnosticController();
-});
+//?======= Health-Diagnostic-Death Management Routes
+//*--- Health Events
+$router->get('/sante', [ $santeevenementController, 'home' ]);
 $router->get('/evenement', [$santeevenementController, 'findByDate']);
 $router->get('/evenement/add', [$santeevenementController, 'formAjouterEvenement']);
 $router->post('/evenement/add', [$santeevenementController, 'ajouterEvenement']);
-
+//*--- Health Event Types
 $router->get('/typeevenement', [$santetypeevenementController, 'home']);
 $router->get('/typeevenement/edit/@id:\d+', [$santetypeevenementController, 'formUpdateTypeEvenement']);
 $router->post('/typeevenement/edit/@id:\d+', [$santetypeevenementController, 'UpdateTypeEvenement']);
 $router->get('/typeevenement/delete/@id:\d+', [$santetypeevenementController, 'deleteTypeEvenement']);
 $router->get('/typeevenement/add', [$santetypeevenementController, 'formAddTypeEvenement']);
 $router->post('/typeevenement/add', [$santetypeevenementController, 'addTypeEvenement']);
-
+//*--- Diagnostic
 $router->get('/diagnostic', [ $diagnosticController, 'home' ]); 
 $router->get('/diagnostic/add', [$diagnosticController, 'formAddDiagnostic']);
 $router->post('/diagnostic/add', [$diagnosticController, 'addDiagnostic']);
-
+$router->get('/soin', [ $diagnosticController, 'soin' ]);
+Flight::route('GET /sante/listDiagnostic', [$diagnosticController, 'listDiagnostic']); //list all diagnostics for page listDiagnostic
+Flight::route('GET /sante/listSignale', [$diagnosticController, 'listSignale']); //list all diagnostics for page listSignale
+Flight::route('GET /sante/listQuarantine', [$diagnosticController, 'listQuarantine']); //list quarantine diagnostics
+Flight::route('GET /sante/listTreatment', [$diagnosticController, 'listTreatment']); //list treatment
+Flight::route('POST /diagnostic/startTreatment/@id_diagnostic', [$diagnosticController, 'startTreatment']); //start treatment
+Flight::route('POST /diagnostic/markFailure/@id_diagnostic', [$diagnosticController, 'markFailure']); //mark treatement as failure
+Flight::route('GET|POST /diagnostic/markSuccess/@id_diagnostic', [$diagnosticController, 'markSuccess']); //mark treatement as success
+Flight::route('GET /diagnostic/formMoveToQuarantine/@id_diagnostic', [$diagnosticController, 'formMoveToQuarantine']); //form move to quarantine
+Flight::route('POST /diagnostic/moveToQuarantine/@id_diagnostic', [$diagnosticController, 'moveToQuarantine']); //process move to quarantine
+Flight::route('POST /diagnostic/recordDeath/@id_diagnostic', [$diagnosticController, 'recordDeath']); //recording death
+//*--- Illness
 $router->get('/maladie', [ $maladieController, 'home' ]); 
 $router->get('/maladie/add', [$maladieController, 'formAddMaladie']);
 $router->post('/maladie/add', [$maladieController, 'addMaladie']);
 $router->get('/maladie/edit/@id:\d+', [$maladieController, 'formUpdateMaladie']);
 $router->post('/maladie/edit/@id:\d+', [$maladieController, 'UpdateMaladie']);
 $router->get('/maladie/delete/@id:\d+', [$maladieController, 'deleteMaladie']);
-
+// *--- Deaths
 $router->get('/deces', [ $decesController, 'home' ]); 
 $router->get('/deces/add', [$decesController, 'formAddDeces']);
 $router->post('/deces/add', [$decesController, 'addDeces']);
@@ -249,14 +224,3 @@ $router->get('/deces/edit/@id:\d+', [$decesController, 'formUpdateDeces']);
 $router->post('/deces/edit/@id:\d+', [$decesController, 'UpdateDeces']);
 $router->get('/deces/delete/@id:\d+', [$decesController, 'deleteDeces']);
 
-$enclos_controller = new EnclosController();
-
-$router->get('/enclos', [$enclos_controller, 'listWithPortees']);
-$router->get('/enclos/move', [$enclos_controller, 'movePortee']);
-$router->post('/enclos/move', [$enclos_controller, 'movePortee']);
-Flight::route('/enclos/convert-females', [$enclos_controller, 'convertFemalesToSows']);
-
-$usercontroller = new UserController();
-Flight::route('/', [$usercontroller, 'getFormLogin']);
-Flight::route('/login', [$usercontroller, 'login']);
-Flight::route('/check_tache/@id/@date', [$Tache_Controller, 'getTacheById']);
