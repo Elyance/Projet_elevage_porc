@@ -1,4 +1,11 @@
-<?php ?>
+<?php 
+    session_start();
+
+    if (!isset($_SESSION['user_id']) || !isset($_SESSION['user'])) {
+        Flight::redirect('/login');
+        exit();
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,15 +66,6 @@
         <div class="nk-sidebar">           
             <div class="nk-nav-scroll">
                 <ul class="metismenu" id="menu">
-                    <li class="nav-label">Dashboard</li>
-                    <li>
-                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                            <i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
-                        </a>
-                        <ul aria-expanded="false">
-                            <li><a href="./index.html">Home</a></li>
-                        </ul>
-                    </li>
                     <li class="nav-label">Modules</li>
                     <li>
                         <a href="<?= BASE_URL ?>/reproduction" aria-expanded="false">
