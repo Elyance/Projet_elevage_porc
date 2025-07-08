@@ -81,15 +81,7 @@ $router->group("/typePorc", function () use ($router) {
     $router->post("/edit", [$typePorcController, "update"]);
 });
 
-// $router->group("/enclos", function () use ($router) {
-//     $enclosController = new EnclosController();
-//     $router->get("/", [$enclosController, "list"]);
-//     $router->get("/add", [$enclosController, "form"]);
-//     $router->post("/add", [$enclosController, "save"]);
-//     $router->get("/delete", [$enclosController, "delete"]);
-//     $router->get("/edit", [$enclosController, "form"]);
-//     $router->post("/edit", [$enclosController, "update"]);
-// });
+
 
 // Employee Routes
 $Employe_Controller = new EmployeController();
@@ -176,7 +168,6 @@ $diagnosticController = new DiagnosticController();
 $maladieController = new MaladieController();
 $decesController = new DecesController();
 
-// routes.php or similar configuration file
 
 // Route for listing signalé diagnostics
 Flight::route('GET /sante/listDiagnostic', function() {
@@ -210,11 +201,6 @@ Flight::route('POST /diagnostic/startTreatment/@id_diagnostic', function($id_dia
 Flight::route('GET /sante/listTreatment', function() {
     Flight::diagnostic()->listTreatment();
 });
-
-// // Route for marking treatment success
-// Flight::route('POST /diagnostic/markSuccess/@id_diagnostic', function($id_diagnostic) {
-//     Flight::diagnostic()->markSuccess($id_diagnostic);
-// });
 
 // Route for marking treatment failure
 Flight::route('POST /diagnostic/markFailure/@id_diagnostic', function($id_diagnostic) {
@@ -268,14 +254,6 @@ $enclos_controller = new EnclosController();
 $router->get('/enclos', [$enclos_controller, 'listWithPortees']);
 $router->get('/enclos/move', [$enclos_controller, 'movePortee']);
 $router->post('/enclos/move', [$enclos_controller, 'movePortee']);
-// $router->get('/enclos/ajouter', [$enclos_controller, 'create']);
-// $router->post('/enclos/ajouter', [$enclos_controller, 'create']);
-// $router->get('/enclos/show/@id', [$enclos_controller, 'show']);
-// $router->get('/enclos/delete/@id', [$enclos_controller, 'delete']);
-
-// $router->get('/enclos/deplacer', [$enclos_controller, 'deplacer']);
-// $router->post('/enclos/deplacer', [$enclos_controller, 'deplacer']);
-// $router->get('/enclos', [$enclos_controller, 'index']);
 Flight::route('/enclos/convert-females', [$enclos_controller, 'convertFemalesToSows']);
 
 $usercontroller = new UserController();
