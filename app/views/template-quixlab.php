@@ -410,7 +410,7 @@
             Content body start
         ***********************************-->
         <div class="content-body">
-            <?php include($_GET['page'] . ".php") ?>;
+            <?= $content ?>
             <!-- #/ container -->
         </div>
         <!--**********************************
