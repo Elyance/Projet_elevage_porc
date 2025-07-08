@@ -59,7 +59,7 @@ $NourrirController = new NourrirController();
 $ReapproController = new ReapproController();
 
 //*--- Tache
-$Tache_controller = new TacheController();
+$Tache_Controller = new TacheController();
 
 //*--- Simulation
 $simul = new SimulationEnclosController();
@@ -148,8 +148,8 @@ $router->post("/presence/add_presence", [$Presence_Controller, "addPresence"]);
 
 //?======= Task management routes
 $router->get("/tache", [$Tache_Controller, "index"]);
-$router->get("/tache_peser", [$Tache_controller, "peserPorcs"]);
-$router->post("/tache_peser_submit", [$Tache_controller, "submitPesee"]);
+$router->get("/tache_peser", [$Tache_Controller, "peserPorcs"]);
+$router->post("/tache_peser_submit", [$Tache_Controller, "submitPesee"]);
 $router->get('/tache/create', [ $Tache_Controller, 'form' ]);
 $router->post('/tache/save', [ $Tache_Controller, 'save' ]);
 $router->get('/tache/edit/@id', [ $Tache_Controller, 'form' ]);
