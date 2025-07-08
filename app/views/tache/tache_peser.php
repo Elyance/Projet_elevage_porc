@@ -41,6 +41,6 @@
         </div>
         <button type="submit" class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Enregistrer</button>
     </form>
-    <a href="/taches" class="mt-4 inline-block text-blue-500 hover:underline">Retour</a>
+    <a href="/tache" class="mt-4 inline-block text-blue-500 hover:underline">Retour</a>
 </body>
 </html>
