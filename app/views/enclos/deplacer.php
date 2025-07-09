@@ -1,7 +1,7 @@
 <div class="form-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Déplacer des porcs</h2>
-        <a href="/enclos" class="btn btn-outline-secondary">Retour à la liste</a>
+        <a href="<?= BASE_URL?>/enclos" class="btn btn-outline-secondary">Retour à la liste</a>
     </div>
     
     <form method="post" class="needs-validation" novalidate>
