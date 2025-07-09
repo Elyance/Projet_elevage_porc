@@ -158,7 +158,7 @@ $router->get('/taches/employe/@id_employe', [ $Tache_Controller, 'employeTaches'
 Flight::route('/check_tache/@id/@date', [$Tache_Controller, 'getTacheById']);
 //*--- Emp Side
 $router->get('/employee/landing', [$Tache_Controller, 'employeeLanding']);
-$router->post('/tache/done', [ $Tache_Controller, 'done' ]);
+$router->post('/tache/done', [ $Tache_Controller, 'done']);
 $router->get("/tache_peser", [$Tache_Controller, "peserPorcs"]);
 $router->post("/tache_peser_submit", [$Tache_Controller, "submitPesee"]);
 

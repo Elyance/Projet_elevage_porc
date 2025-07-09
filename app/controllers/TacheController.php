@@ -201,9 +201,9 @@ class TacheController {
         }
         $id_employe = $_POST['id_employe'] ?? null;
         if ($id_employe) {
-            Flight::redirect('/taches/employe/' . $id_employe);
+            Flight::redirect(BASE_URL.'/taches/employe/' . $id_employe);
         } else {
-            Flight::redirect('/');
+            Flight::redirect(BASE_URL.'/');
         }
     }
 
