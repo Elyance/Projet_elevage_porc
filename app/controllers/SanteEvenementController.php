@@ -14,7 +14,9 @@ class SanteEvenementController
 {
     public function home()
     {
-        Flight::render('sante');
+        SessionMiddleware::startSession();
+        $content = Flight::view()->fetch('sante');
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function findByDate()

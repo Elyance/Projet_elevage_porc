@@ -11,8 +11,7 @@ class UserController {
         SessionMiddleware::startSession();
         if (SessionMiddleware::isLoggedIn()) {
             if($_SESSION['user_role_id'] == 1) {
-                $content = Flight::view()->fetch('home');
-                Flight::render('template-quixlab', ['content' => $content]);
+                Flight::redirect(BASE_URL.'/enclos');
             } else {
                 Flight::redirect(BASE_URL.'/employee/landing');
             }
