@@ -44,7 +44,7 @@
                                         <td><?= htmlspecialchars($employe->nom_poste) ?></td>
                                         <td><?= htmlspecialchars($employe->date_recrutement) ?></td>
                                         <td>
-                                            <a href="/conge/add?id_employe=<?= $employe->id_employe ?>" class="btn btn-info btn-sm">Demande de Congé</a>
+                                            <a href="<?=BASE_URL?>/conge/add?id_employe=<?= $employe->id_employe ?>" class="btn btn-info btn-sm">Demande de Congé</a>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>

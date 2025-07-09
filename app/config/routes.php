@@ -131,6 +131,7 @@ $router->post("/naissance/add", [$Naissance_Controller, "add"]);
 $router->get("/employe", [$Employe_Controller, "index"]);
 $router->get("/employe/congedier/@id", [$Employe_Controller, "congedier"]);
 $router->get("/add_employe", [$AddEmploye_Controller, "index"]);
+$router->post("/add_employe", [$AddEmploye_Controller, "add"]);
 //*--- Salaire
 $router->get("/salaire", [$Salaire_Controller, "index"]);
 $router->get("/salaire/payer/@id", [$Salaire_Controller, "payer"]);

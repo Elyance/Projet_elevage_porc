@@ -19,40 +19,53 @@ class TacheController {
 
     // Affiche la liste des tâches (admin)
     public function index() {
+        SessionMiddleware::startSession();
         $taches = $this->model->all();
-        Flight::render('tache/taches_liste', ['taches' => $taches]);
+        $content = Flight::view()->fetch('tache/taches_liste', [
+            'taches' => $taches
+        ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     // Formulaire de création/modification de tâche
     public function form($id = null) {
+        SessionMiddleware::startSession();
         $tache = null;
         if ($id) {
             $tache = $this->model->find($id);
         }
         $postes = $this->model->getPostes();
-        Flight::render('tache/tache_form', ['tache' => $tache, 'postes' => $postes]);
+        $content = Flight::view()->fetch('tache/tache_form', [
+            'tache' => $tache,
+             'postes' => $postes
+        ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     // Update assignForm to include precision
     public function assignForm() {
+        SessionMiddleware::startSession();
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['continue'])) {
             $id_employe = $_POST['id_employe'];
             $employe = $this->model->getEmploye($id_employe);
             $taches = $this->model->getByPoste($employe['id_employe_poste']);
             $step = 2;
-            Flight::render('tache/tache_assign', [
+            
+            $content = Flight::view()->fetch('tache/tache_assign', [
                 'step' => $step,
                 'id_employe' => $id_employe,
                 'employe_nom' => $employe['nom_employe'] . ' ' . $employe['prenom_employe'],
                 'taches' => $taches
             ]);
+            Flight::render('template-quixlab', ['content' => $content]);
         } else {
             $employes = $this->model->getEmployesActifs();
             $step = 1;
-            Flight::render('tache/tache_assign', [
+            $content = Flight::view()->fetch('tache/tache_assign', [
                 'step' => $step,
                 'employes' => $employes
             ]);
+            Flight::render('template-quixlab', ['content' => $content]);
         }
     }
 
@@ -68,7 +81,7 @@ class TacheController {
                 'precision' => $_POST['precision'] ?? ''
             ];
             TacheModel::assignTache($data);
-            Flight::redirect('/taches');
+            Flight::redirect(BASE_URL.'/tache');
         }
     }
 
@@ -85,7 +98,7 @@ class TacheController {
             } else {
                 $this->model->create($data);
             }
-            Flight::redirect('/taches');
+            Flight::redirect(BASE_URL.'/tache');
         }
     }
 
