@@ -3,7 +3,7 @@
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'];
 $projectPath = dirname($_SERVER['SCRIPT_NAME']);
-define('BASE_URL', $protocol . '://' . $host . $projectPath);
+define('BASE_URL', 'http://localhost:8000');
 define('STATIC_URL', $protocol . '://' . $host . $projectPath . '/public');
 
 use flight\debug\tracy\TracyExtensionLoader;
