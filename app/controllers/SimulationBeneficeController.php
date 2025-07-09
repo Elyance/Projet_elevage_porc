@@ -9,10 +9,16 @@ use Flight;
 class SimulationBeneficeController
 {
     public static function showForm() {
-        Flight::render('simulation/simulation_benefice_form');
+        SessionMiddleware::startSession();
+        $content = Flight::view()->fetch('simulation/simulation_benefice_form');
+
+        Flight::render('template-quixlab', ['content' => $content]);
+        // Flight::render('simulation/simulation_benefice_form');
     }
 
     public static function simulate() {
+        SessionMiddleware::startSession();
+
         // Simulation bénéfice
         $params = [
             'nbTruies' => (int)$_POST['nbTruies'],
@@ -39,9 +45,7 @@ class SimulationBeneficeController
             $statModel = new StatAlimentModel();
             $aliments_stats = $statModel->getStatsAliments($annee_aliment);
         }
-
-        Flight::render(
-            'simulation/simulation_benefice_result',
+        $content = Flight::view()->fetch('simulation/simulation_benefice_result',
             [
                 'simulation' => $result,
                 'params' => $params,
@@ -49,5 +53,8 @@ class SimulationBeneficeController
                 'annee_aliment' => $annee_aliment
             ]
         );
+        Flight::render('template-quixlab', ['content' => $content]);
+
+       
     }
 }
