@@ -15,9 +15,7 @@ class EnclosController
 
     public function delete($id)
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        SessionMiddleware::startSession();
 
         $enclos = EnclosModel::findById($id);
         if ($enclos) {
@@ -32,14 +30,13 @@ class EnclosController
                 'message' => 'Enclos non trouvé',
             ];
         }
-        \Flight::redirect('/enclos');
+        $content = \Flight::view()->fetch('/enclos');
+                    \Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function deplacer()
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        SessionMiddleware::startSession();
 
         if (\Flight::request()->method == 'POST') {
             $id_enclos_source = \Flight::request()->data->enclos_source;
@@ -51,7 +48,8 @@ class EnclosController
                     'type' => 'error',
                     'message' => 'Veuillez remplir tous les champs',
                 ];
-                \Flight::redirect('/enclos/deplacer');
+                $content = \Flight::view()->fetch('/enclos/deplacer');
+                \Flight::render('template-quixlab', ['content' => $content]);
             } else {
                 $EnclosSource = EnclosModel::findById($id_enclos_source);
                 $EnclosDestination = EnclosModel::findById($id_enclos_destination);
@@ -63,7 +61,8 @@ class EnclosController
                         'type' => 'error',
                         'message' => 'Stockage insuffisant dans l\'enclos source',
                     ];
-                    \Flight::redirect('/enclos/deplacer');
+                    $content = \Flight::view()->fetch('/enclos/deplacer');
+                    \Flight::render('template-quixlab', ['content' => $content]);
                 } else {
                     EnclosModel::update($id_enclos_source, $EnclosSource['enclos_type'], $new_stockage_source);
                     $new_stockage_destination = $EnclosDestination['stockage'] + $quantite;
@@ -72,7 +71,8 @@ class EnclosController
                         'type' => 'success',
                         'message' => 'source : Deplacement effectué avec succès',
                     ];
-                    \Flight::redirect('/enclos/deplacer');
+                    $content = \Flight::view()->fetch('/enclos/deplacer');
+                    \Flight::render('template-quixlab', ['content' => $content]);
                 }
             }
         } else {
@@ -83,6 +83,7 @@ class EnclosController
 
     public function show($id)
     {
+        SessionMiddleware::startSession();
         $enclos = EnclosModel::findByIdJoined($id);
         $data = ['page' => 'enclos/show', 'enclos' => $enclos];
         \Flight::render('template', data: $data);
@@ -90,6 +91,7 @@ class EnclosController
 
     public static function index()
     {
+        SessionMiddleware::startSession();
         $enclos = EnclosModel::getAllTsyArray();
         $data = ['page' => 'enclos/index', 'enclos' => $enclos];
         \Flight::render('template', $data);
@@ -97,6 +99,7 @@ class EnclosController
 
     public function create()
     {
+        SessionMiddleware::startSession();
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -136,17 +139,21 @@ class EnclosController
 
     public function listWithPortees()
     {
+        SessionMiddleware::startSession();
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
         $enclosData = $this->getEnclosWithPortees();
-        $data = ['page' => 'enclos/list_with_portees', 'enclosData' => $enclosData];
-        \Flight::render('template', $data);
+        $content = \Flight::view()->fetch('enclos/list_with_portees', [
+            'enclosData' => $enclosData
+        ]);
+        \Flight::render('template-quixlab', ['content' => $content]);
     }
 
     private function getEnclosWithPortees()
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         $stmt = $conn->query("
             SELECT 
@@ -195,6 +202,7 @@ class EnclosController
 
     public function movePorteeManually($id_enclos_portee_source, $id_enclos_destination, $quantite_males, $quantite_femelles)
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         $conn->beginTransaction();
 
@@ -243,6 +251,7 @@ class EnclosController
 
     private function createNewPortee($original_portee, $males, $femelles)
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         $stmt = $conn->prepare("
             INSERT INTO bao_portee (id_truie, id_race, nombre_males, nombre_femelles, date_naissance, id_cycle_reproduction)
@@ -261,9 +270,7 @@ class EnclosController
 
     public function movePortee()
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        SessionMiddleware::startSession();
 
         if (\Flight::request()->method == 'POST') {
             $id_enclos_portee_source = \Flight::request()->data->id_enclos_portee_source;
@@ -275,6 +282,10 @@ class EnclosController
             $conn->beginTransaction();
 
             try {
+
+                $enclos = EnclosModel::getAllTsyArray();
+                $enclosPortees = $this->getAllEnclosPortees();
+
                 $source = $this->getEnclosPortee($id_enclos_portee_source);
                 if (!$source || $source['quantite_total'] < ($quantite_males + $quantite_femelles) || $source['id_portee'] === null) {
                     throw new Exception('Quantité insuffisante ou source invalide dans la source');
@@ -310,22 +321,38 @@ class EnclosController
 
                 $conn->commit();
                 $_SESSION['flash'] = ['type' => 'success', 'message' => 'Mouvement effectué avec succès'];
-                \Flight::redirect('/enclos/move');
+                $content = \Flight::view()->fetch('enclos/move', [
+                    'enclos' => $enclos,
+                    'enclosPortees' => $enclosPortees
+                ]);
+                \Flight::render('template-quixlab', ['content' => $content]);
             } catch (Exception $e) {
                 $conn->rollBack();
                 $_SESSION['flash'] = ['type' => 'error', 'message' => 'Erreur lors du mouvement : ' . $e->getMessage()];
-                \Flight::redirect('/enclos/move');
+                
+                
+                $content = \Flight::view()->fetch('enclos/move', [
+                    'enclos' => $enclos,
+                    'enclosPortees' => $enclosPortees
+                ]);
+                \Flight::render('template-quixlab', ['content' => $content]);
             }
         } else {
             $enclos = EnclosModel::getAllTsyArray();
             $enclosPortees = $this->getAllEnclosPortees();
-            $data = ['page' => 'enclos/move', 'enclos' => $enclos, 'enclosPortees' => $enclosPortees];
-            \Flight::render('template', $data);
+
+
+            $content = \Flight::view()->fetch('enclos/move', [
+                'enclos' => $enclos,
+                'enclosPortees' => $enclosPortees
+            ]);
+            \Flight::render('template-quixlab', ['content' => $content]);
         }
     }
 
     private function getEnclosPortee($id)
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         $stmt = $conn->prepare("SELECT * FROM bao_enclos_portee WHERE id_enclos_portee = :id");
         $stmt->execute([':id' => $id]);
@@ -334,6 +361,7 @@ class EnclosController
 
     private function getAllEnclosPortees()
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         $stmt = $conn->query("
             SELECT ep.id_enclos_portee, e.id_enclos, t.nom_type, p.date_naissance, ep.quantite_total, ep.poids_estimation, ep.nombre_jour_ecoule
@@ -347,6 +375,7 @@ class EnclosController
 
     private function getEnclosPorteeByEnclosAndPortee($id_enclos, $id_portee)
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         $stmt = $conn->prepare("SELECT * FROM bao_enclos_portee WHERE id_enclos = :id_enclos AND id_portee = :id_portee");
         $stmt->execute([':id_enclos' => $id_enclos, ':id_portee' => $id_portee]);
@@ -355,6 +384,7 @@ class EnclosController
 
     private function createEnclosPortee($id_enclos, $id_portee, $quantite, $poids, $joursEcoules)
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         if ($id_enclos === null) {
             throw new Exception('ID de l\'enclos de destination est invalide (NULL)');
@@ -375,6 +405,7 @@ class EnclosController
 
     private function updateEnclosPorteeDetails($id, $quantite, $poids, $joursEcoules)
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         $stmt = $conn->prepare("
             UPDATE bao_enclos_portee
@@ -391,6 +422,7 @@ class EnclosController
 
     public function updateEnclosPorteeQuantite($id, $quantite)
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         $stmt = $conn->prepare("UPDATE bao_enclos_portee SET quantite_total = :quantite WHERE id_enclos_portee = :id");
         $stmt->execute([':quantite' => $quantite, ':id' => $id]);
@@ -398,6 +430,7 @@ class EnclosController
 
     private function recordMovement($sourceId, $destinationId, $males, $femelles)
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         $stmt = $conn->prepare("
             INSERT INTO bao_mouvement_enclos_portee 
@@ -414,9 +447,8 @@ class EnclosController
 
     public function convertFemalesToSows()
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        SessionMiddleware::startSession();
+
 
         $eligibleFemales = $this->getEligibleFemales();
         $enclosTrie = $this->getTrieEnclos();
@@ -432,12 +464,18 @@ class EnclosController
             \Flight::redirect('/enclos/convert-females');
         } else {
             $data = ['page' => 'enclos/convert_females', 'females' => $eligibleFemales, 'enclosTrie' => $enclosTrie];
-            \Flight::render('template', $data);
+            
+            $content = \Flight::view()->fetch('enclos/convert_females',[
+                'females' => $eligibleFemales,
+                'enclosTrie' => $enclosTrie
+            ]);
+            \Flight::render('template-quixlab', ['content' => $content]);
         }
     }
 
     private function getEligibleFemales()
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         $stmt = $conn->query("
             SELECT p.id_portee, p.date_naissance, p.nombre_femelles, ep.id_enclos_portee, ep.id_enclos, ep.quantite_total, ep.nombre_jour_ecoule, ep.poids_estimation
@@ -463,6 +501,7 @@ class EnclosController
 
     private function convertToSow($id_portee, $id_enclos, $quantity)
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         $conn->beginTransaction();
 
@@ -530,6 +569,7 @@ class EnclosController
 
     private function getEnclosPorteeByPortee($id_portee)
     {
+        SessionMiddleware::startSession();
         $conn = \Flight::db();
         $stmt = $conn->prepare("
             SELECT ep.*
