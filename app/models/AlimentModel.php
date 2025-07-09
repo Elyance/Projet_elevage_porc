@@ -52,7 +52,7 @@ class AlimentModel
             return false;
         }
 
-        $query = "UPDATE aliments SET stock_kg = stock_kg + :quantite_kg WHERE id_aliment = :id_aliment";
+        $query = "UPDATE bao_aliments SET stock_kg = stock_kg + :quantite_kg WHERE id_aliment = :id_aliment";
         $stmt = $conn->prepare($query);
         return $stmt->execute([':quantite_kg' => $quantite_kg, ':id_aliment' => $id_aliment]);
     }

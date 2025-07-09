@@ -39,10 +39,20 @@ class NourrirController {
     public function nourrir() {
         SessionMiddleware::startSession();
         $data = Flight::request()->data;
-        $id_enclos = (int)$data->enclos;
+        // DEBUG: Log raw request data
+        // error_log("=== RAW REQUEST DATA ===");
+        // error_log("POST data: " . print_r($data->getData(), true));
+        
+        $id_enclos = (int)$data->enclos + 1;
         $aliments = $data->aliments ?? [];
         $quantites = $data->quantites ?? [];
         $repartitions = $this->parseRepartitions($data);
+        
+        // error_log("=== PARSED DATA ===");
+        // error_log("ID Enclos: " . $id_enclos);
+        // error_log("Aliments: " . print_r($aliments, true));
+        // error_log("Quantites: " . print_r($quantites, true));
+        // error_log("Repartitions: " . print_r($repartitions, true));
 
         try {
             NourrirModel::nourrirEnclos($id_enclos, $aliments, $quantites, $repartitions);
@@ -57,20 +67,28 @@ class NourrirController {
     {
         $repartitions = [];
         $rawData = $data->getData();
-        
+        // error_log("=== PARSING REPARTITIONS ===");
+        // error_log("Raw data keys: " . print_r(array_keys($rawData), true));
         foreach ($rawData as $key => $value) {
-            if (strpos($key, 'repartitions') === 0 && is_array($value)) {
-                foreach ($value as $alimentIndex => $distributions) {
-                    if (is_array($distributions)) {
-                        foreach ($distributions as $target => $quantity) {
-                            if (is_numeric($quantity)) {
-                                $repartitions[$alimentIndex][$target] = (float)$quantity;
-                            }
-                        }
+            // error_log("Processing key: $key");
+            // error_log("Value: " . print_r($value, true));
+            if (strpos($key, 'repartitions') === 0) {
+                error_log("Found repartitions key: $key");
+                
+                // Extract the pattern: repartitions[index][target] = quantity
+                if (preg_match('/repartitions\[(\d+)\]\[([^\]]+)\]/', $key, $matches)) {
+                    $alimentIndex = $matches[1];
+                    $target = $matches[2];
+                    $quantity = (float)$value;
+                    
+                    // error_log("Extracted: index=$alimentIndex, target=$target, quantity=$quantity");
+                    if ($quantity > 0) {
+                        $repartitions[$alimentIndex][$target] = $quantity;
                     }
                 }
             }
         }
+        // error_log("Final repartitions: " . print_r($repartitions, true));
         return $repartitions;
     }
 }

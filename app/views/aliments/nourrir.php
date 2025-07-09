@@ -5,13 +5,13 @@
         <h2>Nourrir les Porcs par Enclos</h2>
     </div>
     <?php if (isset($message)): ?>
-        <div class="alert alert-<?= htmlspecialchars($message['type']) ?>">
-            <?= htmlspecialchars($message['text']); ?>
+        <div class="alert alert-<?= ($message['type']) ?>">
+            <?= ($message['text']); ?>
         </div>
     <?php endif; ?>
     <div class="card-body">
         <form id="form-nourrir" action="<?= BASE_URL?>/aliments/nourrir/action" method="POST">
-            <input type="hidden" name="id_enclos" value="<?= htmlspecialchars($selectedEnclos ?? '') ?>">
+            <input type="hidden" name="enclos" value="<?= htmlspecialchars($selectedEnclos ?? '') ?>">
 
             <div class="row mb-3">
                 <div class="col-md-6">
@@ -75,7 +75,7 @@
 
 <!-- Template pour un nouvel aliment (caché) -->
 <div id="aliment-template" class="d-none">
-    <div class="aliment-group mb-4 border p-3 rounded" data-index="0"> <!-- Add data-index attribute -->
+    <div class="aliment-group mb-4 border p-3 rounded">
         <div class="row mb-3">
             <div class="col-md-5">
                 <label class="form-label">Aliment</label>
@@ -107,20 +107,22 @@
         
         <div class="repartition mt-3">
             <h6>Répartition par race</h6>
-            <?php foreach ($infosNourrissage as $info): ?>
-                <div class="mb-2">
-                    <label><?= ($info['nom_race']) ?> (<?= ($info['quantite_total']) ?> porcs)</label>
-                    <?php if ($info['source_type'] === 'portee'): ?>
-                        <input type="number" class="form-control repartition-input mb-1" 
-                            name="repartitions[{index}][portee_<?= ($info['id_enclos_portee']) ?>]" 
-                            step="0.01" min="0">
-                    <?php else: ?>
-                        <input type="number" class="form-control repartition-input mb-1" 
-                            name="repartitions[{index}][enclos_<?= ($info['id_race']) ?>]" 
-                            step="0.01" min="0">
-                    <?php endif; ?>
-                </div>
-            <?php endforeach; ?>
+            <div class="repartition-inputs">
+                <?php foreach ($infosNourrissage as $info): ?>
+                    <div class="mb-2">
+                        <label><?= htmlspecialchars($info['nom_race']) ?> (<?= htmlspecialchars($info['quantite_total']) ?> porcs)</label>
+                        <?php if ($info['source_type'] === 'portee'): ?>
+                            <input type="number" class="form-control repartition-input" 
+                                data-target="portee_<?= htmlspecialchars($info['id_enclos_portee']) ?>" 
+                                step="0.01" min="0" placeholder="Quantité en kg">
+                        <?php else: ?>
+                            <input type="number" class="form-control repartition-input" 
+                                data-target="enclos_<?= htmlspecialchars($info['id_race']) ?>" 
+                                step="0.01" min="0" placeholder="Quantité en kg">
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
 </div>
@@ -134,10 +136,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const template = document.getElementById('aliment-template').cloneNode(true);
         template.classList.remove('d-none');
         template.removeAttribute('id');
-        template.querySelectorAll('[data-index-placeholder]').forEach(element => {
-            element.name = element.name.replace('{index}', alimentIndex);
-        });
         template.setAttribute('data-index', alimentIndex);
+        
+        // Update the repartition inputs with proper names
+        const repartitionInputs = template.querySelectorAll('.repartition-input');
+        repartitionInputs.forEach(input => {
+            const target = input.getAttribute('data-target');
+            input.name = `repartitions[${alimentIndex}][${target}]`;
+        });
+        
         document.getElementById('aliments-container').appendChild(template);
         
         // Activer les événements pour le nouveau bloc
@@ -147,7 +154,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Supprimer un aliment
     function initAlimentEvents(element) {
-        const index = element.getAttribute('data-index');
         element.querySelector('.remove-aliment').addEventListener('click', function() {
             element.remove();
         });
@@ -174,16 +180,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Validation du formulaire
     document.getElementById('form-nourrir').addEventListener('submit', function(e) {
         let isValid = true;
+        let hasAtLeastOneAliment = false;
         
         document.querySelectorAll('.aliment-group').forEach(group => {
+            const alimentSelect = group.querySelector('.aliment-select');
             const quantite = parseFloat(group.querySelector('.aliment-quantity').value);
             const stock = parseFloat(group.querySelector('.stock-disponible span').textContent);
             
-            if (quantite > stock || quantite <= 0) {
-                alert('❌ La quantité demandée dépasse le stock disponible ou est invalide !');
-                isValid = false;
+            if (alimentSelect.value && quantite > 0) {
+                hasAtLeastOneAliment = true;
+                
+                if (quantite > stock) {
+                    alert('❌ La quantité demandée dépasse le stock disponible !');
+                    isValid = false;
+                }
             }
         });
+
+        if (!hasAtLeastOneAliment) {
+            alert('❌ Veuillez ajouter au moins un aliment avec une quantité valide !');
+            isValid = false;
+        }
 
         if (!isValid) {
             e.preventDefault();
