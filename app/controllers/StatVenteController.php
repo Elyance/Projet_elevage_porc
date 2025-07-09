@@ -8,7 +8,7 @@ class StatVenteController
 {
     public static function showForm() {
         SessionMiddleware::startSession();
-        $content = Flight::view()->fetch('statistique/stat_vente_form');
+        $content = Flight::view()->fetch('statistique/stats_ventes');
         Flight::render('template-quixlab', ['content' => $content]);
 
     }
@@ -26,7 +26,7 @@ class StatVenteController
         $annee = (int)$_POST['annee'];
         $model = new StatVenteModel();
         $stats = $model->getStatsVentes($annee);
-        $content = Flight::view()->fetch('statistique/stat_vente_result', ['stats' => $stats, 'annee' => $annee]);
+        $content = Flight::view()->fetch('statistique/stats_ventes', ['stats' => $stats, 'annee' => $annee]);
 
         Flight::render('template-quixlab', ['content' => $content]);
     }

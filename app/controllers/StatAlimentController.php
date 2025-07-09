@@ -21,11 +21,11 @@ class StatAlimentController
         $model = new StatAlimentModel();
         $stats = $model->getStatsAliments($annee);
         $venteModel = new StatVenteModel();
-        $stats_vente = $venteModel->getStatsVentes($annee);
+        // $stats_vente = $venteModel->getStatsVentes($annee);
         $content = Flight::view()->fetch('statistique/stat_aliment_result', [
             'stats' => $stats,
             'annee' => $annee,
-            'stats_vente' => $stats_vente,
+            // 'stats_vente' => $stats_vente,
             'annee_vente' => $annee
         ]);
         Flight::render('template-quixlab', ['content' => $content]);
@@ -40,11 +40,11 @@ class StatAlimentController
         $model = new StatAlimentModel();
         $stats = $model->getStatsAliments($annee);
         $venteModel = new StatVenteModel();
-        $stats_vente = $venteModel->getStatsVentes($annee);
+        // $stats_vente = $venteModel->getStatsVentes($annee);
         $content = Flight::view()->fetch('statistique/stat_aliment_result', [
             'stats' => $stats,
             'annee' => $annee,
-            'stats_vente' => $stats_vente,
+            // 'stats_vente' => $stats_vente,
             'annee_vente' => $annee
         ]
     );
