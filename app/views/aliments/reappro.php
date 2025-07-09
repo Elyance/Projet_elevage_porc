@@ -1,64 +1,80 @@
-<?php require_once __DIR__ . '/partials/header.php'; ?>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Réapprovisionner un Aliment</h4>
+                
+                <?php if (isset($message)): ?>
+                    <div class="alert alert-<?= $message['type'] ?> alert-dismissible fade show">
+                        <?= $message['text']; ?>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                <?php endif; ?>
+                
+                <div class="basic-form">
+                    <form id="form-reappro" action="/aliments/reappro/action" method="POST">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Aliment</label>
+                                <select class="form-control" id="id_aliment" name="id_aliment" required>
+                                    <option value="">-- Sélectionnez un aliment --</option>
+                                    <?php foreach ($aliments as $aliment): ?>
+                                        <option 
+                                            value="<?= $aliment['id_aliment'] ?>" 
+                                            data-prix="<?= $aliment['prix_kg'] ?>"
+                                        >
+                                            <?= htmlspecialchars($aliment['nom_aliment']) ?> 
+                                            (Prix: <?= number_format($aliment['prix_kg'], 2) ?> MGA/kg)
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
 
-<div class="card">
-    <div class="card-header bg-warning text-dark">
-        <h2>🔄 Réapprovisionner un Aliment</h2>
-    </div>
-    <?php if (isset($message)): ?>
-        <div class="alert alert-<?= $message['type'] ?>">
-            <?= $message['text']; ?>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Quantité à commander (kg)</label>
+                                <input 
+                                    type="number" 
+                                    class="form-control input-default" 
+                                    id="quantite_kg" 
+                                    name="quantite_kg" 
+                                    step="0.01" 
+                                    min="0.1" 
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Coût total estimé</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control input-default" 
+                                    id="cout_total" 
+                                    readonly
+                                    value="0.00 MGA"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-save"></i> Enregistrer le réapprovisionnement
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-    <?php endif; ?>
-    <div class="card-body">
-        <form id="form-reappro" action="/aliments/reappro/action" method="POST">
-            <div class="mb-3">
-                <label for="id_aliment" class="form-label">Aliment</label>
-                <select class="form-select" id="id_aliment" name="id_aliment" required>
-                    <option value="">-- Sélectionnez un aliment --</option>
-                    <?php foreach ($aliments as $aliment): ?>
-                        <option 
-                            value="<?= $aliment['id_aliment'] ?>" 
-                            data-prix="<?= $aliment['prix_kg'] ?>"
-                        >
-                            <?= htmlspecialchars($aliment['nom_aliment']) ?> 
-                            (Prix: <?= number_format($aliment['prix_kg'], 2) ?> MGA/kg)
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="quantite_kg" class="form-label">Quantité à commander (kg)</label>
-                <input 
-                    type="number" 
-                    class="form-control" 
-                    id="quantite_kg" 
-                    name="quantite_kg" 
-                    step="0.01" 
-                    min="0.1" 
-                    required
-                >
-            </div>
-
-            <div class="mb-3">
-                <label for="cout_total" class="form-label">Coût total estimé</label>
-                <input 
-                    type="text" 
-                    class="form-control" 
-                    id="cout_total" 
-                    readonly
-                    value="0.00 MGA"
-                >
-            </div>
-
-            <button type="submit" class="btn btn-primary">
-                💾 Enregistrer le réapprovisionnement
-            </button>
-        </form>
     </div>
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
     // Calcule le coût total en temps réel
     document.getElementById('id_aliment').addEventListener('change', updateCoutTotal);
     document.getElementById('quantite_kg').addEventListener('input', updateCoutTotal);
@@ -72,4 +88,5 @@
 
         document.getElementById('cout_total').value = coutTotal + ' MGA';
     }
+});
 </script>
