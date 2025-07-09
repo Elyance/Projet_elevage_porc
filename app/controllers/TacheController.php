@@ -101,7 +101,7 @@ class TacheController {
     }
 
     public function employeeLanding() {
-
+        SessionMiddleware::startSession();
         $id_employe = $_SESSION['user_id'];
 
         $flash = $_SESSION['flash'] ?? null;
