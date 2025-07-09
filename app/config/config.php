@@ -98,7 +98,6 @@ return [
 		 'host' => 'localhost',
 		 'dbname' => 'gestion_porc',
 		 'username' => 'postgres',
-
 		 'password' => 'snow',
 
 		// uncomment the following line for sqlite

@@ -1,0 +1,14 @@
+Maintenant je veux que tu fasses ceci:
+    Vois tu dans la table bao_enclos_portee il y a id_portee et quantite_total
+    Et dans bao_portee il y a nombre_males
+
+    Maintenant, voici ce que l on va faire:
+        -Dans CommandeController il y a une fonction add(),  cette fonction va ajouter un nouveau commande
+        -Ce que l on va faire c est ceci: on va diminuer le nombre_males dans bao_portee de 'quantite' dans la commande, puis 
+        on va diminuer aussi de 'quantite' le quantite_total dans bao_enclos_portee.
+
+        Pour faire ca tu va joindre bao_enclos_portee et bao_portee pour trouver le nombre_males pour cet id_enclos_portee
+        Puis tu vas updater le nombre_males dans le bao_portee trouve ayant cet id_enclos_portee tel que l'on soutrait par quantite le nombre_males
+        Puis tu vas aussi updater bao_enclos_portee de telle sorte a ce que l on soutrait quantite_total par quantite 
+
+        Donc en principe, lorsqu on fait une commande, le nombre de males diminue dans le bao_portee donc quantite_total dans bao_enclos_portee diminue egalement

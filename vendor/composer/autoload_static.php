@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4b3a253f57d31d773b6986822b8dc6cf
+class ComposerStaticInitc802e1863aa9a799b0502f6b65db9d4a
 {
     public static $files = array (
         '4cdafd4a5191caf078235e7dd119fdaf' => __DIR__ . '/..' . '/flightphp/core/flight/autoload.php',
@@ -111,6 +111,7 @@ class ComposerStaticInit4b3a253f57d31d773b6986822b8dc6cf
         'Nette\\Utils\\Json' => __DIR__ . '/..' . '/nette/utils/src/Utils/Json.php',
         'Nette\\Utils\\JsonException' => __DIR__ . '/..' . '/nette/utils/src/Utils/exceptions.php',
         'Nette\\Utils\\ObjectHelpers' => __DIR__ . '/..' . '/nette/utils/src/Utils/ObjectHelpers.php',
+        'Nette\\Utils\\ObjectMixin' => __DIR__ . '/..' . '/nette/utils/src/Utils/ObjectMixin.php',
         'Nette\\Utils\\Paginator' => __DIR__ . '/..' . '/nette/utils/src/Utils/Paginator.php',
         'Nette\\Utils\\Random' => __DIR__ . '/..' . '/nette/utils/src/Utils/Random.php',
         'Nette\\Utils\\Reflection' => __DIR__ . '/..' . '/nette/utils/src/Utils/Reflection.php',
@@ -160,9 +161,9 @@ class ComposerStaticInit4b3a253f57d31d773b6986822b8dc6cf
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4b3a253f57d31d773b6986822b8dc6cf::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4b3a253f57d31d773b6986822b8dc6cf::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit4b3a253f57d31d773b6986822b8dc6cf::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc802e1863aa9a799b0502f6b65db9d4a::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc802e1863aa9a799b0502f6b65db9d4a::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitc802e1863aa9a799b0502f6b65db9d4a::$classMap;
 
         }, null, ClassLoader::class);
     }
