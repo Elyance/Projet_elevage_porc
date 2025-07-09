@@ -73,5 +73,3 @@
         document.getElementById('cout_total').value = coutTotal + ' MGA';
     }
 </script>
-
-<?php require_once __DIR__ . '/partials/footer.php'; ?>
