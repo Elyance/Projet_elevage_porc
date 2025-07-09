@@ -1,59 +1,91 @@
-<h2>Ajouter une commande</h2>
-<form method="post" action="/commande/add">
-    <div>
-        <label for="nomClient">Client</label>
-        <input type="text" name="nomClient" placeholder="Entrez le nom du client">
-    </div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title">
+                    <h4>Ajouter une commande</h4>
+                </div>
 
-    <div>
-        <label for="id_enclos_portee">Enclos Numéro :</label>
-        <select name="id_enclos_portee" id="id_enclos_portee">
-            <?php foreach ($enclos_portees as $enclos_portee): ?>
-                <option value="<?= $enclos_portee['id_enclos_portee'] ?>"><?= $enclos_portee['id_enclos_portee'] ?></option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+                <div class="basic-form">
+                    <form method="post" action="<?= BASE_URL?>/commande/add">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Client</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="nomClient" placeholder="Entrez le nom du client" required>
+                            </div>
+                        </div>
 
-    <div>
-        <label for="id_race">Race :</label>
-        <select name="id_race" id="id_race" required>
-            <?php foreach ($races as $race): ?>
-                <option value="<?= $race['id_race'] ?>"><?= htmlspecialchars($race['nom_race']) ?></option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Enclos Numéro</label>
+                            <div class="col-sm-10">
+                                <select name="id_enclos_portee" id="id_enclos_portee" class="form-control" required>
+                                    <?php foreach ($enclos_portees as $enclos_portee): ?>
+                                        <option value="<?= $enclos_portee['id_enclos_portee'] ?>"><?= $enclos_portee['id_enclos_portee'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
 
-    <div>
-        <label for="quantite">Quantité</label>
-        <input type="number" name="quantite" id="quantite" required>
-    </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Race</label>
+                            <div class="col-sm-10">
+                                <select name="id_race" id="id_race" class="form-control" required>
+                                    <?php foreach ($races as $race): ?>
+                                        <option value="<?= $race['id_race'] ?>"><?= htmlspecialchars($race['nom_race']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
 
-    <div>
-        <label for="date_commande">Date Commande</label>
-        <input type="date" name="date_commande" id="date_commande" required>
-    </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Quantité</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="quantite" id="quantite" required>
+                            </div>
+                        </div>
 
-    <div>
-        <label for="adresse_livraison">Adresse Livraison</label>
-        <input type="text" name="adresse_livraison" id="adresse_livraison" required>
-    </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Date Commande</label>
+                            <div class="col-sm-10">
+                                <input type="date" class="form-control" name="date_commande" id="date_commande" required>
+                            </div>
+                        </div>
 
-    <div>
-        <label for="date_livraison">Date Livraison</label>
-        <input type="date" name="date_livraison" id="date_livraison">
-    </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Adresse Livraison</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="adresse_livraison" id="adresse_livraison" required>
+                            </div>
+                        </div>
 
-    <div>
-        <label for="statut_livraison">Statut Livraison</label>
-        <select name="statut_livraison" id="statut_livraison">
-            <option value="en attente">En attente</option>
-            <option value="en cours">En cours</option>
-            <option value="livre">Livré</option>
-            <option value="annule">Annulé</option>
-        </select>
-    </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Date Livraison</label>
+                            <div class="col-sm-10">
+                                <input type="date" class="form-control" name="date_livraison" id="date_livraison">
+                            </div>
+                        </div>
 
-    <button type="submit">Ajouter</button>
-    <br>
-    <a href="/commande/list">Voir les commandes</a>
-</form>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Statut Livraison</label>
+                            <div class="col-sm-10">
+                                <select name="statut_livraison" id="statut_livraison" class="form-control">
+                                    <option value="en attente">En attente</option>
+                                    <option value="en cours">En cours</option>
+                                    <option value="livre">Livré</option>
+                                    <option value="annule">Annulé</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                                <a href="<?= BASE_URL?>/commande/list" class="btn btn-secondary">Voir les commandes</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

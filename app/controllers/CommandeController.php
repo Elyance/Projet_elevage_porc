@@ -85,7 +85,7 @@ class CommandeController
             $conn->commit();
 
             // Rediriger vers la liste des commandes
-            Flight::redirect('/commande/list');
+            Flight::redirect(BASE_URL . '/commande/list');
         } catch (\Throwable $th) {
             // Annuler la transaction en cas d'erreur
             $conn->rollBack();
@@ -105,10 +105,10 @@ class CommandeController
             'commands' => $commands,
             'date_debut' => $date_debut ?? '',
             'date_fin' => $date_fin ?? '',
-            'statut' => $statut ?? '',
-            'page' => 'commande/liste'
+            'statut' => $statut ?? ''
         ];
-        Flight::render('commande/liste', $data);
+        $content = Flight::View('commande/liste', $data);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function form()
@@ -120,10 +120,10 @@ class CommandeController
         $data = [
             'clients' => $clients,
             'enclos_portees' => $enclos_portees,
-            'races' => $races,
-            'page' => 'commande/commande'
+            'races' => $races
         ];
-        Flight::render('commande/commande', $data);
+        $content = Flight::View('commande/commande', $data);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function editStatus($id)
@@ -133,10 +133,10 @@ class CommandeController
             Flight::halt(404, 'Commande non trouvée');
         }
         $data = [
-            'command' => $command,
-            'page' => 'commande/edit_status'
+            'command' => $command
         ];
-        Flight::render('commande/edit_status', $data);
+        $content = Flight::View('commande/edit_status', $data);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function updateStatus($id)
@@ -157,7 +157,7 @@ class CommandeController
                 $command->date_livraison,
                 Flight::request()->data['statut_livraison']
             );
-            Flight::redirect('/commande/list');
+            Flight::redirect(BASE_URL . '/commande/list');
         } catch (\Throwable $th) {
             echo $th->getMessage();
         }
@@ -193,9 +193,9 @@ class CommandeController
             'recettes' => $recettes,
             'date_debut' => Flight::request()->query['date_debut'] ?? '',
             'date_fin' => Flight::request()->query['date_fin'] ?? '',
-            'total_recette' => $total_recette,
-            'page' => 'commande/recette'
+            'total_recette' => $total_recette
         ];
-        Flight::render('commande/recette', $data);
+        $content = Flight::View('commande/recette', $data);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 }
