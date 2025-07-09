@@ -23,6 +23,108 @@ class TacheController {
         Flight::render('tache/taches_liste', ['taches' => $taches]);
     }
 
+    // Formulaire de création/modification de tâche
+    public function form($id = null) {
+        $tache = null;
+        if ($id) {
+            $tache = $this->model->find($id);
+        }
+        $postes = $this->model->getPostes();
+        Flight::render('tache/tache_form', ['tache' => $tache, 'postes' => $postes]);
+    }
+
+    // Update assignForm to include precision
+    public function assignForm() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['continue'])) {
+            $id_employe = $_POST['id_employe'];
+            $employe = $this->model->getEmploye($id_employe);
+            $taches = $this->model->getByPoste($employe['id_employe_poste']);
+            $step = 2;
+            Flight::render('tache/tache_assign', [
+                'step' => $step,
+                'id_employe' => $id_employe,
+                'employe_nom' => $employe['nom_employe'] . ' ' . $employe['prenom_employe'],
+                'taches' => $taches
+            ]);
+        } else {
+            $employes = $this->model->getEmployesActifs();
+            $step = 1;
+            Flight::render('tache/tache_assign', [
+                'step' => $step,
+                'employes' => $employes
+            ]);
+        }
+    }
+
+    // Update assignSave to include precision
+    public function assignSave() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'id_employe' => $_POST['id_employe'],
+                'id_tache' => $_POST['id_tache'],
+                'date_attribution' => $_POST['date_attribution'],
+                'date_echeance' => $_POST['date_echeance'],
+                'statut' => $_POST['statut'],
+                'precision' => $_POST['precision'] ?? ''
+            ];
+            TacheModel::assignTache($data);
+            Flight::redirect('/taches');
+        }
+    }
+
+    // Enregistrer une tâche (création ou modification)
+    public function save() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'id_employe_poste' => $_POST['id_employe_poste'],
+                'nom_tache' => $_POST['nom_tache'],
+                'description' => $_POST['description']
+            ];
+            if (!empty($_POST['id_tache'])) {
+                $this->model->update($_POST['id_tache'], $data);
+            } else {
+                $this->model->create($data);
+            }
+            Flight::redirect('/taches');
+        }
+    }
+
+    // Supprimer une tâche
+    public function delete($id) {
+        $this->model->delete($id);
+        Flight::redirect('/taches');
+    }
+
+    public function getTaches() {
+        $taches = $this->model->all();
+        Flight::json($taches);
+    }
+
+    //?======== Emp side
+    public function employeeLanding() {
+        SessionMiddleware::startSession();
+        
+        if ($_SESSION['user_role_id'] != 2) {
+            Flight::redirect('/', ['error' => 'Accès interdit. Vous devez être connecté en tant que employé.']);
+            return;
+        }
+
+        $id_employe = $_SESSION['user_id'];
+        $flash = $_SESSION['flash'] ?? null;
+        unset($_SESSION['flash']);
+
+        $tasks = TacheModel::getTachesEmploye($id_employe);
+        
+        $selectedDate = date('Y-m-d');
+        
+        Flight::render('tache/employee_landing', [
+            'tasks' => $tasks,
+            'selectedDate' => $selectedDate,
+            'flash' => $flash,
+            'id_employe' => $id_employe
+        ]);
+    }
+
     public function peserPorcs() {
         // Afficher la page pour enregistrer une nouvelle pesée
         Flight::render('tache/tache_peser');
@@ -67,116 +169,6 @@ class TacheController {
         Flight::render('tache/historique_pesee', ['pesees' => $pesees]);
     }
 
-    // Formulaire de création/modification de tâche
-    public function form($id = null) {
-        $tache = null;
-        if ($id) {
-            $tache = $this->model->find($id);
-        }
-        $postes = $this->model->getPostes();
-        Flight::render('tache/tache_form', ['tache' => $tache, 'postes' => $postes]);
-    }
-
-    // Enregistrer une tâche (création ou modification)
-    public function save() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'id_employe_poste' => $_POST['id_employe_poste'],
-                'nom_tache' => $_POST['nom_tache'],
-                'description' => $_POST['description']
-            ];
-            if (!empty($_POST['id_tache'])) {
-                $this->model->update($_POST['id_tache'], $data);
-            } else {
-                $this->model->create($data);
-            }
-            Flight::redirect('/taches');
-        }
-    }
-
-    // Supprimer une tâche
-    public function delete($id) {
-        $this->model->delete($id);
-        Flight::redirect('/taches');
-    }
-
-    public function employeeLanding() {
-        SessionMiddleware::startSession();
-        $id_employe = $_SESSION['user_id'];
-
-        $flash = $_SESSION['flash'] ?? null;
-        unset($_SESSION['flash']);
-
-        $currentMonth = date('m');
-        $currentYear = date('Y');
-        $tasks = TacheModel::getTachesEmploye($id_employe);
-        
-        $calendar = [];
-        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
-        $firstDay = new DateTime("$currentYear-$currentMonth-01");
-        $dayOfWeek = $firstDay->format('w');
-        
-        for ($i = 0; $i < ($dayOfWeek + $daysInMonth); $i++) {
-            $day = $i - $dayOfWeek + 1;
-            $dateKey = $currentYear . '-' . str_pad($currentMonth, 2, '0', STR_PAD_LEFT) . '-' . str_pad($day, 2, '0', STR_PAD_LEFT);
-            $calendar[$i] = [
-                'day' => $day > 0 && $day <= $daysInMonth ? $day : '',
-                'tasks' => array_filter($tasks, fn($t) => $t['date_echeance'] === $dateKey) ?: []
-            ];
-        }
-        $tasks = TacheModel::getTachesEmploye($id_employe);
-        
-        Flight::render('tache/employee_landing', [
-            'calendar' => $calendar,
-            'currentMonth' => $currentMonth,
-            'currentYear' => $currentYear,
-            'id_employe' => $id_employe,
-            'flash' => $flash,
-            'daysInMonth' => $daysInMonth,
-            'dayOfWeek' => $dayOfWeek,
-            'tasks' => $tasks
-        ]);
-    }
-
-    // Update assignForm to include precision
-    public function assignForm() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['continue'])) {
-            $id_employe = $_POST['id_employe'];
-            $employe = $this->model->getEmploye($id_employe);
-            $taches = $this->model->getByPoste($employe['id_employe_poste']);
-            $step = 2;
-            Flight::render('tache/tache_assign', [
-                'step' => $step,
-                'id_employe' => $id_employe,
-                'employe_nom' => $employe['nom_employe'] . ' ' . $employe['prenom_employe'],
-                'taches' => $taches
-            ]);
-        } else {
-            $employes = $this->model->getEmployesActifs();
-            $step = 1;
-            Flight::render('tache/tache_assign', [
-                'step' => $step,
-                'employes' => $employes
-            ]);
-        }
-    }
-
-    // Update assignSave to include precision
-    public function assignSave() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'id_employe' => $_POST['id_employe'],
-                'id_tache' => $_POST['id_tache'],
-                'date_attribution' => $_POST['date_attribution'],
-                'date_echeance' => $_POST['date_echeance'],
-                'statut' => $_POST['statut'],
-                'precision' => $_POST['precision'] ?? ''
-            ];
-            TacheModel::assignTache($data);
-            Flight::redirect('/taches');
-        }
-    }
-
     // Liste des tâches assignées à un employé (côté employé)
     public function employeTaches($id_employe) {
         $employe = $this->model->getEmploye($id_employe);
@@ -200,11 +192,6 @@ class TacheController {
         } else {
             Flight::redirect('/');
         }
-    }
-
-    public function getTaches() {
-        $taches = $this->model->all();
-        Flight::json($taches);
     }
 
     public function getTacheById($id,$date) {

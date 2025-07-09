@@ -1,98 +1,89 @@
-<!-- app/views/tache/employee_landing.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de Bord Employé</title>
+    <title>Taches Employé</title>
     <style>
-        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin: 20px 0; }
-        .day { border: 1px solid #ccc; padding: 10px; text-align: center; }
-        .task { background-color: #f0f0f0; margin: 5px 0; padding: 5px; }
-        .task .precision { font-style: italic; color: #666; }
-        .today-tasks { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
-        .today-tasks a { margin-right: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        .task-row { display: none; }
+        .task-row.visible { display: table-row; }
+        .date-filter { margin: 20px 0; }
+        .actions { white-space: nowrap; }
     </style>
 </head>
 <body>
-    <h1>Tableau de Bord - <?= htmlspecialchars($id_employe) ?></h1>
-    <h2><?= date('F Y', mktime(0, 0, 0, $currentMonth, 1, $currentYear)) ?></h2>
+    <h1>Taches Employé</h1>
+    <a href="<?= BASE_URL ?>/logout">Déconnexion</a>
 
-    <!-- Today's Tasks Interface -->
-    <div class="today-tasks">
-    <h3>Tâches d'Aujourd'hui (<?= date('Y-m-d') ?>)</h3>
-    <?php
-    $today = date('Y-m-d'); // 2025-07-06 at 07:55 AM EAT
-    // Debug output for tasks and today's date
-    $taskCount = count($tasks ?? []);
-    $dateEcheances = $tasks ? array_column($tasks, 'date_echeance') : [];
-
-    // Filter tasks for today
-    $todayTasks = array_filter($tasks ?? [], fn($t) => $t['date_echeance'] == $today);
-
-    if (false) {
-        echo "<p>Aucune tâche prévue aujourd'hui.</p>";
-    }else {
-            foreach ($todayTasks as $task) {
-                $href = '/checkbox'; // Default href
-                switch ($task['nom_tache']) {
-                    case 'Peser les porcs':
-                        $href = '/tache_peser';
-                        break;
-                    // Add more cases as needed
-                    case 'Nourrir les animaux':
-                        $href = '/nourrir';
-                        break;
-                    case 'Nettoyer les enclos':
-                        $href = '/nettoyer';
-                        break;
-                    // Add additional cases for other tasks with specific routes
-                }
-                echo "<a href='" . htmlspecialchars($href) . "'>" . htmlspecialchars($task['nom_tache']) . "</a>";
-                if ($task['precision']) {
-                    echo " <span class='precision'>" . htmlspecialchars($task['precision']) . "</span>";
-                }
-                echo "<br>";
-            }
-        }
-        ?>
+    <div class="date-filter">
+        <label for="task-date">Date des tâches:</label>
+        <input type="date" id="task-date" value="<?= htmlspecialchars($selectedDate) ?>">
+        <button id="today-btn">Aujourd'hui</button>
     </div>
 
-    <div class="calendar">
-        <?php
-        $days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-        for ($i = 0; $i < 7; $i++) {
-            echo "<div class='day'>$days[$i]</div>";
-        }
-        foreach ($calendar as $cell) {
-            echo "<div class='day'>";
-            if ($cell['day']) {
-                echo $cell['day'];
-                foreach ($cell['tasks'] as $task) {
-                    $href = '/check_tache/'.$task['id_tache'].'/'.$task['date_echeance']; // Default href
-                    switch ($task['nom_tache']) {
-                        case 'Peser les porcs':
-                            $href = '/tache_peser';
-                            break;
-                        case 'Nourrir les animaux':
-                            $href = '/nourrir';
-                            break;
-                        case 'Nettoyer les enclos':
-                            $href = '/nettoyer';
-                            break;
-                        // Add additional cases for other tasks with specific routes
-                    }
-                    echo "<div class='task'>";
-                    echo "<a href='" . htmlspecialchars($href) . "' onclick=\"return confirm('Terminer la tache ?')\">" . htmlspecialchars($task['nom_tache']) . "</a>";
-                    if ($task['precision']) {
-                        echo "<div class='precision'>" . htmlspecialchars($task['precision']) . "</div>";
-                    }
-                    echo "</div>";
+    <table>
+        <thead>
+            <tr>
+                <th>Tâche</th>
+                <th>Description</th>
+                <th>Date d'échéance</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="tasks-container">
+            <?php if (!empty($tasks)) {
+                foreach ($tasks as $task): ?>
+                    <tr class="task-row" data-date="<?= htmlspecialchars($task['date_echeance']) ?>">
+                        <td><?= htmlspecialchars($task['nom_tache']) ?></td>
+                        <td><?= htmlspecialchars($task['description'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($task['date_echeance']) ?></td>
+                        <td class="actions">
+                            <form method="post" action="<?= BASE_URL ?>/taches/done" style="display: inline;">
+                                <input type="hidden" name="taches_done[]" value="<?= $task['id_tache'] ?>">
+                                <button type="submit">Confirmer</button>
+                            </form>
+                            
+                            <?php if ($task['nom_tache'] === 'Peser les porcs'): ?>
+                                <a href="<?= BASE_URL ?>/tache_peser" class="action-btn">Peser</a>
+                            <?php elseif ($task['nom_tache'] === 'Nourrir les animaux'): ?>
+                                <a href="<?= BASE_URL ?>/nourrir" class="action-btn">Nourrir</a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; 
+            } else { echo '<tr><td colspan="4">Aucune tâche disponible.</td></tr>'; } ?>
+        </tbody>
+    </table>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('task-date');
+        const todayBtn = document.getElementById('today-btn');
+        const taskRows = document.querySelectorAll('.task-row');
+        
+        function filterTasks() {
+            const selectedDate = dateInput.value;
+            taskRows.forEach(row => {
+                if (row.dataset.date === selectedDate) {
+                    row.classList.add('visible');
+                } else {
+                    row.classList.remove('visible');
                 }
-            }
-            echo "</div>";
+            });
         }
-        ?>
-    </div>
+        
+        function showToday() {
+            dateInput.value = new Date().toISOString().split('T')[0];
+            filterTasks();
+        }
+        
+        dateInput.addEventListener('change', filterTasks);
+        todayBtn.addEventListener('click', showToday);
+        
+        filterTasks();
+    });
+</script>
 </body>
 </html>
