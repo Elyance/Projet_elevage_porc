@@ -2,7 +2,7 @@
 
 <div class="card">
     <div class="card-header bg-primary text-white">
-        <h2>🍽️ Nourrir les Porcs par Enclos</h2>
+        <h2>Nourrir les Porcs par Enclos</h2>
     </div>
     <?php if (isset($message)): ?>
         <div class="alert alert-<?= htmlspecialchars($message['type']) ?>">
@@ -10,19 +10,19 @@
         </div>
     <?php endif; ?>
     <div class="card-body">
-        <form id="form-nourrir" action="/aliments/nourrir/action" method="POST">
+        <form id="form-nourrir" action="<?= BASE_URL?>/aliments/nourrir/action" method="POST">
             <input type="hidden" name="id_enclos" value="<?= htmlspecialchars($selectedEnclos ?? '') ?>">
 
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="id_enclos_select" class="form-label">Sélectionner un enclos</label>
-                    <select class="form-select" id="id_enclos_select" required
-                            onchange="window.location.href='/aliments/nourrir?enclos='+this.value">
+                    <select class="form-select" id="id_enclos_select" required onchange="window.location.href='<?= BASE_URL?>/aliments/nourrir?enclos='+this.value">
                         <option value="">-- Sélectionnez un enclos --</option>
                         <?php if (!empty($enclos)): ?>
                             <?php foreach ($enclos as $enclo): ?>
                                 <option value="<?= htmlspecialchars($enclo['id_enclos']) ?>" <?= isset($selectedEnclos) && $selectedEnclos == $enclo['id_enclos'] ? 'selected' : '' ?>>
-                                    Enclos #<?= htmlspecialchars($enclo['id_enclos']) ?> (Type: <?= htmlspecialchars($enclo['enclos_type']) ?>)
+                                    Enclos #<?= htmlspecialchars($enclo['id_enclos']) ?> 
+                                    (Type: <?= htmlspecialchars($enclo['type_name'] ?? 'Inconnu') ?>)
                                 </option>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -109,10 +109,16 @@
             <h6>Répartition par race</h6>
             <?php foreach ($infosNourrissage as $info): ?>
                 <div class="mb-2">
-                    <label><?= htmlspecialchars($info['nom_race']) ?> (<?= htmlspecialchars($info['quantite_total']) ?> porcs)</label>
-                    <input type="number" class="form-control repartition-input mb-1" 
-                           name="repartitions[{index}][<?= htmlspecialchars($info['id_enclos_portee']) ?>]" 
-                           step="0.01" min="0" data-index-placeholder="{index}">
+                    <label><?= ($info['nom_race']) ?> (<?= ($info['quantite_total']) ?> porcs)</label>
+                    <?php if ($info['source_type'] === 'portee'): ?>
+                        <input type="number" class="form-control repartition-input mb-1" 
+                            name="repartitions[{index}][portee_<?= ($info['id_enclos_portee']) ?>]" 
+                            step="0.01" min="0">
+                    <?php else: ?>
+                        <input type="number" class="form-control repartition-input mb-1" 
+                            name="repartitions[{index}][enclos_<?= ($info['id_race']) ?>]" 
+                            step="0.01" min="0">
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         </div>
@@ -190,5 +196,3 @@ document.addEventListener('DOMContentLoaded', function() {
     <?php endif; ?>
 });
 </script>
-
-<?php require_once __DIR__ . '/partials/footer.php'; ?>

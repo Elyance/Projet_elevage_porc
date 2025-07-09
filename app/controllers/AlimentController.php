@@ -9,11 +9,10 @@ class AlimentController
 {
     public function index()
     {
+        SessionMiddleware::startSession();
         $aliments = AlimentModel::getAllAliments();
-        Flight::render('aliments/index', [
-            'aliments' => $aliments,
-            'showSidebar' => true
-        ]);
+        $content = Flight::view()->fetch('aliments/index', ['aliments' => $aliments]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function show(int $id)

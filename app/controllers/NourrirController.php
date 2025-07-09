@@ -33,6 +33,7 @@ class NourrirController {
             'selectedEnclos' => $id_enclos,
             'message' => $message
         ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function nourrir() {
