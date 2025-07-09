@@ -24,6 +24,9 @@ use app\controllers\SimulationBeneficeController;
 use app\controllers\StatAlimentController;
 use app\controllers\StatVenteController;
 use app\controllers\CongeController;
+use app\controllers\BudgetController;
+use app\controllers\CommandeController;
+use app\controllers\DepenseController;
 
 use flight\Engine;
 use flight\net\Router;
@@ -224,3 +227,21 @@ $router->get('/deces/edit/@id:\d+', [$decesController, 'formUpdateDeces']);
 $router->post('/deces/edit/@id:\d+', [$decesController, 'UpdateDeces']);
 $router->get('/deces/delete/@id:\d+', [$decesController, 'deleteDeces']);
 
+
+// Commandes
+$CommandeController = new CommandeController();
+$router->post('/commande/add', [$CommandeController, 'add']);
+$router->get('/commande/add',[$CommandeController, 'form']);
+$router->get('/commande/recette', [$CommandeController, 'recette']);
+$router->get('/commande/list', [$CommandeController, 'list']);	
+$router->get('/commande/edit-status/@id', [$CommandeController, 'editStatus']);
+$router->post('/commande/edit-status/@id', [$CommandeController, 'updateStatus']);
+
+// Depenses
+$DepenseController = new DepenseController();
+$router->get('/depense/list', [$DepenseController, 'list']);
+
+
+//Budget
+$BudgetController = new BudgetController();
+$router->get('/budget/index', [$BudgetController, 'index']);
