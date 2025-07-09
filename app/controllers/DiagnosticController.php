@@ -10,27 +10,36 @@ use Exception;
 use Flight;
 use DateTime;
 use SessionMiddleware;
+use Tracy\Bar;
 
 class DiagnosticController
 {
     public function soin()
     {
-        Flight::render('maladie/soin');
+        SessionMiddleware::startSession();
+        $content = Flight::view()->fetch('maladie/soin');
+        Flight::render('template-quixlab', ['content' => $content]);
     }
     public function home()
     {
+        SessionMiddleware::startSession();
         $diagnostic = new Diagnostic(Flight::db());
-        Flight::render('maladie/listDiagnostic', ['diagnostics' => $diagnostic->findAll()]);
+        $content = Flight::view()->fetch('maladie/listDiagnostic', [
+            'diagnostics' => $diagnostic->findAll()
+        ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function formAddDiagnostic() {
+        SessionMiddleware::startSession();
         $maladie = new Maladie(Flight::db());
         $enclos_portee = new Enclos(Flight::db()); // Assuming Enclos model handles bao_enclos_portee
         $data = [
             'maladies' => $maladie->findAll(),
             'enclos_portee' => $enclos_portee->findAllEnclosPortee() // Adjust method name based on Enclos model
         ];
-        Flight::render('maladie/createDiagnostic', $data);
+        $content = Flight::view()->fetch('maladie/createDiagnostic', $data);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function addDiagnostic() {
@@ -38,9 +47,9 @@ class DiagnosticController
         $diagnostic = new Diagnostic(Flight::db());
         try {
             $diagnostic->ajouterDiagnostic($data);
-            Flight::redirect('/diagnostic/add?success=Evenement cree');
+            Flight::redirect(BASE_URL.'/diagnostic/add?success=Evenement cree');
         } catch (Exception $th) {
-            Flight::redirect('/diagnostic/add?error=Erreur lors de la creation de l\'evenement');
+            Flight::redirect(BASE_URL.'/diagnostic/add?error=Erreur lors de la creation de l\'evenement');
         }
     }
 
@@ -48,14 +57,15 @@ class DiagnosticController
     {
         $diagnostic = new Diagnostic(Flight::db());
         $diagnostics = $diagnostic->findByStatus('signale'); // Changed to use findByStatus
-        Flight::render('maladie/listDiagnostic', ['diagnostics' => $diagnostics]);
+        $content = Flight::view()->fetch('maladie/listDiagnostic', ['diagnostics' => $diagnostics]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function listSignale()
     {
         $diagnostic = new Diagnostic(Flight::db());
         $diagnostics = $diagnostic->findByStatus('signale');
-        Flight::render('maladie/listSignale', ['diagnostics' => $diagnostics]);
+        $content = Flight::view()->fetch('maladie/listSignale', ['diagnostics' => $diagnostics]);
     }
 
     public function formMoveToQuarantine($id_diagnostic)
@@ -75,9 +85,9 @@ class DiagnosticController
             'id_diagnostic' => $id_diagnostic,
             'moveData' => $moveData,
             'quarantineEnclos' => $quarantineEnclos,
-            'page' => 'maladie/moveToQuarantine'
         ];
-        Flight::render('template', $data);
+        $content = Flight::view()->fetch('maladie/moveToQuarantine', $data);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function moveToQuarantine($id_diagnostic)
@@ -88,7 +98,7 @@ class DiagnosticController
             $id_enclos_destination = Flight::request()->data->id_enclos_destination;
 
             if ($id_enclos_destination === null) {
-                Flight::redirect('/maladie/signale?error=Enclos de quarantaine non sélectionné');
+                Flight::redirect(BASE_URL.'/maladie/signale?error=Enclos de quarantaine non sélectionné');
                 return;
             }
 
@@ -105,14 +115,14 @@ class DiagnosticController
                 );
                 $diagnostic->updateStatusAndEnclos($id_diagnostic, 'en quarantaine', $moveData['id_enclos_portee_original'], $id_tena_izy);
                 // $conn->commit();
-                Flight::redirect('/maladie/signale?success=Mis en quarantaine');
+                Flight::redirect(BASE_URL.'/maladie/signale?success=Mis en quarantaine');
             } catch (Exception $e) {
                 // $conn->rollBack();
                 echo $e;
-                Flight::redirect('/maladie/signale?error=Erreur lors du déplacement: ' . $e->getMessage());
+                Flight::redirect(BASE_URL.'/maladie/signale?error=Erreur lors du déplacement: ' . $e->getMessage());
             }
         } else {
-            Flight::redirect('/diagnostic/moveToQuarantine/' . $id_diagnostic);
+            Flight::redirect(BASE_URL.'/diagnostic/moveToQuarantine/' . $id_diagnostic);
         }
     }
 
@@ -120,7 +130,8 @@ class DiagnosticController
     {
         $diagnostic = new Diagnostic(Flight::db());
         $diagnostics = $diagnostic->findByStatus('en quarantaine');
-        Flight::render('maladie/listQuarantine', ['diagnostics' => $diagnostics]);
+        $content = Flight::view()->fetch('maladie/listQuarantine', ['diagnostics' => $diagnostics]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function startTreatment($id_diagnostic)
@@ -128,9 +139,9 @@ class DiagnosticController
         $diagnostic = new Diagnostic(Flight::db());
         try {
             $diagnostic->startTreatment($id_diagnostic);
-            Flight::redirect('/maladie/quarantine?success=Traitement commencé');
+            Flight::redirect(BASE_URL.'/maladie/quarantine?success=Traitement commencé');
         } catch (Exception $e) {
-            Flight::redirect('/maladie/quarantine?error=Erreur lors du début du traitement: ' . $e->getMessage());
+            Flight::redirect(BASE_URL.'/maladie/quarantine?error=Erreur lors du début du traitement: ' . $e->getMessage());
         }
     }
 
@@ -138,7 +149,8 @@ class DiagnosticController
     {
         $diagnostic = new Diagnostic(Flight::db());
         $diagnostics = $diagnostic->findByStatuses(['en traitement', 'echec']);
-        Flight::render('maladie/listTreatment', ['diagnostics' => $diagnostics]);
+        $content = Flight::view()->fetch('maladie/listTreatment', ['diagnostics' => $diagnostics]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function markSuccess($id_diagnostic)
@@ -151,18 +163,19 @@ class DiagnosticController
                 // $conn->beginTransaction();
                 $diagnostic->markSuccess($id_diagnostic, $id_enclos_destination);
                 // $conn->commit();
-                Flight::redirect('/maladie/treatment?success=Traitement réussi');
+                Flight::redirect(BASE_URL.'/maladie/treatment?success=Traitement réussi');
             } catch (Exception $e) {
                 // $conn->rollBack();
-                Flight::redirect('/maladie/treatment?error=Erreur lors de la marque de succès: ' . $e->getMessage());
+                Flight::redirect(BASE_URL.'/maladie/treatment?error=Erreur lors de la marque de succès: ' . $e->getMessage());
             }
         } else {
             $diagnosticData = $diagnostic->findById($id_diagnostic);
             $enclosList = \app\models\EnclosModel::getAllTsyArray(); // Fetch all enclosures with type details
-            Flight::render('maladie/selectEnclosForHealedPigs', [
+            $content = Flight::view()->fetch('maladie/selectEnclosForHealedPigs', [
                 'diagnostic' => $diagnosticData,
                 'enclosList' => $enclosList
             ]);
+            Flight::render('template-quixlab', ['content' => $content]);
         }
     }
 
@@ -171,9 +184,9 @@ class DiagnosticController
         $diagnostic = new Diagnostic(Flight::db());
         try {
             $diagnostic->markFailure($id_diagnostic);
-            Flight::redirect('/maladie/treatment?success=Traitement échoué');
+            Flight::redirect(BASE_URL.'/maladie/treatment?success=Traitement échoué');
         } catch (Exception $e) {
-            Flight::redirect('/maladie/treatment?error=Erreur lors de la marque d\'échec: ' . $e->getMessage());
+            Flight::redirect(BASE_URL.'/maladie/treatment?error=Erreur lors de la marque d\'échec: ' . $e->getMessage());
         }
     }
 
@@ -185,9 +198,9 @@ class DiagnosticController
         $diagnostic = new Diagnostic(Flight::db());
         try {
             $diagnostic->recordDeath($id_diagnostic, $male_deces, $female_deces);
-            Flight::redirect('/maladie/treatment?success=Décès enregistré');
+            Flight::redirect(BASE_URL.'/maladie/treatment?success=Décès enregistré');
         } catch (Exception $e) {
-            Flight::redirect('/maladie/treatment?error=Erreur lors de l\'enregistrement du décès: ' . $e->getMessage());
+            Flight::redirect(BASE_URL.'/maladie/treatment?error=Erreur lors de l\'enregistrement du décès: ' . $e->getMessage());
         }
     }
 }

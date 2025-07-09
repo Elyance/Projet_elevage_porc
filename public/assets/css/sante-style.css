@@ -1,0 +1,124 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa; /* Light background for the page */
+}
+
+.calendar {
+    width: 100%;
+    max-width: 1200px; /* Maximum width for larger screens */
+    margin: 30px auto; /* Centers the calendar and adds vertical spacing */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 8px;
+    overflow: hidden; /* Ensures rounded corners work properly */
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #7571f9;
+    color: white;
+    padding: 15px 20px; /* Increased padding */
+    border-radius: 8px 8px 0 0;
+}
+
+.calendar-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: all 0.2s;
+}
+
+.calendar-header button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #f1f1f1;
+    text-align: center;
+    font-weight: bold;
+    padding: 12px 0; /* Increased padding */
+}
+
+.calendar-weekdays div {
+    padding: 8px;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: #e0e0e0;
+    padding: 1px; /* Helps with the grid gap */
+}
+
+.calendar-days div {
+    padding: 15px; /* Increased padding */
+    min-height: 100px; /* Larger cells for better spacing */
+    background: white;
+    text-align: right;
+    transition: background 0.2s;
+    position: relative;
+}
+
+.calendar-days div.today {
+    background: #e6f2ff;
+    font-weight: bold;
+}
+
+.calendar-days div.other-month {
+    color: #aaa;
+    background: #f9f9f9;
+}
+
+.calendar-days div:hover {
+    background: #f5f5f5;
+    cursor: pointer;
+}
+
+/* Modal styles remain the same */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: #000;
+}

@@ -1,35 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php require_once __DIR__ . '/../sante/header.php'; ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creation d'un diagnostic</title>
-</head>
-
-<body>
-    <form method="post">
-        <label for="id_enclos">Enclos : </label>
-        <select name="id_enclos" id="id_enclos">
-            <?php if(!empty($enclos)) {
-                foreach($enclos as $enclo) {?>
-                    <option value="<?=$enclo['id_enclos'] ?>"><?= $enclo['id_enclos'] ?></option>
-            <?php }
-            }?>
-        </select>
-        <br>
-        <label for="nombre_deces">Nombre de mort : </label>
-        <input type="number" name="nombre_deces" id="nombre_deces">
-        <br>
-        <label for="date_deces">Date: </label>
-        <input type="date" name="date_deces" id="date_deces">
-        <br>
-        <label for="cause_deces">Cause : </label>
-        <input type="text" name="cause_deces" id="cause_deces">
-        <br><br>
-        <button type="submit">Avis de décès</button>
-
-    </form>
-</body>
-
-</html>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title">
+                    <h4>Création d'un Avis de Décès</h4>
+                </div>
+                <div class="basic-form">
+                    <form method="post">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Enclos</label>
+                            <div class="col-sm-10">
+                                <select name="id_enclos" id="id_enclos" class="form-control" required>
+                                    <?php if(!empty($enclos)): ?>
+                                        <?php foreach($enclos as $enclo): ?>
+                                            <option value="<?= htmlspecialchars($enclo['id_enclos']) ?>">
+                                                Enclos <?= htmlspecialchars($enclo['id_enclos']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Nombre de décès</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="nombre_deces" id="nombre_deces" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Date</label>
+                            <div class="col-sm-10">
+                                <input type="date" class="form-control" name="date_deces" id="date_deces" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Cause</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="cause_deces" id="cause_deces" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+</div>
