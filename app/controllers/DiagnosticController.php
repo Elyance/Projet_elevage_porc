@@ -23,7 +23,7 @@ class DiagnosticController
     {
         SessionMiddleware::startSession();
         $diagnostic = new Diagnostic(Flight::db());
-        $content = Flight::view()->fetch('maladie/home', [
+        $content = Flight::view()->fetch('maladie/listDiagnostic', [
             'diagnostics' => $diagnostic->findAll()
         ]);
         Flight::render('template-quixlab', ['content' => $content]);
@@ -65,7 +65,6 @@ class DiagnosticController
         $diagnostic = new Diagnostic(Flight::db());
         $diagnostics = $diagnostic->findByStatus('signale');
         $content = Flight::view()->fetch('maladie/listSignale', ['diagnostics' => $diagnostics]);
-        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function formMoveToQuarantine($id_diagnostic)
