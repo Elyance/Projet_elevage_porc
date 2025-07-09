@@ -31,13 +31,14 @@ class SanteEvenementController
     }
 
     public function formAjouterEvenement() {
+        SessionMiddleware::startSession();
         $santetypevenement = new SanteTypeEvenement(Flight::db());
         $enclos = new Enclos(Flight::db());
-        $data = [
+        $content = Flight::view()->fetch('evenement/createEvenement', [
             'santetypevenements' => $santetypevenement->findAll(),
             'enclos' => $enclos->findAll()
-        ];
-        Flight::render('evenement/createEvenement', $data);
+        ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function ajouterEvenement() {
@@ -45,9 +46,9 @@ class SanteEvenementController
         $santeevenement = new SanteEvenement(Flight::db());
         try {
             $santeevenement->ajouterEvenement($data);
-            Flight::redirect('/evenement/add?success=Evenement cree');
+            Flight::redirect(BASE_URL.'/evenement/add?success=Evenement cree');
         } catch (Exception $th) {
-            Flight::redirect('/evenement/add?error=Erreur lors de la creation de l'.'evenement');
+            Flight::redirect(BASE_URL.'/evenement/add?error=Erreur lors de la creation de l'.'evenement');
         }
     }
 }
