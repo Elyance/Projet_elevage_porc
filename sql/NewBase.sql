@@ -151,6 +151,9 @@ CREATE TABLE bao_details_alimentation (
     quantite_kg DECIMAL(5, 2) NOT NULL,
     id_enclos_portee INT REFERENCES bao_enclos_portee(id_enclos_portee)
 );
+ALTER TABLE bao_details_alimentation
+ALTER COLUMN id_enclos_portee DROP NOT NULL,
+ADD COLUMN id_enclos INT REFERENCES bao_enclos(id_enclos);
 
 CREATE TABLE bao_reapprovisionnement_aliments (
     id_reappro SERIAL PRIMARY KEY,

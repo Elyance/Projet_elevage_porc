@@ -208,14 +208,14 @@ INSERT INTO bao_pesee_enclos_portee (id_enclos_portee, date_pesee, poids_total) 
 -- 14. FOOD MANAGEMENT
 ------------------
 -- Enclosure Feeding
-INSERT INTO bao_alimentation_enclos (id_enclos) VALUES (4), (5), (1);
+-- INSERT INTO bao_alimentation_enclos (id_enclos) VALUES (4), (5), (1);
 
--- Feeding Details
-INSERT INTO bao_details_alimentation (id_alimentation, id_aliment, quantite_kg, id_enclos_portee) VALUES
-(1, 1, 25.5, 1),
-(1, 2, 10.2, 1),
-(2, 3, 30.0, 2),
-(3, 5, 15.0, NULL);
+-- -- Feeding Details
+-- INSERT INTO bao_details_alimentation (id_alimentation, id_aliment, quantite_kg, id_enclos_portee) VALUES
+-- (1, 1, 25.5, 1),
+-- (1, 2, 10.2, 1),
+-- (2, 3, 30.0, 2),
+-- (3, 5, 15.0, NULL);
 
 -- Food Replenishment
 INSERT INTO bao_reapprovisionnement_aliments (id_aliment, quantite_kg, cout_total) VALUES
