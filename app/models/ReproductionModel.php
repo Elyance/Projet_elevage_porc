@@ -34,7 +34,7 @@ class ReproductionModel
             $query .= ' WHERE ' . implode(' AND ', $where);
         }
 
-        echo $query;
+        // echo $query;
         $stmt = $conn->prepare($query);
         $stmt->execute($params);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
