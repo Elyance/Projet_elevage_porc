@@ -163,7 +163,7 @@
         
         <!-- Première étape : sélection de l'employé -->
         <?php if (!isset($id_employe)): ?>
-        <form method="post" action="/tache/assign">
+        <form method="post" action="<?=BASE_URL?>/tache/assign">
             <div class="form-group">
                 <label>Sélectionner un employé :</label>
                 <select name="id_employe" required>
@@ -178,7 +178,7 @@
         
         <!-- Deuxième étape : assignation de la tâche avec calendrier -->
         
-        <form method="post" action="/tache/assign/save">
+        <form method="post" action="<?=BASE_URL?>/tache/assign/save">
             <input type="hidden" name="id_employe" value="<?= $id_employe ?>">
             
             <div class="form-group">
