@@ -22,12 +22,13 @@ class StatVenteController
 
     public static function showStats() {
         SessionMiddleware::startSession();
-
         $annee = (int)$_POST['annee'];
         $model = new StatVenteModel();
         $stats = $model->getStatsVentes($annee);
-        $content = Flight::view()->fetch('statistique/stats_ventes', ['stats' => $stats, 'annee' => $annee]);
-
+        $content = Flight::view()->fetch('statistique/stats_ventes', [
+            'stats' => $stats,
+            'annee' => $annee
+        ]);
         Flight::render('template-quixlab', ['content' => $content]);
     }
 }
