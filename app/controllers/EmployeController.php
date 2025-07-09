@@ -3,14 +3,16 @@ namespace app\controllers;
 
 use app\models\EmployeModel;
 use Flight;
+use flight\debug\tracy\SessionExtension;
 use SessionMiddleware;
 
 class EmployeController
 {
     public function index()
     {
+        SessionMiddleware::startSession();
         $employes = EmployeModel::getAll();
-        Flight::render("employe/index", [
+        $content = Flight::view()->fetch('employe/index', [
             "employes" => $employes,
             "links" => [
                 "gestion_salaire" => "/salaire",
@@ -19,8 +21,11 @@ class EmployeController
                 "add_employe" => "/add_employe"
             ]
         ]);
-    }
+        Flight::render("template-quixlab", [
+            "content" => $content
+        ]);
 
+    }
     public function congedier($id)
     {
         $date_retirer = date("Y-m-d");
