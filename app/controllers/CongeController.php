@@ -11,13 +11,15 @@ class CongeController
 {
     public function addForm()
     {
+        SessionMiddleware::startSession();
         $employes = EmployeModel::getAll();
         $selected_employe = Flight::request()->query->id_employe ? (int)Flight::request()->query->id_employe : null;
 
-        Flight::render("conge/add", [
+        $content = Flight::view()->fetch('conge/add', [
             "employes" => $employes,
             "selected_employe" => $selected_employe
         ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function add()
@@ -30,7 +32,7 @@ class CongeController
 
             // Validate dates
             if (strtotime($date_fin) < strtotime($date_debut)) {
-                Flight::redirect("/conge/add?error=invalid_dates" . ($id_employe ? "&id_employe=$id_employe" : ""));
+                Flight::redirect(BASE_URL."/conge/add?error=invalid_dates" . ($id_employe ? "&id_employe=$id_employe" : ""));
                 return;
             }
 
@@ -40,7 +42,7 @@ class CongeController
             // Insert daily presence records as "absent"
             PresenceModel::insertDailyPresences($id_employe, $date_debut, $date_fin);
 
-            Flight::redirect("/conge/add?success=leave_added" . ($id_employe ? "&id_employe=$id_employe" : ""));
+            Flight::redirect(BASE_URL."/conge/add?success=leave_added" . ($id_employe ? "&id_employe=$id_employe" : ""));
         }
     }
 }

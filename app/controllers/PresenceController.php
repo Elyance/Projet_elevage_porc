@@ -28,6 +28,7 @@ class PresenceController
 
     public function detailJour($date)
     {
+        SessionMiddleware::startSession();
         $presences = PresenceModel::getAll(["date_presence" => $date]);
         $employes = EmployeModel::getAll();
         $present = array_filter($presences, fn($p) => $p->statut === "present");
@@ -37,15 +38,18 @@ class PresenceController
             return !empty($matching_employes) ? array_values($matching_employes)[0] : null;
         }, $present);
 
-        Flight::render("presence/detail_jour", [
+
+        $content = Flight::view()->fetch('presence/detail_jour', [
             "date" => $date,
             "present_employes" => $present_employes,
             "conge_payes" => []
         ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function addPresence()
     {
+        SessionMiddleware::startSession();
         $date = $_GET["date"] ?? date("Y-m-d");
         $employes = EmployeModel::getAll();
 
@@ -59,12 +63,13 @@ class PresenceController
                     PresenceModel::updateStatut($existing[0]->id_presence, $statut);
                 }
             }
-            Flight::redirect("/presence/detail_jour/$date");
+            Flight::redirect(BASE_URL."/presence/detail_jour/$date");
         }
 
-        Flight::render("presence/add_presence", [
+        $content = Flight::view()->fetch('presence/add_presence', [
             "employes" => $employes,
             "date" => $date
         ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 }
