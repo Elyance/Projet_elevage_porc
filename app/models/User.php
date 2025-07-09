@@ -98,4 +98,24 @@ class User
         return null; // identifiants invalides
     }
 
+    public function isEmployeeStillActif($loginUsername, $password) {
+        $query = "SELECT *
+            FROM bao_utilisateur u
+            JOIN bao_employe e ON u.id_utilisateur = e.id_utilisateur
+            WHERE u.nom_utilisateur = :loginUsername
+            AND u.mot_de_passe = :loginpassword
+            AND e.statut = 'actif'
+            LIMIT 1"
+        ;
+
+        $db = Flight::db();
+        $stmt = $db->prepare($query);
+        $stmt->execute([
+            'loginpassword' => $loginUsername,
+            'loginpassword' => $password
+        ]);
+        $row = $stmt->fetch();
+        return $row !== false;
+    }
+
 }

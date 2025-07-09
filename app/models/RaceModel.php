@@ -21,14 +21,14 @@ class RaceModel
     }
 
     /**
-     * Fetch all breeds from the races_porcs table.
+     * Fetch all breeds from the bao_races_porcs table.
      *
      * @return array Array of RaceModel objects
      */
     public static function getAll()
     {
         $conn = Flight::db();
-        $stmt = $conn->query("SELECT * FROM races_porcs");
+        $stmt = $conn->query("SELECT * FROM bao_races_porcs");
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         return array_map(fn($item) => self::fromArray($item), $result);
     }
@@ -42,14 +42,14 @@ class RaceModel
     public static function findById(int $id)
     {
         $conn = Flight::db();
-        $stmt = $conn->prepare("SELECT * FROM races_porcs WHERE id_race = :id");
+        $stmt = $conn->prepare("SELECT * FROM bao_races_porcs WHERE id_race = :id");
         $stmt->execute([':id' => $id]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result ? self::fromArray($result) : null;
     }
 
     /**
-     * Create a new breed in the races_porcs table.
+     * Create a new breed in the bao_races_porcs table.
      *
      * @param string $nom_race The breed name
      * @param string|null $description The breed description
@@ -60,7 +60,7 @@ class RaceModel
     public static function create(string $nom_race, ?string $description = null, ?string $besoins_nutritionnels = null, ?int $duree_engraissement_jours = null): bool
     {
         $conn = Flight::db();
-        $stmt = $conn->prepare("INSERT INTO races_porcs (nom_race, description, besoins_nutritionnels, duree_engraissement_jours) VALUES (:nom_race, :description, :besoins_nutritionnels, :duree_engraissement_jours)");
+        $stmt = $conn->prepare("INSERT INTO bao_races_porcs (nom_race, description, besoins_nutritionnels, duree_engraissement_jours) VALUES (:nom_race, :description, :besoins_nutritionnels, :duree_engraissement_jours)");
         return $stmt->execute([
             ':nom_race' => $nom_race,
             ':description' => $description,
@@ -70,7 +70,7 @@ class RaceModel
     }
 
     /**
-     * Update an existing breed in the races_porcs table.
+     * Update an existing breed in the bao_races_porcs table.
      *
      * @param int $id The ID of the breed to update
      * @param string $nom_race The new breed name
@@ -82,7 +82,7 @@ class RaceModel
     public static function update(int $id, string $nom_race, ?string $description = null, ?string $besoins_nutritionnels = null, ?int $duree_engraissement_jours = null): bool
     {
         $conn = Flight::db();
-        $stmt = $conn->prepare("UPDATE races_porcs SET nom_race = :nom_race, description = :description, besoins_nutritionnels = :besoins_nutritionnels, duree_engraissement_jours = :duree_engraissement_jours WHERE id_race = :id");
+        $stmt = $conn->prepare("UPDATE bao_races_porcs SET nom_race = :nom_race, description = :description, besoins_nutritionnels = :besoins_nutritionnels, duree_engraissement_jours = :duree_engraissement_jours WHERE id_race = :id");
         return $stmt->execute([
             ':id' => $id,
             ':nom_race' => $nom_race,
@@ -93,7 +93,7 @@ class RaceModel
     }
 
     /**
-     * Delete a breed from the races_porcs table.
+     * Delete a breed from the bao_races_porcs table.
      *
      * @param int $id The ID of the breed to delete
      * @return bool Success of the operation
@@ -101,7 +101,7 @@ class RaceModel
     public static function delete(int $id): bool
     {
         $conn = Flight::db();
-        $stmt = $conn->prepare("DELETE FROM races_porcs WHERE id_race = :id");
+        $stmt = $conn->prepare("DELETE FROM bao_races_porcs WHERE id_race = :id");
         return $stmt->execute([':id' => $id]);
     }
 

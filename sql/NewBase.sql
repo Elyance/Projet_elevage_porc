@@ -1,8 +1,8 @@
--- Connect to PostgreSQL and create/drop database
--- \c postgres;
--- DROP DATABASE IF EXISTS gestion_porc;
--- CREATE DATABASE gestion_porc;
--- \c gestion_porc;
+Connect to PostgreSQL and create/drop database
+\c postgres;
+DROP DATABASE IF EXISTS gestion_porc;
+CREATE DATABASE gestion_porc;
+\c gestion_porc;
 
 -- 1. TABLES UTILISATEURS
 CREATE TABLE bao_utilisateur_role (
@@ -32,7 +32,7 @@ CREATE TABLE bao_type_porc (
 );
 
 -- Table for pig breeds
-CREATE TABLE races_porcs (
+CREATE TABLE bao_races_porcs (
     id_race SERIAL PRIMARY KEY,
     nom_race VARCHAR(50) NOT NULL,
     description TEXT,
@@ -40,7 +40,7 @@ CREATE TABLE races_porcs (
     duree_engraissement_jours INT
 );
 
--- 2. TABLES ENCLOS-TRUIES-PORTEES
+-- 2. TABLES ENCLOS-TRUIES-REPROD-PORTEES
 -- Table for enclosures
 CREATE TABLE bao_enclos (
     id_enclos SERIAL PRIMARY KEY,
@@ -57,7 +57,31 @@ CREATE TABLE bao_truie (
     poids DECIMAL(10,6), -- Sow weight in kg
     date_entree DATE,
     FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos),
-    FOREIGN KEY (id_race) REFERENCES races_porcs(id_race)
+    FOREIGN KEY (id_race) REFERENCES bao_races_porcs(id_race)
+);
+
+CREATE TABLE bao_insemination (
+    id_insemination SERIAL PRIMARY KEY,
+    id_truie INTEGER,
+    date_insemination DATE,
+    resultat VARCHAR(20) CHECK (resultat IN ('succes', 'echec', 'en cours')),
+    FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
+        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
+);
+
+CREATE TABLE bao_cycle_reproduction (
+    id_cycle_reproduction SERIAL PRIMARY KEY,
+    id_truie INTEGER,
+    date_debut_cycle DATE,
+    date_fin_cycle DATE,
+    nombre_males INTEGER,
+    nombre_femelles INTEGER,
+    id_insemination INTEGER,
+    etat VARCHAR(20) CHECK (etat IN ('en cours', 'termine')),
+    FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
+        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED,
+    FOREIGN KEY (id_insemination) REFERENCES bao_insemination(id_insemination)
+        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
 
 -- Table for litters
@@ -68,12 +92,12 @@ CREATE TABLE bao_portee (
     nombre_males INTEGER, -- Number of males in the litter
     nombre_femelles INTEGER, -- Number of females in the litter
     date_naissance DATE, -- Birth date of the litter
-    id_cycle_reproduction INTEGER,
+    id_cycle_reproduction INTEGER, -- generation of portee
     FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
         ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED,
     FOREIGN KEY (id_cycle_reproduction) REFERENCES bao_cycle_reproduction(id_cycle_reproduction)
         ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED,
-    FOREIGN KEY (id_race) REFERENCES races_porcs(id_race)
+    FOREIGN KEY (id_race) REFERENCES bao_races_porcs(id_race)
 );
 
 -- Table for managing litters in enclosures
@@ -101,30 +125,7 @@ CREATE TABLE bao_mouvement_enclos_portee (
     FOREIGN KEY (id_enclos_portee_destination) REFERENCES bao_enclos_portee(id_enclos_portee)
 );
 
--- 4. TABLES REPRODUCTION
-CREATE TABLE bao_insemination (
-    id_insemination SERIAL PRIMARY KEY,
-    id_truie INTEGER,
-    date_insemination DATE,
-    resultat VARCHAR(20) CHECK (resultat IN ('succes', 'echec', 'en cours')),
-    FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
-        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
-);
 
-CREATE TABLE bao_cycle_reproduction (
-    id_cycle_reproduction SERIAL PRIMARY KEY,
-    id_truie INTEGER,
-    date_debut_cycle DATE,
-    date_fin_cycle DATE,
-    nombre_males INTEGER,
-    nombre_femelles INTEGER,
-    id_insemination INTEGER,
-    etat VARCHAR(20) CHECK (etat IN ('en cours', 'termine')),
-    FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
-        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED,
-    FOREIGN KEY (id_insemination) REFERENCES bao_insemination(id_insemination)
-        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
-);
 
 -- 5. TABLES ALIMENTS
 CREATE TABLE bao_aliments (
@@ -145,15 +146,15 @@ CREATE TABLE bao_alimentation_enclos (
 
 CREATE TABLE bao_details_alimentation (
     id_detail SERIAL PRIMARY KEY,
-    id_alimentation INT REFERENCES alimentation_enclos(id_alimentation),
-    id_aliment INT REFERENCES aliments(id_aliment),
+    id_alimentation INT REFERENCES bao_alimentation_enclos(id_alimentation),
+    id_aliment INT REFERENCES bao_aliments(id_aliment),
     quantite_kg DECIMAL(5, 2) NOT NULL,
     id_enclos_portee INT REFERENCES bao_enclos_portee(id_enclos_portee)
 );
 
 CREATE TABLE bao_reapprovisionnement_aliments (
     id_reappro SERIAL PRIMARY KEY,
-    id_aliment INT REFERENCES aliments(id_aliment),
+    id_aliment INT REFERENCES bao_aliments(id_aliment),
     quantite_kg DECIMAL(10, 2) NOT NULL,
     date_reappro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     cout_total DECIMAL(10, 2) NOT NULL
@@ -187,7 +188,10 @@ CREATE TABLE bao_employe (
     date_recrutement DATE,
     date_retirer DATE,
     statut VARCHAR(20) CHECK (statut IN ('actif', 'retraiter', 'congedier')),
+    id_utilisateur INTEGER UNIQUE, -- an emp is a user
     FOREIGN KEY (id_employe_poste) REFERENCES bao_employe_poste(id_employe_poste)
+        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED,
+    FOREIGN KEY (id_utilisateur) REFERENCES bao_utilisateur(id_utilisateur)
         ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
 ----------- 7a/ GESTION SALAIRE EMPLOYÉ
@@ -330,17 +334,3 @@ CREATE TABLE bao_pesee_enclos_portee (
     poids_total DECIMAL(10,6), -- Total weight of the litter in the enclosure in kg
     FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee)
 );
-
-
--- DONNEES
--- Insert user roles and users
-INSERT INTO bao_utilisateur_role (nom_role) VALUES ('admin'), ('emp');
-INSERT INTO bao_utilisateur (nom_utilisateur, mot_de_passe, id_utilisateur_role)
-VALUES ('admin', 'admin', 1), ('emp', 'emp', 2);
-
-INSERT INTO aliments (nom_aliment, prix_kg, stock_kg, apports_nutritionnels, contact_fournisseur, conso_journaliere_kg_par_porc) VALUES
-('Maïs grain', 0.35, 500.00, 'Energie: 3300 kcal/kg, Protéines: 8%', '0601020304', 0.8),
-('Tourteau de soja', 0.55, 300.00, 'Protéines: 45%, Lysine: 2.8%', '0602030405', 0.3),
-('Orge', 0.30, 400.00, 'Energie: 2800 kcal/kg, Fibres: 5%', '0603040506', 0.6),
-('Son de blé', 0.25, 200.00, 'Fibres: 12%, Energie modérée', '0604050607', 0.4),
-('Mélange complet', 0.60, 350.00, 'Equilibré: 16% protéines, vitamines', '0605060708', 1.0);

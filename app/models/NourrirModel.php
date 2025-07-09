@@ -18,7 +18,7 @@ class NourrirModel
                 (ep.quantite_total) AS quantite_total
             FROM bao_enclos_portee ep
             JOIN bao_portee p ON ep.id_portee = p.id_portee
-            JOIN races_porcs rp ON p.id_race = rp.id_race
+            JOIN bao_races_porcs rp ON p.id_race = rp.id_race
             WHERE ep.id_enclos = :id_enclos
         ";
         $stmt = $conn->prepare($query);
