@@ -14,7 +14,7 @@ CREATE TABLE bao_commande (
     -- Clés étrangères
     FOREIGN KEY (id_client) REFERENCES bao_client(id_client),
     FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee),
-    FOREIGN KEY (id_race) REFERENCES races_porcs(id_race)
+    FOREIGN KEY (id_race) REFERENCES bao_races_porcs(id_race)
 );
 
 
@@ -24,8 +24,8 @@ CREATE TABLE bao_prix_vente_porc (
     id_race INTEGER,
     prix_unitaire DECIMAL(10,2),
 
-    -- Clé étrangère vers races_porcs
-    FOREIGN KEY (id_race) REFERENCES races_porcs(id_race)
+    -- Clé étrangère vers bao_races_porcs
+    FOREIGN KEY (id_race) REFERENCES bao_races_porcs(id_race)
 );
 
 
@@ -56,7 +56,7 @@ SELECT
     ra.date_reappro::DATE AS date_depense,
     ra.cout_total AS montant
 FROM 
-    reapprovisionnement_aliments ra
+    bao_reapprovisionnement_aliments ra
 
 UNION
 

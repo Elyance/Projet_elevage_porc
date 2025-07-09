@@ -132,7 +132,7 @@ class CommandeController
     {
         $clients = Flight::db()->query('SELECT * FROM bao_client')->fetchAll();
         $enclos_portees = Flight::db()->query('SELECT * FROM bao_enclos_portee')->fetchAll();
-        $races = Flight::db()->query('SELECT * FROM races_porcs')->fetchAll();
+        $races = Flight::db()->query('SELECT * FROM bao_races_porcs')->fetchAll();
 
         // $data = [
         //     'clients' => $clients,
