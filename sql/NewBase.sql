@@ -1,8 +1,8 @@
 -- Connect to PostgreSQL and create/drop database
-\c postgres;
-DROP DATABASE IF EXISTS gestion_porc;
-CREATE DATABASE gestion_porc;
-\c gestion_porc;
+-- \c postgres;
+-- DROP DATABASE IF EXISTS gestion_porc;
+-- CREATE DATABASE gestion_porc;
+-- \c gestion_porc;
 
 -- 1. TABLES UTILISATEURS
 CREATE TABLE bao_utilisateur_role (
@@ -18,8 +18,6 @@ CREATE TABLE bao_utilisateur (
     FOREIGN KEY (id_utilisateur_role) REFERENCES bao_utilisateur_role(id_utilisateur_role)
         ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
-
-
 
 -- 2. TABLES FOR PIG MANAGEMENT
 -- Table for pig enclosure types
@@ -41,12 +39,8 @@ CREATE TABLE races_porcs (
     besoins_nutritionnels TEXT,
     duree_engraissement_jours INT
 );
--- 2. TABLES ENCLOS ET TRUIES
-CREATE TABLE bao_enclos_type (
-    id_enclos_type SERIAL PRIMARY KEY,
-    nom_enclos_type VARCHAR(50) NOT NULL
-);
 
+-- 2. TABLES ENCLOS-TRUIES-PORTEES
 -- Table for enclosures
 CREATE TABLE bao_enclos (
     id_enclos SERIAL PRIMARY KEY,
@@ -58,37 +52,12 @@ CREATE TABLE bao_enclos (
 -- Table for sows
 CREATE TABLE bao_truie (
     id_truie SERIAL PRIMARY KEY,
-    id_enclos INTEGER,
+    id_enclos INTEGER, -- where is that truie located
     id_race INTEGER, -- Added to track sow breed
     poids DECIMAL(10,6), -- Sow weight in kg
     date_entree DATE,
     FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos),
     FOREIGN KEY (id_race) REFERENCES races_porcs(id_race)
-);
--- 3. TABLE INSEMINATION (obligatoire pour cycle reproduction)
-CREATE TABLE bao_insemination (
-    id_insemination SERIAL PRIMARY KEY,
-    id_truie INTEGER,
-    date_insemination DATE,
-    resultat VARCHAR(20) CHECK (resultat IN ('succes', 'echec', 'en cours')),
-    FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
-        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
-);
-
--- 4. TABLES REPRODUCTION
-CREATE TABLE bao_cycle_reproduction (
-    id_cycle_reproduction SERIAL PRIMARY KEY,
-    id_truie INTEGER,
-    date_debut_cycle DATE,
-    date_fin_cycle DATE,
-    nombre_males INTEGER,
-    nombre_femelles INTEGER,
-    id_insemination INTEGER,
-    etat VARCHAR(20) CHECK (etat IN ('en cours', 'termine')),
-    FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
-        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED,
-    FOREIGN KEY (id_insemination) REFERENCES bao_insemination(id_insemination)
-        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
 
 -- Table for litters
@@ -120,25 +89,6 @@ CREATE TABLE bao_enclos_portee (
     FOREIGN KEY (id_portee) REFERENCES bao_portee(id_portee)
 );
 
-
--- Table for sow weighing
-CREATE TABLE bao_pesee_truie (
-    id_pesee_truie SERIAL PRIMARY KEY,
-    id_truie INTEGER,
-    date_pesee DATE,
-    poids DECIMAL(10,6), -- Weight of the sow in kg
-    FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
-);
-
--- Table for litter weighing in enclosures
-CREATE TABLE bao_pesee_enclos_portee (
-    id_pesee_enclos_portee SERIAL PRIMARY KEY,
-    id_enclos_portee INTEGER,
-    date_pesee DATE,
-    poids_total DECIMAL(10,6), -- Total weight of the litter in the enclosure in kg
-    FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee)
-);
-
 -- Table for tracking movement of litters between enclosures
 CREATE TABLE bao_mouvement_enclos_portee (
     id_mouvement_enclos_portee SERIAL PRIMARY KEY,
@@ -151,25 +101,32 @@ CREATE TABLE bao_mouvement_enclos_portee (
     FOREIGN KEY (id_enclos_portee_destination) REFERENCES bao_enclos_portee(id_enclos_portee)
 );
 
--- Table for disease records affecting sows
-CREATE TABLE bao_maladie_truie (
-    id_maladie_truie SERIAL PRIMARY KEY,
+-- 4. TABLES REPRODUCTION
+CREATE TABLE bao_insemination (
+    id_insemination SERIAL PRIMARY KEY,
     id_truie INTEGER,
-    date_diagnostic DATE,
-    description TEXT,
-    traitement TEXT,
+    date_insemination DATE,
+    resultat VARCHAR(20) CHECK (resultat IN ('succes', 'echec', 'en cours')),
     FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
+        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
 
--- Table for disease records affecting enclosures (litters)
-CREATE TABLE bao_maladie_enclos (
-    id_maladie_enclos SERIAL PRIMARY KEY,
-    id_enclos INTEGER,
-    date_diagnostic DATE,
-    description TEXT,
-    traitement TEXT,
-    FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos)
+CREATE TABLE bao_cycle_reproduction (
+    id_cycle_reproduction SERIAL PRIMARY KEY,
+    id_truie INTEGER,
+    date_debut_cycle DATE,
+    date_fin_cycle DATE,
+    nombre_males INTEGER,
+    nombre_femelles INTEGER,
+    id_insemination INTEGER,
+    etat VARCHAR(20) CHECK (etat IN ('en cours', 'termine')),
+    FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
+        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED,
+    FOREIGN KEY (id_insemination) REFERENCES bao_insemination(id_insemination)
+        ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
+
+-- 5. TABLES ALIMENTS
 CREATE TABLE aliments (
     id_aliment SERIAL PRIMARY KEY,
     nom_aliment VARCHAR(50) NOT NULL,
@@ -179,7 +136,6 @@ CREATE TABLE aliments (
     contact_fournisseur VARCHAR(20),
     conso_journaliere_kg_par_porc DECIMAL(5, 2)
 );
-
 
 CREATE TABLE alimentation_enclos (
     id_alimentation SERIAL PRIMARY KEY,
@@ -195,9 +151,6 @@ CREATE TABLE details_alimentation (
     id_enclos_portee INT REFERENCES bao_enclos_portee(id_enclos_portee)
 );
 
-DROP TABLE IF EXISTS historique_alimentation;
-DROP TABLE IF EXISTS porcs;
-
 CREATE TABLE reapprovisionnement_aliments (
     id_reappro SERIAL PRIMARY KEY,
     id_aliment INT REFERENCES aliments(id_aliment),
@@ -207,7 +160,7 @@ CREATE TABLE reapprovisionnement_aliments (
 );
 
 
--- 5. CLIENTS
+-- 6. CLIENTS
 CREATE TABLE bao_client (
     id_client SERIAL PRIMARY KEY,
     nom_client VARCHAR(50),
@@ -217,7 +170,7 @@ CREATE TABLE bao_client (
     contact_email VARCHAR(50)
 );
 
--- 6. EMPLOYES
+-- 7. EMPLOYES
 CREATE TABLE bao_employe_poste (
     id_employe_poste SERIAL PRIMARY KEY,
     nom_poste VARCHAR(100),
@@ -237,7 +190,7 @@ CREATE TABLE bao_employe (
     FOREIGN KEY (id_employe_poste) REFERENCES bao_employe_poste(id_employe_poste)
         ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
 );
------------ 5a/ GESTION SALAIRE EMPLOYÉ
+----------- 7a/ GESTION SALAIRE EMPLOYÉ
 CREATE TABLE bao_salaire (
     id_salaire SERIAL PRIMARY KEY,
     id_employe INTEGER,
@@ -247,7 +200,7 @@ CREATE TABLE bao_salaire (
     FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
 );
 
------------ 5b/ GESTION PRESENCE EMPLOYÉ
+----------- 7b/ GESTION PRESENCE EMPLOYÉ
 CREATE TABLE bao_presence (
     id_presence SERIAL PRIMARY KEY,
     id_employe INTEGER,
@@ -256,7 +209,7 @@ CREATE TABLE bao_presence (
     FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
 );
 
------------ 5c/ GESTION CONGES EMPLOYÉ
+----------- 7c/ GESTION CONGES EMPLOYÉ
 CREATE TABLE bao_conge (
     id_conge SERIAL PRIMARY KEY,
     id_employe INTEGER,
@@ -267,7 +220,7 @@ CREATE TABLE bao_conge (
     FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
 );
 
------------ 6/ GESTION TACHES EMPLOYÉ
+-- 8. TASK
 CREATE TABLE bao_tache (
     id_tache SERIAL PRIMARY KEY,
     id_employe_poste INTEGER, -- les taches sont liees a un poste specifique
@@ -283,18 +236,17 @@ CREATE TABLE bao_tache_employe (
     date_attribution DATE,
     date_echeance DATE,
     statut VARCHAR(20),
+    precision TEXT, -- details sur la tache
     FOREIGN KEY (id_tache) REFERENCES bao_tache(id_tache),
     FOREIGN KEY (id_employe) REFERENCES bao_employe(id_employe)
 );
-ALTER TABLE bao_tache_employe
-ADD COLUMN precision TEXT;
 
+-- 9. TABLES HEALTH EVENTS
 CREATE TABLE bao_sante_type_evenement (
     id_type_evenement SERIAL PRIMARY KEY,
     nom_type_evenement VARCHAR(50),
     prix DECIMAL(10,2)
 );
-
 
 CREATE TABLE bao_sante_evenement (
     id_sante_evenement SERIAL PRIMARY KEY,
@@ -321,7 +273,26 @@ CREATE TABLE bao_deces (
     FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos)
 );
 
------------ 8/ GESTION MALADIE -----------
+----------- 10/ GESTION MALADIE -----------
+-- CREATE TABLE bao_maladie_truie (
+--     id_maladie_truie SERIAL PRIMARY KEY,
+--     id_truie INTEGER,
+--     date_diagnostic DATE,
+--     description TEXT,
+--     traitement TEXT,
+--     FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
+-- );
+
+-- -- Table for disease records affecting enclosures (litters)
+-- CREATE TABLE bao_maladie_enclos (
+--     id_maladie_enclos SERIAL PRIMARY KEY,
+--     id_enclos INTEGER,
+--     date_diagnostic DATE,
+--     description TEXT,
+--     traitement TEXT,
+--     FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos)
+-- );
+
 CREATE TABLE bao_symptome (
     id_symptome SERIAL PRIMARY KEY,
     nom_symptome VARCHAR(50),
@@ -360,6 +331,25 @@ CREATE TABLE bao_diagnostic (
     FOREIGN KEY (id_enclos_portee_original) REFERENCES bao_enclos_portee(id_enclos_portee)
 );
 
+-- ADDITIONAL TABLES THAT NEKENA ADDED
+-- Table for sow weighing
+CREATE TABLE bao_pesee_truie (
+    id_pesee_truie SERIAL PRIMARY KEY,
+    id_truie INTEGER,
+    date_pesee DATE,
+    poids DECIMAL(10,6), -- Weight of the sow in kg
+    FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
+);
+
+-- Table for litter weighing in enclosures
+CREATE TABLE bao_pesee_enclos_portee (
+    id_pesee_enclos_portee SERIAL PRIMARY KEY,
+    id_enclos_portee INTEGER,
+    date_pesee DATE,
+    poids_total DECIMAL(10,6), -- Total weight of the litter in the enclosure in kg
+    FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee)
+);
+
 
 -- DONNEES
 -- Insert user roles and users
@@ -387,9 +377,9 @@ INSERT INTO bao_client (nom_client, type_profil, adresse, contact_telephone, con
 
 
 -- Insert initial data
+Insert into bao_enclos_type(nom_enclos_type)
+VALUES ('truie'), ('portee');
 
-select * from bao_type_porc;
--- Insert enclosure types into bao_type_porc (replacing bao_enclos_type)
 INSERT INTO bao_type_porc (nom_type, age_min, age_max, poids_min, poids_max, espace_requis)
 VALUES 
 ('Truie', 12, 36, 100.00, 200.00, 10.00),  -- 1 enclosure type for sows
