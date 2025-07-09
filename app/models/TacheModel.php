@@ -69,7 +69,7 @@ class TacheModel
 
     public static function getTachesEmploye(int $id_employe) {
     $conn = Flight::db();
-    $stmt = $conn->prepare("SELECT t.*, te.date_echeance, te.precision 
+    $stmt = $conn->prepare("SELECT t.*, te.date_echeance, te.precision, te.statut 
                            FROM bao_tache t 
                            JOIN bao_tache_employe te ON t.id_tache = te.id_tache 
                            WHERE te.id_employe = :id_employe");

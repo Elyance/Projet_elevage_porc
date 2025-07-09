@@ -53,18 +53,23 @@
                                         <td><?= htmlspecialchars($task['description'] ?? '') ?></td>
                                         <td><?= htmlspecialchars($task['date_echeance']) ?></td>
                                         <td>
-                                            <span class="badge badge-primary px-2">En cours</span>
+                                            <?php if ($task['statut'] === 'en cours'): ?>
+                                                <span class="badge badge-warning px-2">En cours</span>
+                                            <?php elseif ($task['statut'] === 'terminee'): ?>
+                                                <span class="badge badge-success px-2">Terminé</span>
+                                            <?php endif; ?>
                                         </td>
                                         <td class="actions">
-                                            <form method="post" action="<?= BASE_URL ?>/taches/done" style="display: inline;">
-                                                <input type="hidden" name="taches_done[]" value="<?= $task['id_tache'] ?>">
-                                                <button type="submit">Confirmer</button>
-                                            </form>
-                                            
-                                            <?php if ($task['nom_tache'] === 'Peser les porcs'): ?>
-                                                <a href="<?= BASE_URL ?>/tache_peser" class="action-btn">Peser</a>
-                                            <?php elseif ($task['nom_tache'] === 'Nourrir les animaux'): ?>
-                                                <a href="<?= BASE_URL ?>/nourrir" class="action-btn">Nourrir</a>
+                                            <?php if ($task['statut'] === 'en cours'): ?>
+                                                <form method="post" action="<?= BASE_URL ?>/tache/done" style="display: inline;">
+                                                    <input type="hidden" name="taches_done[]" value="<?= $task['id_tache'] ?>">
+                                                    <button type="submit">Terminer</button>
+                                                </form>
+                                                <?php if ($task['nom_tache'] === 'Peser les porcs'): ?>
+                                                    <a href="<?= BASE_URL ?>/tache_peser" class="action-btn">Peser</a>
+                                                <?php elseif ($task['nom_tache'] === 'Nourrir les animaux'): ?>
+                                                    <a href="<?= BASE_URL ?>/nourrir" class="action-btn">Nourrir</a>
+                                                <?php endif; ?>
                                             <?php endif; ?>
                                         </td>
                                     </tr>

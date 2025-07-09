@@ -107,7 +107,7 @@ class Tache {
         $db = Flight::db();
         $stmt = $db->prepare('UPDATE bao_tache_employe SET statut = ? WHERE id_tache = ? AND date_echeance = ?');
         
-        $stmt->execute(['termine', $ids,$date]);
+        $stmt->execute(['terminee', $ids,$date]);
         
     }
 }
