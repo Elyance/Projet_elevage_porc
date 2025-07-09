@@ -9,7 +9,7 @@ class ReapproModel
     public static function addReappro(int $id_aliment, float $quantite_kg): bool
     {
         $conn = Flight::db();
-        $query = "SELECT prix_kg FROM aliments WHERE id_aliment = :id_aliment";
+        $query = "SELECT prix_kg FROM bao_aliments WHERE id_aliment = :id_aliment";
         $stmt = $conn->prepare($query);
         $stmt->execute([':id_aliment' => $id_aliment]);
         $prix_kg = $stmt->fetchColumn();
@@ -19,7 +19,7 @@ class ReapproModel
         }
 
         $cout_total = $prix_kg * $quantite_kg;
-        $query = "INSERT INTO reapprovisionnement_aliments (id_aliment, quantite_kg, cout_total) 
+        $query = "INSERT INTO bao_reapprovisionnement_aliments (id_aliment, quantite_kg, cout_total) 
                   VALUES (:id_aliment, :quantite_kg, :cout_total)";
         $stmt = $conn->prepare($query);
         return $stmt->execute([

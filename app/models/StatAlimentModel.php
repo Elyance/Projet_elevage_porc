@@ -13,7 +13,7 @@ class StatAlimentModel
     public function getStatsAliments($annee) {
         // $db = Flight::db();
         $sql = "SELECT a.nom_aliment, SUM(r.quantite_kg) AS total_kg
-                FROM reapprovisionnement_aliments r
+                FROM bao_reapprovisionnement_aliments r
                 JOIN aliments a ON a.id_aliment = r.id_aliment
                 WHERE EXTRACT(YEAR FROM r.date_reappro) = :annee
                 GROUP BY a.nom_aliment

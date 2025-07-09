@@ -31,7 +31,7 @@ class NourrirModel
         $conn = Flight::db();
         try {
             $conn->beginTransaction();
-            $query = "INSERT INTO alimentation_enclos (id_enclos) VALUES (:id_enclos) RETURNING id_alimentation";
+            $query = "INSERT INTO bao_alimentation_enclos (id_enclos) VALUES (:id_enclos) RETURNING id_alimentation";
             $stmt = $conn->prepare($query);
             $stmt->execute([':id_enclos' => $id_enclos]);
             $id_alimentation = $stmt->fetchColumn();
@@ -40,7 +40,7 @@ class NourrirModel
                 if (!empty($repartitions[$index])) {
                     foreach ($repartitions[$index] as $id_enclos_portee => $quantite) {
                         if ($quantite > 0) {
-                            $query = "INSERT INTO details_alimentation 
+                            $query = "INSERT INTO bao_details_alimentation 
                                      (id_alimentation, id_aliment, quantite_kg, id_enclos_portee) 
                                      VALUES (:id_alimentation, :id_aliment, :quantite_kg, :id_enclos_portee)";
                             $stmt = $conn->prepare($query);

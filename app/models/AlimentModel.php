@@ -17,7 +17,7 @@ class AlimentModel
                 JOIN bao_type_porc ON bao_enclos.enclos_type = bao_type_porc.id_type_porc
                 WHERE bao_type_porc.id_type_porc IN (2, 3)) * a.conso_journaliere_kg_par_porc 
                AS conso_journaliere_totale 
-        FROM aliments a
+        FROM bao_aliments a
     ";
     $stmt = $conn->prepare($query);
     $stmt->execute();
@@ -32,7 +32,7 @@ class AlimentModel
                    r.quantite_kg AS quantite_reappro, 
                    r.date_reappro, 
                    r.cout_total
-            FROM aliments a
+            FROM bao_aliments a
             LEFT JOIN reapprovisionnement_aliments r ON a.id_aliment = r.id_aliment
             WHERE a.id_aliment = :id
         ";
@@ -45,7 +45,7 @@ class AlimentModel
     {
         $conn = Flight::db();
         // Validate that new stock won't be negative
-        $stmtCheck = $conn->prepare("SELECT stock_kg FROM aliments WHERE id_aliment = :id_aliment");
+        $stmtCheck = $conn->prepare("SELECT stock_kg FROM bao_aliments WHERE id_aliment = :id_aliment");
         $stmtCheck->execute([':id_aliment' => $id_aliment]);
         $currentStock = $stmtCheck->fetchColumn() ?: 0;
         if ($currentStock + $quantite_kg < 0) {
