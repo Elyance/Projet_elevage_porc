@@ -95,13 +95,23 @@ class CycleModel
     public static function getPrevision(int $truieId, int $currentId): array
     {
         $conn = Flight::db();
-        $stmt = $conn->prepare("SELECT AVG((date_fin_cycle - date_debut_cycle)) AS avg_days, AVG(nombre_males + nombre_femelles) AS avg_portee 
-                               FROM bao_cycle_reproduction WHERE id_truie = :id_truie AND (nombre_males IS NOT NULL OR nombre_femelles IS NOT NULL) AND id_cycle_reproduction != :current_id");
+        $stmt = $conn->prepare("
+            SELECT 
+                AVG(EXTRACT(DAY FROM (date_fin_cycle::timestamp - date_debut_cycle::timestamp))) AS avg_days, 
+                AVG(COALESCE(nombre_males, 0) + COALESCE(nombre_femelles, 0)) AS avg_portee 
+            FROM bao_cycle_reproduction 
+            WHERE id_truie = :id_truie 
+            AND etat = 'termine' 
+            AND id_cycle_reproduction != :current_id
+            AND date_fin_cycle IS NOT NULL
+            AND date_debut_cycle IS NOT NULL
+        ");
         $stmt->execute([':id_truie' => $truieId, ':current_id' => $currentId]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
         return [
-            'days' => $result['avg_days'] ?: 115,
-            'portee' => $result['avg_portee'] ?: 0
+            'days' => $result['avg_days'] ? round($result['avg_days'], 2) : 115,
+            'portee' => $result['avg_portee'] ? round($result['avg_portee'], 2) : 0
         ];
     }
 

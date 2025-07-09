@@ -33,6 +33,7 @@ class ReproductionController {
 
     public function inseminate()
     {
+        SessionMiddleware::requireAuth();
         $truies = TruieModel::getAll();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -44,6 +45,7 @@ class ReproductionController {
             Flight::redirect('/reproduction');
         }
 
-        Flight::render('reproduction/inseminate', ['truies' => $truies]);
+        $content = Flight::view()->fetch('reproduction/inseminate', ['truies' => $truies]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 }

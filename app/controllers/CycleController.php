@@ -10,12 +10,15 @@ class CycleController
 {
     public function index()
     {
+        SessionMiddleware::requireAuth();
         $cycles = CycleModel::getAll();
-        Flight::render('cycle/index', ['cycles' => $cycles]);
+        $content = Flight::view()->fetch('cycle/index', ['cycles' => $cycles]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function add()
     {
+        SessionMiddleware::requireAuth();
         $truies = TruieModel::getAll();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -29,12 +32,13 @@ class CycleController
 
             Flight::redirect('/cycle');
         }
-
-        Flight::render('cycle/add', ['truies' => $truies]);
+        $content = Flight::view()->fetch('cycle/add', ['truies' => $truies]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function details($id)
     {
+        SessionMiddleware::requireAuth();
         $currentCycle = CycleModel::findById((int)$id);
 
         if ($currentCycle && $currentCycle->etat !== 'en cours') {
@@ -48,11 +52,12 @@ class CycleController
         $truieId = $currentCycle ? $currentCycle->id_truie : 0;
         $precedentCycle = $currentCycle ? CycleModel::getPrecedentTerminatedCycle($truieId) : null;
         $prevision = $currentCycle ? CycleModel::getPrevision($truieId, $currentCycle->id_cycle_reproduction) : ['days' => 115, 'portee' => 0];
-
-        Flight::render('cycle/details', [
+        
+        $content = Flight::view()->fetch('cycle/details', [
             'currentCycle' => $currentCycle,
             'precedentCycle' => $precedentCycle,
             'prevision' => $prevision
         ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 }
