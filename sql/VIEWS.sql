@@ -1,1 +1,0 @@
-SELECT client.* , categorie_client.nom_categorie FROM client JOIN categorie_client ON categorie_client.id_categorie = client.id_categorie;
