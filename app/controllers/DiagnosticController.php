@@ -10,6 +10,7 @@ use Exception;
 use Flight;
 use DateTime;
 use SessionMiddleware;
+use Tracy\Bar;
 
 class DiagnosticController
 {
@@ -84,9 +85,9 @@ class DiagnosticController
             'id_diagnostic' => $id_diagnostic,
             'moveData' => $moveData,
             'quarantineEnclos' => $quarantineEnclos,
-            'page' => 'maladie/moveToQuarantine'
         ];
-        Flight::render('template', $data);
+        $content = Flight::view()->fetch('maladie/moveToQuarantine', $data);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function moveToQuarantine($id_diagnostic)
@@ -97,7 +98,7 @@ class DiagnosticController
             $id_enclos_destination = Flight::request()->data->id_enclos_destination;
 
             if ($id_enclos_destination === null) {
-                Flight::redirect('/maladie/signale?error=Enclos de quarantaine non sélectionné');
+                Flight::redirect(BASE_URL.'/maladie/signale?error=Enclos de quarantaine non sélectionné');
                 return;
             }
 
@@ -114,14 +115,14 @@ class DiagnosticController
                 );
                 $diagnostic->updateStatusAndEnclos($id_diagnostic, 'en quarantaine', $moveData['id_enclos_portee_original'], $id_tena_izy);
                 // $conn->commit();
-                Flight::redirect('/maladie/signale?success=Mis en quarantaine');
+                Flight::redirect(BASE_URL.'/maladie/signale?success=Mis en quarantaine');
             } catch (Exception $e) {
                 // $conn->rollBack();
                 echo $e;
-                Flight::redirect('/maladie/signale?error=Erreur lors du déplacement: ' . $e->getMessage());
+                Flight::redirect(BASE_URL.'/maladie/signale?error=Erreur lors du déplacement: ' . $e->getMessage());
             }
         } else {
-            Flight::redirect('/diagnostic/moveToQuarantine/' . $id_diagnostic);
+            Flight::redirect(BASE_URL.'/diagnostic/moveToQuarantine/' . $id_diagnostic);
         }
     }
 

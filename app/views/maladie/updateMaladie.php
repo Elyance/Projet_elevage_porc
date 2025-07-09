@@ -1,46 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php require_once __DIR__ . '/partials/header.php'; ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Modifier la maladie</h4>
+                <div class="basic-form">
+                    <form method="post">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Nom de la maladie</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="nom_maladie" id="nom_maladie" class="form-control" 
+                                    value="<?= htmlspecialchars($maladie['nom_maladie']) ?>" required>
+                            </div>
+                        </div>
 
-<body>
-    <h1>Modifier la maladie</h1>
-    <form method="post">
-        <label for="nom_maladie">Nom de la maladie :</label>
-        <input type="text" name="nom_maladie" id="nom_maladie" value="<?= htmlspecialchars($maladie['nom_maladie']) ?>">
-        <br>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Description</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="description" id="description" class="form-control" 
+                                    value="<?= htmlspecialchars($maladie['description']) ?>">
+                            </div>
+                        </div>
 
-        <label for="description">Description :</label>
-        <input type="text" name="description" id="description" value="<?= htmlspecialchars($maladie['description']) ?>">
-        <br>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Dangerosité</label>
+                            <div class="col-sm-10">
+                                <select name="dangerosite" id="dangerosite" class="form-control">
+                                    <option value="faible" <?= $maladie['dangerosite'] === 'faible' ? 'selected' : '' ?>>Faible</option>
+                                    <option value="moderee" <?= $maladie['dangerosite'] === 'moderee' ? 'selected' : '' ?>>Modérée</option>
+                                    <option value="elevee" <?= $maladie['dangerosite'] === 'elevee' ? 'selected' : '' ?>>Élevée</option>
+                                </select>
+                            </div>
+                        </div>
 
-        <label for="dangerosite">Dangerosité :</label>
-        <select name="dangerosite" id="dangerosite">
-            <option value="faible" <?= $maladie['dangerosite'] === 'faible' ? 'selected' : '' ?>>Faible</option>
-            <option value="moderee" <?= $maladie['dangerosite'] === 'moderee' ? 'selected' : '' ?>>Modérée</option>
-            <option value="elevee" <?= $maladie['dangerosite'] === 'elevee' ? 'selected' : '' ?>>Élevée</option>
-        </select>
-        <br>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Symptômes</label>
+                            <div class="col-sm-10">
+                                <?php 
+                                $idsSymptomesAssocies = array_column($symptomes_maladie, 'id_symptome');
+                                foreach ($symptomes as $symptome): 
+                                    $checked = in_array($symptome['id_symptome'], $idsSymptomesAssocies) ? 'checked' : '';
+                                ?>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="id_symptomes[]" 
+                                            value="<?= $symptome['id_symptome'] ?>" id="symptome_<?= $symptome['id_symptome'] ?>"
+                                            <?= $checked ?>>
+                                        <label class="form-check-label" for="symptome_<?= $symptome['id_symptome'] ?>">
+                                            <?= htmlspecialchars($symptome['nom_symptome']) ?>
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
 
-        <label>Symptômes :</label><br>
-        <?php
-        $idsSymptomesAssocies = array_column($symptomes_maladie, 'id_symptome');
-        foreach ($symptomes as $symptome):
-            $checked = in_array($symptome['id_symptome'], $idsSymptomesAssocies) ? 'checked' : '';
-            ?>
-            <input type="checkbox" name="id_symptomes[]" value="<?= $symptome['id_symptome'] ?>" id="symptome_<?= $symptome['id_symptome'] ?>"
-                <?= $checked ?>>
-            <label for="symptome_<?= $symptome['id_symptome'] ?>"><?= htmlspecialchars($symptome['nom_symptome']) ?></label><br>
-        <?php endforeach; ?>
-
-        <br>
-        <button type="submit">Modifier la maladie</button>
-    </form>
-
-</body>
-
-</html>
+                        <div class="form-group row">
+                            <div class="col-sm-10 offset-sm-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-save"></i> Modifier la maladie
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

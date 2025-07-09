@@ -1,37 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php require_once __DIR__ . '/partials/header.php'; ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creation d'une maladie</title>
-</head>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Création d'une maladie</h4>
+                <div class="basic-form">
+                    <form method="post">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Nom de la maladie</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="nom_maladie" id="nom_maladie" class="form-control" required>
+                            </div>
+                        </div>
 
-<body>
-    <form method="post">
-        <label for="nom_maladie">Nom de la maladie : </label>
-        <input type="text" name="nom_maladie" id="nom_maladie">
-        <br>
-        <label for="description">Description : </label>
-        <input type="text" name="description" id="description">
-        <br>
-        <label for="dangerosite">Dangerosite : </label>
-        <select name="dangerosite" id="dangerosite">
-            <option value="faible">Faible</option>
-            <option value="moderee">Moderee</option>
-            <option value="elevee">Elevee</option>
-        </select>
-        <br>
-        <label>Symptômes :</label><br>
-        <?php foreach ($symptomes as $symptome): ?>
-            <input type="checkbox" name="id_symptomes[]" value="<?= $symptome['id_symptome'] ?>"
-                id="symptome_<?= $symptome['id_symptome'] ?>">
-            <label for="symptome_<?= $symptome['id_symptome'] ?>"><?= htmlspecialchars($symptome['nom_symptome']) ?></label><br>
-        <?php endforeach; ?>
-        <br><br>
-        <button type="submit">Créer la maladie</button>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Description</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="description" id="description" class="form-control">
+                            </div>
+                        </div>
 
-    </form>
-</body>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Dangerosité</label>
+                            <div class="col-sm-10">
+                                <select name="dangerosite" id="dangerosite" class="form-control">
+                                    <option value="faible">Faible</option>
+                                    <option value="moderee">Modérée</option>
+                                    <option value="elevee">Élevée</option>
+                                </select>
+                            </div>
+                        </div>
 
-</html>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Symptômes</label>
+                            <div class="col-sm-10">
+                                <?php foreach ($symptomes as $symptome): ?>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="id_symptomes[]" 
+                                            value="<?= $symptome['id_symptome'] ?>" id="symptome_<?= $symptome['id_symptome'] ?>">
+                                        <label class="form-check-label" for="symptome_<?= $symptome['id_symptome'] ?>">
+                                            <?= htmlspecialchars($symptome['nom_symptome']) ?>
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-10 offset-sm-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-save"></i> Créer la maladie
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
