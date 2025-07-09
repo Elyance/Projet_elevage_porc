@@ -361,6 +361,39 @@ CREATE TABLE bao_diagnostic (
 );
 
 
+CREATE TABLE bao_commande (
+    id_commande SERIAL PRIMARY KEY,
+    id_client INTEGER,
+    id_enclos_portee INTEGER, -- enclos d'origine des porcs
+    quantite INTEGER, -- nombre de porcs commandés
+    date_commande DATE, -- date de la commande
+    adresse_livraison VARCHAR(100),
+    date_livraison DATE, -- peut être NULL au début
+    statut_livraison VARCHAR(20) CHECK (statut_livraison IN ('en attente', 'en cours', 'livre', 'annule')), -- statut de livraison
+    nomClient VARCHAR(60), -- nom du client (stocké en plus de l'id_client)
+    id_race INTEGER, -- race des porcs commandés
+
+    -- Clés étrangères
+    FOREIGN KEY (id_client) REFERENCES bao_client(id_client),
+    FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee),
+    FOREIGN KEY (id_race) REFERENCES races_porcs(id_race)
+);
+
+
+
+CREATE TABLE bao_prix_vente_porc (
+    id SERIAL PRIMARY KEY,
+    id_race INTEGER,
+    prix_unitaire DECIMAL(10,2),
+
+    -- Clé étrangère vers races_porcs
+    FOREIGN KEY (id_race) REFERENCES races_porcs(id_race)
+);
+
+INSERT INTO bao_prix_vente_porc(id_race,prix_unitaire) VALUES (1,1050000), (2,1200000), (3,1300000);
+
+
+
 -- DONNEES
 -- Insert user roles and users
 INSERT INTO bao_utilisateur_role (nom_role) VALUES ('admin'), ('emp');

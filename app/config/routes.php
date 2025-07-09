@@ -22,6 +22,9 @@ use app\controllers\SanteEvenementController;
 use app\controllers\SanteTypeEvenementController;
 use app\controllers\DiagnosticController;
 use app\controllers\MaladieController;
+use app\controllers\BudgetController;
+use app\controllers\CommandeController;
+use app\controllers\DepenseController;
 
 use flight\Engine;
 use flight\net\Router;
@@ -282,3 +285,23 @@ $usercontroller = new UserController();
 Flight::route('/', [$usercontroller, 'getFormLogin']);
 Flight::route('/login', [$usercontroller, 'login']);
 Flight::route('/check_tache/@id/@date', [$Tache_Controller, 'getTacheById']);
+
+
+
+// Commandes
+$CommandeController = new CommandeController();
+$router->post('/commande/add', [$CommandeController, 'add']);
+$router->get('/commande/add',[$CommandeController, 'form']);
+$router->get('/commande/recette', [$CommandeController, 'recette']);
+$router->get('/commande/list', [$CommandeController, 'list']);	
+$router->get('/commande/edit-status/@id', [$CommandeController, 'editStatus']);
+$router->post('/commande/edit-status/@id', [$CommandeController, 'updateStatus']);
+
+// Depenses
+$DepenseController = new DepenseController();
+$router->get('/depense/list', [$DepenseController, 'list']);
+
+
+//Budget
+$BudgetController = new BudgetController();
+$router->get('/budget/index', [$BudgetController, 'index']);

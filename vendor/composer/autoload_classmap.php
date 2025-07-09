@@ -69,6 +69,7 @@ return array(
     'Nette\\Utils\\Json' => $vendorDir . '/nette/utils/src/Utils/Json.php',
     'Nette\\Utils\\JsonException' => $vendorDir . '/nette/utils/src/Utils/exceptions.php',
     'Nette\\Utils\\ObjectHelpers' => $vendorDir . '/nette/utils/src/Utils/ObjectHelpers.php',
+    'Nette\\Utils\\ObjectMixin' => $vendorDir . '/nette/utils/src/Utils/ObjectMixin.php',
     'Nette\\Utils\\Paginator' => $vendorDir . '/nette/utils/src/Utils/Paginator.php',
     'Nette\\Utils\\Random' => $vendorDir . '/nette/utils/src/Utils/Random.php',
     'Nette\\Utils\\Reflection' => $vendorDir . '/nette/utils/src/Utils/Reflection.php',
