@@ -70,9 +70,9 @@ return [
 	'database' => [
 		// uncomment the below 4 lines for mysql
 		'host' => 'localhost',
-		 'dbname' => 'elevage_porc',
+		 'dbname' => 'gestion_porc',
 		 'user' => 'postgres',
-		 'password' => 'Admin'
+		 'password' => 'post'
 
 		// uncomment the following line for sqlite
 		// 'file_path' => __DIR__ . $ds . '..' . $ds . 'database.sqlite'
