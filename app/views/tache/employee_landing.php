@@ -12,12 +12,12 @@
     <link href="<?= STATIC_URL ?>/assets/css/employee-task-style.css" rel="stylesheet">
 </head>
 <body>
+    <?php include 'partials/headerLanding.php'; ?>
     <div class="container">
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
                     <h4>Taches Employé</h4>
-                    <a href="<?= BASE_URL ?>/logout" class="logout-link">Déconnexion</a>
                     <div class="clearfix"></div>
                 </div>
 
@@ -26,9 +26,6 @@
                         <label for="task-date">Date des tâches:</label>
                         <div class="input-group">
                             <input type="date" id="task-date" class="form-control" value="<?= htmlspecialchars($selectedDate) ?>">
-                            <span class="input-group-append">
-                                <span class="input-group-text"><i class="mdi mdi-calendar-check"></i></span>
-                            </span>
                         </div>
                         <button id="today-btn" class="btn btn-primary">Aujourd'hui</button>
                     </div>
