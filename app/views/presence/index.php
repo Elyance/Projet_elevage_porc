@@ -1,5 +1,5 @@
 <h1>Gestion de la Présence</h1>
-<form method="get" action="/presence">
+<form method="get" action="<?= BASE_URL?>/presence">
     <label>Mois: 
         <select name="mois" onchange="this.form.submit()">
             <?php foreach ($months as $m): ?>
@@ -17,5 +17,5 @@
 </form>
 <h2>Jours du Mois</h2>
 <?php foreach ($days as $day): ?>
-    <a href="/presence/detail_jour/<?= sprintf("%04d-%02d-%02d", $year, $month, $day) ?>"><?= $day ?></a> 
+    <a href="<?= BASE_URL?>/presence/detail_jour/<?= sprintf("%04d-%02d-%02d", $year, $month, $day) ?>"><?= $day ?></a> 
 <?php endforeach; ?>

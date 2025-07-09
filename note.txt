@@ -1,0 +1,3 @@
+lasa otrany izao ilay liens http://localhost:8000/Git/Projet_elevage_porc/presence/detail_jour/2025-07-02
+rehefa redirect
+mila confirmen'ilay admin ilay tache

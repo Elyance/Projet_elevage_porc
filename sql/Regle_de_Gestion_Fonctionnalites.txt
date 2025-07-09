@@ -1,0 +1,14 @@
+Enclos:
+1. Les enclos partagent les meme dimensions, donc possedent le meme stockage maximal (ce dernier devrait etre configurable qqpart).
+
+Deplacement de porcs:
+1. Les porcs ne peuvent etre deplacees que dans des enclos de leur type: ex 'Portee' vers 'Portee', 'Truies' vers 'Truie'.
+2. Le nombre de porc to move doit etre inferieur a la capacite maximale de l'enclos.
+3. Le deplacement de portee n'est possible que si la portee destination partage le meme mois de naissance que la portee source. (sinon ça devient tres complexe de gerer quelle portee sont pret pour la vente rehefa mixer izy ireo dans un seul et meme enclos)
+
+
+Reproduction:
+1. Lorsqu'il y a une naissance, l'insertion en elle meme se fait au niveau de 'bao_portee' et 'bao_enclos_portee'
+2. Apres insertion de naissance, la table cycle egalement devrait mettre a jour le cycle qui vient de se terminer
+    ex: nombre_portee, date_fin_cycle
+3. Dans la prediction des prochains cycles, le nombre estimee sera une moyenne des nb_portee des cycles precedents
