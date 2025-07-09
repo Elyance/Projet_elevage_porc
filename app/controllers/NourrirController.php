@@ -7,26 +7,26 @@ use app\models\EnclosModel;
 use Flight;
 use SessionMiddleware;
 
-class NourrirController
-{
-    public function index(?int $id_enclos = null, ?array $message = null)
-    {
+class NourrirController {
+    public function index(?int $id_enclos = null, ?array $message = null) {
+        SessionMiddleware::startSession();
         if ($id_enclos === null) {
             $id_enclos = (int)Flight::request()->query->enclos;
         }
         // Convert EnclosModel objects to arrays
-        $enclosObjects = EnclosModel::getAll();
+        $enclosObjects = EnclosModel::getAllWithTypeNames();
         $enclos = array_map(function ($enclo) {
             return [
                 'id_enclos' => $enclo->id_enclos,
                 'enclos_type' => $enclo->enclos_type,
+                'type_name' => $enclo->type_name,
                 'surface' => $enclo->surface
             ];
         }, $enclosObjects);
         $aliments = AlimentModel::getAllAliments();
         $infosNourrissage = $id_enclos ? NourrirModel::getInfosNourrissage($id_enclos) : [];
 
-        Flight::render('aliments/nourrir', [
+        $content = Flight::view()->fetch('aliments/nourrir', [
             'enclos' => $enclos,
             'aliments' => $aliments,
             'infosNourrissage' => $infosNourrissage,
@@ -35,19 +35,13 @@ class NourrirController
         ]);
     }
 
-    public function nourrir()
-    {
+    public function nourrir() {
+        SessionMiddleware::startSession();
         $data = Flight::request()->data;
-        $id_enclos = (int)$data->id_enclos;
+        $id_enclos = (int)$data->enclos;
         $aliments = $data->aliments ?? [];
         $quantites = $data->quantites ?? [];
         $repartitions = $this->parseRepartitions($data);
-
-        // Debug output
-        
-        
-        
-        
 
         try {
             NourrirModel::nourrirEnclos($id_enclos, $aliments, $quantites, $repartitions);
@@ -59,41 +53,23 @@ class NourrirController
     }
 
     private function parseRepartitions($data): array
-{
-    $repartitions = [];
-    $rawData = $data->getData(); // Access the underlying array from flight\util\Collection
-    // 
-            
-    // 
-    foreach ($rawData as $key => $value) {
-        // 
-
-        if (strpos($key, 'repartitions') === 0 && is_array($value)) {
-            // 
-            // Iterate over the outer array to get aliment indices
-            foreach ($value as $alimentIndex => $distributions) {
-                // 
-                if (is_array($distributions)) {
-                    // Iterate over the inner array to get id_enclos_portee and quantity
-                    foreach ($distributions as $id_enclos_portee => $quantity) {
-                        // 
-                        if (is_numeric($quantity)) {
-                            // 
-                            $repartitions[$alimentIndex][$id_enclos_portee] = (float)$quantity;
-                            // 
-                        } else {
-                            // 
+    {
+        $repartitions = [];
+        $rawData = $data->getData();
+        
+        foreach ($rawData as $key => $value) {
+            if (strpos($key, 'repartitions') === 0 && is_array($value)) {
+                foreach ($value as $alimentIndex => $distributions) {
+                    if (is_array($distributions)) {
+                        foreach ($distributions as $target => $quantity) {
+                            if (is_numeric($quantity)) {
+                                $repartitions[$alimentIndex][$target] = (float)$quantity;
+                            }
                         }
                     }
-                } else {
-                    // 
                 }
             }
-        } else {
-            // 
         }
+        return $repartitions;
     }
-    // 
-    return $repartitions;
-}
 }

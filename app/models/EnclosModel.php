@@ -25,6 +25,24 @@ class EnclosModel
         return array_map(fn($item) => self::fromArray($item), $result);
     }
 
+    public static function getAllWithTypeNames()
+    {
+        $conn = Flight::db();
+        $query = "
+            SELECT e.*, tp.nom_type AS type_name 
+            FROM bao_enclos e
+            LEFT JOIN bao_type_porc tp ON e.enclos_type = tp.id_type_porc
+        ";
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+        
+        $results = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $results[] = (object)$row;
+        }
+        return $results;
+    }
+
     public static function getEncloTypeName(int $id_enclos_type): ?string
     {
         $conn = Flight::db();
