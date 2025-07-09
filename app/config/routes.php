@@ -1,7 +1,5 @@
 <?php
 
-// use app\controllers\ApiExampleController;
-// use app\controllers\WelcomeController;
 use app\controllers\UserController;
 use app\controllers\EnclosController;
 use app\controllers\ReproductionController;
@@ -16,12 +14,16 @@ use app\controllers\AddEmployeController;
 use app\controllers\AlimentController;
 use app\controllers\NourrirController;
 use app\controllers\ReapproController;
-use app\controllers\SimulationEnclosController;
 use app\controllers\DecesController;
 use app\controllers\SanteEvenementController;
 use app\controllers\SanteTypeEvenementController;
 use app\controllers\DiagnosticController;
 use app\controllers\MaladieController;
+use app\controllers\SimulationEnclosController;
+use app\controllers\SimulationBeneficeController;
+use app\controllers\StatAlimentController;
+use app\controllers\StatVenteController;
+use app\controllers\CongeController;
 
 use flight\Engine;
 use flight\net\Router;
@@ -29,15 +31,7 @@ use flight\net\Router;
 /**
  * @var Router $router
  * @var Engine $app
- */
-/*$router->get('/', function() use ($app) {
-	$Welcome_Controller = new WelcomeController($app);
-	$app->render('welcome', [ 'message' => 'It works!!' ]);
-});*/
-
-// $router->get("/hello-world/@name", function($name) {
-//     echo "<h1>Hello world! Oh hey " . $name . "!</h1>";
-// });
+*/
 
 //?======= Our controllers
 //*--- User
@@ -63,6 +57,10 @@ $Tache_Controller = new TacheController();
 
 //*--- Simulation
 $simul = new SimulationEnclosController();
+$simulationBeneficeController = new SimulationBeneficeController();
+$statAlimentController = new StatAlimentController();
+$statVenteController = new StatVenteController();
+$congeController = new CongeController();
 
 //*--- Reprod
 $Reproduction_Controller = new ReproductionController();
@@ -79,8 +77,7 @@ $decesController = new DecesController();
 //?======= User Routes
 Flight::route('/', [$usercontroller, 'getFormLogin']);
 Flight::route('/login', [$usercontroller, 'login']);
-Flight::route('/check_tache/@id/@date', [$Tache_Controller, 'getTacheById']);
-
+Flight::route('/logout', [$usercontroller, 'logout']);
 
 //?======= Type Porc routes
 $router->group('/typePorc', function () use ($router, $typePorcController) {
@@ -130,7 +127,7 @@ $router->post("/naissance/add", [$Naissance_Controller, "add"]);
 
 
 //?======= Employee congedier-salaire-presence Management Routes
-//*--- Congedier
+//*--- Gestion emp
 $router->get("/employe", [$Employe_Controller, "index"]);
 $router->get("/employe/congedier/@id", [$Employe_Controller, "congedier"]);
 $router->get("/add_employe", [$AddEmploye_Controller, "index"]);
@@ -147,9 +144,8 @@ $router->post("/presence/add_presence", [$Presence_Controller, "addPresence"]);
 
 
 //?======= Task management routes
+//*--- Admin Side
 $router->get("/tache", [$Tache_Controller, "index"]);
-$router->get("/tache_peser", [$Tache_Controller, "peserPorcs"]);
-$router->post("/tache_peser_submit", [$Tache_Controller, "submitPesee"]);
 $router->get('/tache/create', [ $Tache_Controller, 'form' ]);
 $router->post('/tache/save', [ $Tache_Controller, 'save' ]);
 $router->get('/tache/edit/@id', [ $Tache_Controller, 'form' ]);
@@ -158,27 +154,31 @@ $router->get('/tache/assign', [ $Tache_Controller, 'assignForm' ]);
 $router->post('/tache/assign', [ $Tache_Controller, 'assignForm' ]);
 $router->post('/tache/assign/save', [ $Tache_Controller, 'assignSave' ]);
 $router->get('/taches/employe/@id_employe', [ $Tache_Controller, 'employeTaches' ]);
+Flight::route('/check_tache/@id/@date', [$Tache_Controller, 'getTacheById']);
+//*--- Emp Side
+$router->get('/employee/landing', [$Tache_Controller, 'employeeLanding']);
 $router->post('/tache/done', [ $Tache_Controller, 'done' ]);
-Flight::route('GET /taches/employelanding', ['app\controllers\TacheController', 'employeeLanding']);
+$router->get("/tache_peser", [$Tache_Controller, "peserPorcs"]);
+$router->post("/tache_peser_submit", [$Tache_Controller, "submitPesee"]);
 
 
 //?======= Simulations-Stats Routes
 $router->get('/simulation', [ $simul, 'index' ]); 
 $router->get('/simulation/enclos', [ $simul, 'showForm' ]); 
 $router->post('/simulation/enclos', [ $simul, 'simulate' ]); 
-Flight::route('GET /simulation/benefice', ['app\controllers\SimulationBeneficeController', 'showForm']);
-Flight::route('POST /simulation/benefice', ['app\controllers\SimulationBeneficeController', 'simulate']);
+Flight::route('GET /simulation/benefice', [$simulationBeneficeController, 'showForm']);
+Flight::route('POST /simulation/benefice', [$simulationBeneficeController, 'simulate']);
 
 //?======= Statistics Routes
-$router->get('/statistique', [ 'app\controllers\StatVenteController', 'index' ]); 
-Flight::route('GET /statistiques/aliments', ['app\controllers\StatAlimentController', 'showForm']);
-Flight::route('POST /statistiques/aliments', ['app\controllers\StatAlimentController', 'showStats']);
-Flight::route('GET /statistiques/ventes', ['app\controllers\StatVenteController', 'showForm']);
-Flight::route('POST /statistiques/ventes', ['app\controllers\StatVenteController', 'showStats']);
+$router->get('/statistique', [$statVenteController, 'index' ]); 
+Flight::route('GET /statistiques/ventes', [$statVenteController, 'showForm']);
+Flight::route('POST /statistiques/ventes', [$statVenteController, 'showStats']);
+Flight::route('GET /statistiques/aliments', [$statAlimentController, 'showForm']);
+Flight::route('POST /statistiques/aliments', [$statAlimentController, 'showStats']);
 
 //?======= Conge Management Routes
-Flight::route('GET /conge/add', ['app\controllers\CongeController', 'addForm']);
-Flight::route('POST /conge/add', ['app\controllers\CongeController', 'add']);
+Flight::route('GET /conge/add', [$congeController, 'addForm']);
+Flight::route('POST /conge/add', [$congeController, 'add']);
 
 
 //?======= Health-Diagnostic-Death Management Routes
