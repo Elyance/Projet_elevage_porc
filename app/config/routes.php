@@ -19,14 +19,14 @@ use app\controllers\SanteEvenementController;
 use app\controllers\SanteTypeEvenementController;
 use app\controllers\DiagnosticController;
 use app\controllers\MaladieController;
-use app\controllers\BudgetController;
-use app\controllers\CommandeController;
-use app\controllers\DepenseController;
 use app\controllers\SimulationEnclosController;
 use app\controllers\SimulationBeneficeController;
 use app\controllers\StatAlimentController;
 use app\controllers\StatVenteController;
 use app\controllers\CongeController;
+use app\controllers\BudgetController;
+use app\controllers\CommandeController;
+use app\controllers\DepenseController;
 
 use flight\Engine;
 use flight\net\Router;

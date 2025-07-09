@@ -14,7 +14,6 @@ class DepenseController
 
         $depenses = Depense::getFiltered($date_debut, $date_fin);
         $total_depense = Depense::getTotal($date_debut, $date_fin);
-
         $data = [
             'depenses' => $depenses,
             'date_debut' => $date_debut ?? '',

@@ -5,11 +5,13 @@ use Flight;
 use app\models\Commande;
 use SessionMiddleware;
 
+
 class CommandeController
 {
     public function add()
     {
         SessionMiddleware::startSession();
+
         $conn = Flight::db();
         try {
             // Récupérer les données de la requête
@@ -88,6 +90,7 @@ class CommandeController
 
             // Rediriger vers la liste des commandes
             Flight::redirect(BASE_URL . '/commande/list');
+
         } catch (\Throwable $th) {
             // Annuler la transaction en cas d'erreur
             $conn->rollBack();
@@ -112,6 +115,7 @@ class CommandeController
         ];
         $content = Flight::view()->fetch('commande/liste', $data);
         Flight::render('template-quixlab', ['content' => $content]);
+
     }
 
     public function form()
@@ -133,6 +137,7 @@ class CommandeController
     public function editStatus($id)
     {
         SessionMiddleware::startSession();
+
         $command = Commande::findById($id);
         if (!$command) {
             Flight::halt(404, 'Commande non trouvée');
@@ -164,6 +169,7 @@ class CommandeController
                 Flight::request()->data['statut_livraison']
             );
             Flight::redirect(BASE_URL . '/commande/list');
+
         } catch (\Throwable $th) {
             echo $th->getMessage();
         }
