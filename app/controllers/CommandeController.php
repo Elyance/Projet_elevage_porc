@@ -95,11 +95,17 @@ class CommandeController
 
     public function list()
     {
-        $conn = Flight::db();
-        $sql = 'SELECT * FROM bao_commande';
-        $commands = $conn->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        $date_debut = Flight::request()->query['date_debut'] ?? null;
+        $date_fin = Flight::request()->query['date_fin'] ?? null;
+        $statut = Flight::request()->query['statut'] ?? null;
+
+        $commands = Commande::getAll($date_debut, $date_fin, $statut);
+
         $data = [
-            'commands' => array_map(fn($item) => Commande::fromArray($item), $commands),
+            'commands' => $commands,
+            'date_debut' => $date_debut ?? '',
+            'date_fin' => $date_fin ?? '',
+            'statut' => $statut ?? '',
             'page' => 'commande/liste'
         ];
         Flight::render('commande/liste', $data);

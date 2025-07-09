@@ -54,4 +54,6 @@
     </div>
 
     <button type="submit">Ajouter</button>
+    <br>
+    <a href="/commande/list">Voir les commandes</a>
 </form>
