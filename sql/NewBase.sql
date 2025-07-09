@@ -337,3 +337,16 @@ CREATE TABLE bao_pesee_enclos_portee (
     poids_total DECIMAL(10,6), -- Total weight of the litter in the enclosure in kg
     FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee)
 );
+
+CREATE TABLE bao_commande (
+    id_commande SERIAL PRIMARY KEY,
+    id_client INTEGER,
+    id_enclos_portee INTEGER, -- enclos where on va prendre les porcs
+    quantite INTEGER, -- nombre de porc commanded, egalement le nombre de porc to remove from l'enclos choisi
+    date_commande DATE, -- date de la commande
+    adresse_livraison VARCHAR(100),
+    date_livraison DATE, -- date de la livraison, null au debut
+    statut_livraison VARCHAR(20) CHECK (statut_livraison IN ('en attente', 'en cours', 'livré', 'annulé')), -- statut de la livraison
+    FOREIGN KEY (id_client) REFERENCES bao_client(id_client),
+    FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee)
+);
