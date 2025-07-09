@@ -140,64 +140,12 @@ class EnclosController
     public function listWithPortees()
     {
         SessionMiddleware::startSession();
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
 
         $enclosData = $this->getEnclosWithPortees();
         $content = \Flight::view()->fetch('enclos/list_with_portees', [
             'enclosData' => $enclosData
         ]);
         \Flight::render('template-quixlab', ['content' => $content]);
-    }
-
-    private function getEnclosWithPortees()
-    {
-        SessionMiddleware::startSession();
-        $conn = \Flight::db();
-        $stmt = $conn->query("
-            SELECT 
-                e.id_enclos, t.nom_type, e.surface,
-                ep.id_enclos_portee, ep.id_portee, ep.quantite_total, ep.poids_estimation, 
-                ep.statut_vente, ep.nombre_jour_ecoule,
-                p.id_truie, p.id_race, p.nombre_males, p.nombre_femelles, p.date_naissance, p.id_cycle_reproduction
-            FROM bao_enclos e
-            JOIN bao_type_porc t ON e.enclos_type = t.id_type_porc
-            LEFT JOIN bao_enclos_portee ep ON e.id_enclos = ep.id_enclos
-            LEFT JOIN bao_portee p ON ep.id_portee = p.id_portee
-            ORDER BY e.id_enclos
-        ");
-        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        $enclosData = [];
-        foreach ($results as $row) {
-            $id_enclos = $row['id_enclos'];
-            if (!isset($enclosData[$id_enclos])) {
-                $enclosData[$id_enclos] = [
-                    'id_enclos' => $row['id_enclos'],
-                    'nom_type' => $row['nom_type'],
-                    'surface' => $row['surface'],
-                    'portees' => []
-                ];
-            }
-            if ($row['id_enclos_portee']) {
-                $enclosData[$id_enclos]['portees'][] = [
-                    'id_enclos_portee' => $row['id_enclos_portee'],
-                    'id_portee' => $row['id_portee'],
-                    'quantite_total' => $row['quantite_total'],
-                    'poids_estimation' => $row['poids_estimation'],
-                    'statut_vente' => $row['statut_vente'],
-                    'nombre_jour_ecoule' => $row['nombre_jour_ecoule'],
-                    'id_truie' => $row['id_truie'],
-                    'id_race' => $row['id_race'],
-                    'nombre_males' => $row['nombre_males'],
-                    'nombre_femelles' => $row['nombre_femelles'],
-                    'date_naissance' => $row['date_naissance'],
-                    'id_cycle_reproduction' => $row['id_cycle_reproduction']
-                ];
-            }
-        }
-        return array_values($enclosData);
     }
 
     public function movePorteeManually($id_enclos_portee_source, $id_enclos_destination, $quantite_males, $quantite_femelles)
@@ -247,25 +195,6 @@ class EnclosController
             $conn->rollBack();
             throw $e;
         }
-    }
-
-    private function createNewPortee($original_portee, $males, $femelles)
-    {
-        SessionMiddleware::startSession();
-        $conn = \Flight::db();
-        $stmt = $conn->prepare("
-            INSERT INTO bao_portee (id_truie, id_race, nombre_males, nombre_femelles, date_naissance, id_cycle_reproduction)
-            VALUES (:id_truie, :id_race, :males, :femelles, :date_naissance, :id_cycle_reproduction)
-        ");
-        $stmt->execute([
-            ':id_truie' => $original_portee['id_truie'],
-            ':id_race' => $original_portee['id_race'],
-            ':males' => $males,
-            ':femelles' => $femelles,
-            ':date_naissance' => $original_portee['date_naissance'],
-            ':id_cycle_reproduction' => $original_portee['id_cycle_reproduction']
-        ]);
-        return $conn->lastInsertId();
     }
 
     public function movePortee()
@@ -350,6 +279,35 @@ class EnclosController
         }
     }
 
+    public function convertFemalesToSows()
+    {
+        SessionMiddleware::startSession();
+
+
+        $eligibleFemales = $this->getEligibleFemales();
+        $enclosTrie = $this->getTrieEnclos();
+
+        if (\Flight::request()->method == 'POST') {
+            $id_portee = \Flight::request()->data->id_portee;
+            $id_enclos = \Flight::request()->data->id_enclos;
+            $quantity = (int) \Flight::request()->data->quantity;
+
+            $this->convertToSow($id_portee, $id_enclos, $quantity);
+
+            $_SESSION['flash'] = ['type' => 'success', 'message' => "$quantity femelle(s) convertie(s) en truie(s) et déplacée(s) avec succès"];
+            \Flight::redirect('/enclos/convert-females');
+        } else {
+            $data = ['page' => 'enclos/convert_females', 'females' => $eligibleFemales, 'enclosTrie' => $enclosTrie];
+            
+            $content = \Flight::view()->fetch('enclos/convert_females',[
+                'females' => $eligibleFemales,
+                'enclosTrie' => $enclosTrie
+            ]);
+            \Flight::render('template-quixlab', ['content' => $content]);
+        }
+    }
+
+    //?===== Model looking ahh
     private function getEnclosPortee($id)
     {
         SessionMiddleware::startSession();
@@ -357,6 +315,74 @@ class EnclosController
         $stmt = $conn->prepare("SELECT * FROM bao_enclos_portee WHERE id_enclos_portee = :id");
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    private function getEnclosWithPortees()
+    {
+        SessionMiddleware::startSession();
+        $conn = \Flight::db();
+        $stmt = $conn->query("
+            SELECT 
+                e.id_enclos, t.nom_type, e.surface,
+                ep.id_enclos_portee, ep.id_portee, ep.quantite_total, ep.poids_estimation, 
+                ep.statut_vente, ep.nombre_jour_ecoule,
+                p.id_truie, p.id_race, p.nombre_males, p.nombre_femelles, p.date_naissance, p.id_cycle_reproduction
+            FROM bao_enclos e
+            JOIN bao_type_porc t ON e.enclos_type = t.id_type_porc
+            LEFT JOIN bao_enclos_portee ep ON e.id_enclos = ep.id_enclos
+            LEFT JOIN bao_portee p ON ep.id_portee = p.id_portee
+            ORDER BY e.id_enclos
+        ");
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $enclosData = [];
+        foreach ($results as $row) {
+            $id_enclos = $row['id_enclos'];
+            if (!isset($enclosData[$id_enclos])) {
+                $enclosData[$id_enclos] = [
+                    'id_enclos' => $row['id_enclos'],
+                    'nom_type' => $row['nom_type'],
+                    'surface' => $row['surface'],
+                    'portees' => []
+                ];
+            }
+            if ($row['id_enclos_portee']) {
+                $enclosData[$id_enclos]['portees'][] = [
+                    'id_enclos_portee' => $row['id_enclos_portee'],
+                    'id_portee' => $row['id_portee'],
+                    'quantite_total' => $row['quantite_total'],
+                    'poids_estimation' => $row['poids_estimation'],
+                    'statut_vente' => $row['statut_vente'],
+                    'nombre_jour_ecoule' => $row['nombre_jour_ecoule'],
+                    'id_truie' => $row['id_truie'],
+                    'id_race' => $row['id_race'],
+                    'nombre_males' => $row['nombre_males'],
+                    'nombre_femelles' => $row['nombre_femelles'],
+                    'date_naissance' => $row['date_naissance'],
+                    'id_cycle_reproduction' => $row['id_cycle_reproduction']
+                ];
+            }
+        }
+        return array_values($enclosData);
+    }
+
+    private function createNewPortee($original_portee, $males, $femelles)
+    {
+        SessionMiddleware::startSession();
+        $conn = \Flight::db();
+        $stmt = $conn->prepare("
+            INSERT INTO bao_portee (id_truie, id_race, nombre_males, nombre_femelles, date_naissance, id_cycle_reproduction)
+            VALUES (:id_truie, :id_race, :males, :femelles, :date_naissance, :id_cycle_reproduction)
+        ");
+        $stmt->execute([
+            ':id_truie' => $original_portee['id_truie'],
+            ':id_race' => $original_portee['id_race'],
+            ':males' => $males,
+            ':femelles' => $femelles,
+            ':date_naissance' => $original_portee['date_naissance'],
+            ':id_cycle_reproduction' => $original_portee['id_cycle_reproduction']
+        ]);
+        return $conn->lastInsertId();
     }
 
     private function getAllEnclosPortees()
@@ -420,14 +446,6 @@ class EnclosController
         ]);
     }
 
-    public function updateEnclosPorteeQuantite($id, $quantite)
-    {
-        SessionMiddleware::startSession();
-        $conn = \Flight::db();
-        $stmt = $conn->prepare("UPDATE bao_enclos_portee SET quantite_total = :quantite WHERE id_enclos_portee = :id");
-        $stmt->execute([':quantite' => $quantite, ':id' => $id]);
-    }
-
     private function recordMovement($sourceId, $destinationId, $males, $femelles)
     {
         SessionMiddleware::startSession();
@@ -445,33 +463,7 @@ class EnclosController
         ]);
     }
 
-    public function convertFemalesToSows()
-    {
-        SessionMiddleware::startSession();
-
-
-        $eligibleFemales = $this->getEligibleFemales();
-        $enclosTrie = $this->getTrieEnclos();
-
-        if (\Flight::request()->method == 'POST') {
-            $id_portee = \Flight::request()->data->id_portee;
-            $id_enclos = \Flight::request()->data->id_enclos;
-            $quantity = (int) \Flight::request()->data->quantity;
-
-            $this->convertToSow($id_portee, $id_enclos, $quantity);
-
-            $_SESSION['flash'] = ['type' => 'success', 'message' => "$quantity femelle(s) convertie(s) en truie(s) et déplacée(s) avec succès"];
-            \Flight::redirect('/enclos/convert-females');
-        } else {
-            $data = ['page' => 'enclos/convert_females', 'females' => $eligibleFemales, 'enclosTrie' => $enclosTrie];
-            
-            $content = \Flight::view()->fetch('enclos/convert_females',[
-                'females' => $eligibleFemales,
-                'enclosTrie' => $enclosTrie
-            ]);
-            \Flight::render('template-quixlab', ['content' => $content]);
-        }
-    }
+    
 
     private function getEligibleFemales()
     {

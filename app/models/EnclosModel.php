@@ -114,12 +114,5 @@ class EnclosModel
         return $result;
     }
 
-    // public static function findById($id)
-    // {
-    //     $stmt = \Flight::db()->prepare('SELECT * FROM bao_enclos WHERE id_enclos = ?');
-    //     $stmt->execute([$id]);
-    //     $result = $stmt->fetch();
-
-    //     return $result;
-    // }
+    
 }
