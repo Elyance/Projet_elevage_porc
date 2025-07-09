@@ -6,8 +6,7 @@ use PDO;
 
 class AlimentModel
 {
-    public static function getAllAliments(): array
-{
+    public static function getAllAliments(): array {
     $conn = Flight::db();
     $query = "
         SELECT a.*, 
@@ -33,7 +32,7 @@ class AlimentModel
                    r.date_reappro, 
                    r.cout_total
             FROM bao_aliments a
-            LEFT JOIN reapprovisionnement_aliments r ON a.id_aliment = r.id_aliment
+            LEFT JOIN bao_reapprovisionnement_aliments r ON a.id_aliment = r.id_aliment
             WHERE a.id_aliment = :id
         ";
         $stmt = $conn->prepare($query);
