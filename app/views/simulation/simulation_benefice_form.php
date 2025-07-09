@@ -89,7 +89,7 @@ button[type="submit"]:hover {
 </style>
 <div class="container">
     <h1>🐷 Simulateur d'élevage de porcs</h1>
-    <form method="post" action="<?= Flight::get('flight.base_url') ?>/simulation/benefice">
+    <form method="post" action="<?= BASE_URL ?>/simulation/benefice">
         <h3>Paramètres de départ</h3>
         <div class="row">
             <div class="col">
