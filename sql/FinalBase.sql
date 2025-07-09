@@ -1,4 +1,4 @@
-Connect to PostgreSQL and create/drop database
+-- Connect to PostgreSQL and create/drop database
 \c postgres;
 DROP DATABASE IF EXISTS gestion_porc;
 CREATE DATABASE gestion_porc;
