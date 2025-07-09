@@ -59,7 +59,7 @@
 </style>
 <div class="stats-aliments-container">
     <h2>Statistiques des aliments achetés</h2>
-    <form class="stats-aliments-form" method="post" action="<?= Flight::get('flight.base_url') ?>/statistiques/aliments">
+    <form class="stats-aliments-form" method="post" action="<?= BASE_URL ?>/statistiques/aliments">
         <label>Année :
             <input type="number" name="annee" value="<?= isset($annee) ? $annee : date('Y') ?>" min="2000" max="<?= date('Y') ?>" required>
         </label>
