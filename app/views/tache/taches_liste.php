@@ -22,4 +22,4 @@
     </tr>
     <?php endforeach; ?>
 </table>
-<a href="/tache/assign">Assigner une tâche</a>
+<a href="<?= BASE_URL?>/tache/assign">Assigner une tâche</a>

@@ -9,16 +9,10 @@ class EmployeController
 {
     public function index()
     {
+        SessionMiddleware::startSession();
         $employes = EmployeModel::getAll();
-        Flight::render("employe/index", [
-            "employes" => $employes,
-            "links" => [
-                "gestion_salaire" => "/salaire",
-                "gestion_presence" => "/presence",
-                "gestion_taches" => "/tache",
-                "add_employe" => "/add_employe"
-            ]
-        ]);
+        $content = Flight::view()->fetch('employe/index', ['employes' => $employes]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function congedier($id)

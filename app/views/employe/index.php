@@ -1,10 +1,10 @@
 <!-- app/views/employe/index.php -->
 <h1>Gestion des Employés</h1>
 <div>
-    <a href="/salaire">Gestion Salaire</a> | 
-    <a href="/presence">Gestion Présence</a> | 
-    <a href="/tache">Gestion Tâches</a> | 
-    <a href="/add_employe">Ajouter Employé</a>
+    <a href="<?= BASE_URL?>/salaire">Gestion Salaire</a> | 
+    <a href="<?= BASE_URL?>/presence">Gestion Présence</a> | 
+    <a href="<?= BASE_URL?>/tache">Gestion Tâches</a> | 
+    <a href="<?= BASE_URL?>/add_employe">Ajouter Employé</a>
 </div>
 <table border="1">
     <tr>

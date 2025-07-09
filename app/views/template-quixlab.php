@@ -102,7 +102,7 @@
 
                     <li class="nav-label">Modules</li>
                     <li>
-                        <a href="<?= BASE_URL ?>/reproduction" aria-expanded="false">
+                        <a href="<?= BASE_URL ?>reproduction" aria-expanded="false">
                             <i class="icon-heart menu-icon"></i><span class="nav-text">Reproduction</span>
                         </a>
                     </li>
