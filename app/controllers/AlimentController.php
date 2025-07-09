@@ -17,12 +17,14 @@ class AlimentController
 
     public function show(int $id)
     {
+        SessionMiddleware::startSession();
         $aliment = AlimentModel::getAlimentById($id);
         if (!$aliment) {
             Flight::flash()->error('Aliment non trouvé');
             Flight::redirect('/aliments');
             return;
         }
-        Flight::render('aliments/details', ['aliment' => $aliment]);
+        $content = Flight::view()->fetch('aliments/details', ['aliment' => $aliment]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 }

@@ -1,0 +1,3 @@
+ALTER TABLE bao_insemination
+DROP CHECK `bao_insemination.resultat`,
+ADD CHECK (resultat IN ('succes', 'echec', 'en cours'));

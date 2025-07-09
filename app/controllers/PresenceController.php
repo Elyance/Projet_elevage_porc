@@ -10,18 +10,20 @@ class PresenceController
 {
     public function index()
     {
+        SessionMiddleware::startSession();
         $month = $_GET["mois"] ?? date("m");
         $year = $_GET["annee"] ?? date("Y");
         $days_in_month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
         $days = range(1, $days_in_month);
 
-        Flight::render("presence/index", [
+        $content = Flight::view()->fetch('presence/index', [
             "month" => $month,
             "year" => $year,
             "days" => $days,
             "months" => range(1, 12),
             "years" => range(date("Y") - 5, date("Y"))
         ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function detailJour($date)

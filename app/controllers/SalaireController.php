@@ -12,21 +12,24 @@ class SalaireController
 {
     public function index()
     {
+        SessionMiddleware::startSession();
         $month = $_GET["mois"] ?? date("m");
         $year = $_GET["annee"] ?? date("Y");
         $employes = EmployeModel::getAll();
 
-        Flight::render("salaire/index", [
+        $content = Flight::view()->fetch('salaire/index', [
             "employes" => $employes,
             "month" => $month,
             "year" => $year,
             "months" => range(1, 12),
             "years" => range(date("Y") - 5, date("Y"))
         ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function payer($id)
     {
+        SessionMiddleware::startSession();
         $month = $_GET["mois"] ?? date("m");
         $year = $_GET["annee"] ?? date("Y");
         $employe = EmployeModel::getAll(["id_employe" => $id])[0];
@@ -46,10 +49,10 @@ class SalaireController
             $montant = floatval($_POST["salaire_final"]);
             $date_salaire = "$year-$month-01"; // Use first day of the month
             SalaireModel::create((int)$id, $date_salaire, $montant, "payé");
-            Flight::redirect("/salaire?mois=$month&annee=$year");
+            Flight::redirect("salaire?mois=$month&annee=$year");
         }
 
-        Flight::render("salaire/payer", [
+        $content = Flight::view()->fetch('salaire/payer', [
             "employe" => $employe,
             "salaire_brut" => $salaire_brut,
             "nb_jours_present" => $nb_jours_present,
@@ -58,6 +61,7 @@ class SalaireController
             "month" => $month,
             "year" => $year
         ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function historiquePaie()

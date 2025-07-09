@@ -2,7 +2,7 @@
 
 <div class="card">
     <div class="card-header">
-        <h2>🔍 Détails de l'aliment : <?= htmlspecialchars($aliment['nom_aliment']) ?></h2>
+        <h2>Détails de l'aliment : <?= htmlspecialchars($aliment['nom_aliment']) ?></h2>
     </div>
     <div class="card-body">
         <div class="row">
@@ -49,8 +49,6 @@
             <div class="alert alert-warning">Aucun réapprovisionnement enregistré.</div>
         <?php endif; ?>
 
-        <a href="/aliments" class="btn btn-secondary mt-3">← Retour à la liste</a>
+        <a href="<?= BASE_URL?>/aliments" class="btn btn-secondary mt-3">← Retour à la liste</a>
     </div>
 </div>
-
-<?php require_once __DIR__ . '/partials/footer.php'; ?>
