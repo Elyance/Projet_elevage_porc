@@ -24,12 +24,21 @@ class EnclosModel
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         return array_map(fn($item) => self::fromArray($item), $result);
     }
-    public static function getAll2()
-{
-    $conn = Flight::db();
-    $stmt = $conn->query("SELECT id_enclos, enclos_type, surface FROM bao_enclos");
-    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-}
+
+    public static function getEncloTypeName(int $id_enclos_type): ?string
+    {
+        $conn = Flight::db();
+        $stmt = $conn->prepare("SELECT nom_enclos_type FROM bao_enclos_type WHERE id_enclos_type = :id_enclos_type");
+        $stmt->execute([':id_enclos_type' => $id_enclos_type]);
+        $result = $stmt->fetchColumn();
+        return $result ?: null;
+    }
+
+    public static function getAll2() {
+        $conn = Flight::db();
+        $stmt = $conn->query("SELECT id_enclos, enclos_type, surface FROM bao_enclos");
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 
     public static function findById(int $id_enclos): ?self
     {
