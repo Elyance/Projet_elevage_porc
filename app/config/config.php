@@ -98,6 +98,7 @@ return [
 		 'host' => 'localhost',
 		 'dbname' => 'gestion_porc',
 		 'username' => 'postgres',
+		 'password' => '7Siory76',
 
 		// uncomment the following line for sqlite
 		// 'file_path' => __DIR__ . $ds . '..' . $ds . 'database.sqlite'
