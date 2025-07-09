@@ -5,6 +5,7 @@ use app\models\CongeModel;
 use app\models\PresenceModel;
 use app\models\EmployeModel;
 use Flight;
+use SessionMiddleware;
 
 class CongeController
 {

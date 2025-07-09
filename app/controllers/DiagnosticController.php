@@ -9,6 +9,7 @@ use app\controllers\EnclosController;
 use Exception;
 use Flight;
 use DateTime;
+use SessionMiddleware;
 
 class DiagnosticController
 {

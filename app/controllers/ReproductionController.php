@@ -5,6 +5,7 @@ use app\models\ReproductionModel;
 use app\models\TruieModel;
 use app\models\CycleModel;
 use Flight;
+use SessionMiddleware;
 
 class ReproductionController {
     public function index()

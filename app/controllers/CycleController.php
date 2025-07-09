@@ -3,6 +3,7 @@ namespace app\controllers;
 
 use app\models\CycleModel;
 use app\models\TruieModel;
+use SessionMiddleware;
 use Flight;
 
 class CycleController

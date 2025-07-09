@@ -7,6 +7,7 @@ use app\models\Enclos;
 use Exception;
 use Flight;
 use DateTime;
+use SessionMiddleware;
 
 class SanteTypeEvenementController
 {

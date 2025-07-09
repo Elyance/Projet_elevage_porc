@@ -5,6 +5,7 @@ use app\models\TacheModel;
 use app\models\Tache;
 use DateTime;
 use Flight;
+use SessionMiddleware;
 
 
 require_once __DIR__ . '/../models/Tache.php';
@@ -15,6 +16,7 @@ class TacheController {
     public function __construct() {
         $this->model = new Tache();
     }
+
     // Affiche la liste des tâches (admin)
     public function index() {
         $taches = $this->model->all();
@@ -99,7 +101,7 @@ class TacheController {
     }
 
     public function employeeLanding() {
-        // Fallback to query parameter if route param is missing
+
         $id_employe = $_SESSION['user_id'];
 
         $flash = $_SESSION['flash'] ?? null;
@@ -204,6 +206,7 @@ class TacheController {
         $taches = $this->model->all();
         Flight::json($taches);
     }
+
     public function getTacheById($id,$date) {
         $tache = $this->model->setTachesDone2($id,$date);
         if ($tache) {

@@ -2,6 +2,7 @@
 namespace app\controllers;
 
 use Flight;
+use SessionMiddleware;
 
 class HomeController
 {

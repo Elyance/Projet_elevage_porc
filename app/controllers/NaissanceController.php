@@ -7,6 +7,7 @@ use app\models\CycleModel;
 use app\models\EnclosModel;
 use app\models\RaceModel;
 use Flight;
+use SessionMiddleware;
 
 class NaissanceController
 {

@@ -5,6 +5,7 @@ use app\models\AlimentModel;
 use app\models\NourrirModel;
 use app\models\EnclosModel;
 use Flight;
+use SessionMiddleware;
 
 class NourrirController
 {

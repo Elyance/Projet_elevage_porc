@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\EnclosModel;
 use app\models\EnclosTypeModel;
 use Exception;
+use SessionMiddleware;
 
 class EnclosController
 {

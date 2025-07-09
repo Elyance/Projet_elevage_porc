@@ -3,6 +3,7 @@ namespace app\controllers;
 use app\models\StatAlimentModel;
 use app\models\StatVenteModel;
 use Flight;
+use SessionMiddleware;
 
 class StatAlimentController
 {

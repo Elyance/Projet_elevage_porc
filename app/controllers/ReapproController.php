@@ -4,6 +4,7 @@ namespace app\controllers;
 use app\models\ReapproModel;
 use app\models\AlimentModel;
 use Flight;
+use SessionMiddleware;
 
 class ReapproController
 {

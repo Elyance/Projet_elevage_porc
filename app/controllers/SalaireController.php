@@ -6,6 +6,7 @@ use app\models\SalaireModel;
 use app\models\PresenceModel;
 use app\models\EmployePosteModel;
 use Flight;
+use SessionMiddleware;
 
 class SalaireController
 {

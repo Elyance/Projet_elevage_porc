@@ -9,6 +9,7 @@ use app\models\Maladie;
 use Exception;
 use Flight;
 use DateTime;
+use SessionMiddleware;
 
 class DecesController
 {

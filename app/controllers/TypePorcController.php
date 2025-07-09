@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\TypePorcModel;
 use Flight;
+use SessionMiddleware;
 
 class TypePorcController
 {

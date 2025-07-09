@@ -3,6 +3,7 @@
 namespace app\controllers;
 use app\models\User;
 use Flight;
+use SessionMiddleware;
 
 class UserController {
     public function getFormLogin() {
@@ -18,7 +19,6 @@ class UserController {
         $user = $userModel->loginUser($username, $password);
         
         if ($user) {
-            session_start();
             $_SESSION['user'] = $user->getUsername();
             $_SESSION['user_id'] = $user->getIdUser() - 1; // Keep -1 if intentional
             if ($user->getRole() == 1) {

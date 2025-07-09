@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\SimulationEnclosModel;
 use Flight;
+use SessionMiddleware;
 
 class SimulationEnclosController
 {
