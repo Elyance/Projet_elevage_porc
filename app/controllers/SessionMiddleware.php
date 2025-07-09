@@ -15,7 +15,7 @@ class SessionMiddleware {
             if($_SESSION['user_role_id'] == 1) {
                 Flight::redirect(BASE_URL.'/');
             } else {
-                Flight::redirect('/employee/landing');
+                Flight::redirect(BASE_URL.'/employee/landing');
             }
             exit();
         }
