@@ -10,12 +10,14 @@ class ReapproController
 {
     public function index(?array $message = null)
     {
+        SessionMiddleware::startSession();
         $aliments = AlimentModel::getAllAliments();
-        Flight::render('aliments/reappro', ['aliments' => $aliments, 'message' => $message]);
+        $content = Flight::view()->fetch('aliments/reappro', ['aliments' => $aliments, 'message' => $message]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
-    public function reapprovisionner()
-    {
+    public function reapprovisionner() {
+        SessionMiddleware::startSession();
         $data = Flight::request()->data;
         $id_aliment = (int)$data->id_aliment;
         $quantite_kg = (float)$data->quantite_kg;
