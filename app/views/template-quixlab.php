@@ -89,15 +89,21 @@
         <div class="nk-sidebar">           
             <div class="nk-nav-scroll">
                 <ul class="metismenu" id="menu">
+                    <li class="mega-menu mega-menu-sm">
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-basket menu-icon"></i><span class="nav-text">Alimentation</span>
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="<?= BASE_URL ?>/aliments">Consulter les stocks</a></li>
+                            <li><a href="<?= BASE_URL ?>/aliments/reappro">Faire des provisions</a></li>
+                            <li><a href="<?= BASE_URL ?>/aliments">Consulter l'historique de circulation</a></li>
+                        </ul>
+                    </li>
+
                     <li class="nav-label">Modules</li>
                     <li>
                         <a href="<?= BASE_URL ?>/reproduction" aria-expanded="false">
                             <i class="icon-heart menu-icon"></i><span class="nav-text">Reproduction</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?= BASE_URL ?>/aliments" aria-expanded="false">
-                            <i class="icon-basket menu-icon"></i><span class="nav-text">Alimentation</span>
                         </a>
                     </li>
                     <li>
@@ -143,20 +149,20 @@
         ***********************************-->
         
         
-        <!--**********************************
-            Footer start
-        ***********************************-->
-        <div class="footer">
-            <div class="copyright">
-                <p>ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx</a></p>
-            </div>
-        </div>
-        <!--**********************************
-            Footer end
-        ***********************************-->
     </div>
+    <!--**********************************
+        Footer start
+    ***********************************-->
+    <div class="footer">
+        <div class="copyright">
+            <p>ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx</a></p>
+        </div>
+    </div>
+    <!--**********************************
+        Footer end
+    ***********************************-->
 
-
+<script src="<?= STATIC_URL ?>/assets/plugins/jquery/jquery.min.js"></script>
 <script src="<?= STATIC_URL ?>/assets/plugins/common/common.min.js"></script>
 <script src="<?= STATIC_URL ?>/assets/js/custom.min.js"></script>
 <script src="<?= STATIC_URL ?>/assets/js/settings.js"></script>
