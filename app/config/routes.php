@@ -19,6 +19,9 @@ use app\controllers\SanteEvenementController;
 use app\controllers\SanteTypeEvenementController;
 use app\controllers\DiagnosticController;
 use app\controllers\MaladieController;
+use app\controllers\BudgetController;
+use app\controllers\CommandeController;
+use app\controllers\DepenseController;
 use app\controllers\SimulationEnclosController;
 use app\controllers\SimulationBeneficeController;
 use app\controllers\StatAlimentController;
@@ -224,3 +227,42 @@ $router->get('/deces/edit/@id:\d+', [$decesController, 'formUpdateDeces']);
 $router->post('/deces/edit/@id:\d+', [$decesController, 'UpdateDeces']);
 $router->get('/deces/delete/@id:\d+', [$decesController, 'deleteDeces']);
 
+$enclos_controller = new EnclosController();
+
+$router->get('/enclos', [$enclos_controller, 'listWithPortees']);
+$router->get('/enclos/move', [$enclos_controller, 'movePortee']);
+$router->post('/enclos/move', [$enclos_controller, 'movePortee']);
+// $router->get('/enclos/ajouter', [$enclos_controller, 'create']);
+// $router->post('/enclos/ajouter', [$enclos_controller, 'create']);
+// $router->get('/enclos/show/@id', [$enclos_controller, 'show']);
+// $router->get('/enclos/delete/@id', [$enclos_controller, 'delete']);
+
+// $router->get('/enclos/deplacer', [$enclos_controller, 'deplacer']);
+// $router->post('/enclos/deplacer', [$enclos_controller, 'deplacer']);
+// $router->get('/enclos', [$enclos_controller, 'index']);
+Flight::route('/enclos/convert-females', [$enclos_controller, 'convertFemalesToSows']);
+
+$usercontroller = new UserController();
+Flight::route('/', [$usercontroller, 'getFormLogin']);
+Flight::route('/login', [$usercontroller, 'login']);
+Flight::route('/check_tache/@id/@date', [$Tache_Controller, 'getTacheById']);
+
+
+
+// Commandes
+$CommandeController = new CommandeController();
+$router->post('/commande/add', [$CommandeController, 'add']);
+$router->get('/commande/add',[$CommandeController, 'form']);
+$router->get('/commande/recette', [$CommandeController, 'recette']);
+$router->get('/commande/list', [$CommandeController, 'list']);	
+$router->get('/commande/edit-status/@id', [$CommandeController, 'editStatus']);
+$router->post('/commande/edit-status/@id', [$CommandeController, 'updateStatus']);
+
+// Depenses
+$DepenseController = new DepenseController();
+$router->get('/depense/list', [$DepenseController, 'list']);
+
+
+//Budget
+$BudgetController = new BudgetController();
+$router->get('/budget/index', [$BudgetController, 'index']);
