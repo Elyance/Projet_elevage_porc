@@ -91,6 +91,12 @@
         <div class="nk-sidebar">
             <div class="nk-nav-scroll">
                 <ul class="metismenu" id="menu">
+                    <!-- <li class="nav-label">Modules</li> -->
+                    <li>
+                        <a href="<?= BASE_URL ?>/simulation/benefice" aria-expanded="false">
+                            <i class="icon-chart menu-icon"></i><span class="nav-text">Simulation</span>
+                        </a>
+                    </li>
                     <li class="mega-menu mega-menu-sm">
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                             <i class="icon-basket menu-icon"></i><span class="nav-text">Alimentation</span>
@@ -101,13 +107,12 @@
                             <li><a href="<?= BASE_URL ?>/aliments">Consulter l'historique de circulation</a></li>
                         </ul>
                     </li>
-                    <!-- <li class="nav-label">Modules</li> -->
                     <li class="mega-menu mega-menu-sm">
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                            <i class="icon-home menu-icon"></i><span class="nav-text">Statistique</span>
+                            <i class="icon-home menu-icon"></i><span class="nav-text">Enclos</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a href="<?= BASE_URL ?>/enclos">Enclos</a></li>
+                            <li><a href="<?= BASE_URL ?>/enclos">Infos Enclos</a></li>
                             <li><a href="<?= BASE_URL ?>/histo_peser">Historique pesée</a></li>
                         </ul>
                     </li>
@@ -117,33 +122,27 @@
                         </a>
                         <ul aria-expanded="false">
                             <!-- Employee Management -->
-                            <li class="mega-menu-title">G.Employés</li>
+                            <li class="mega-menu-title pl-3">G.Employés</li>
                             <li><a href="<?= BASE_URL ?>/employe">Liste des Employés</a></li>
                             <li><a href="<?= BASE_URL ?>/add_employe">Ajouter un Employé</a></li>
                             
                             <!-- Salary Section -->
-                            <li class="mega-menu-title">G.Salaires</li>
+                            <li class="mega-menu-title pl-3">G.Salaires</li>
                             <li><a href="<?= BASE_URL ?>/salaire">Salaires</a></li>
                             <li><a href="<?= BASE_URL ?>/salaire/historique_paie">Historique des Paiements</a></li>
                             
                             <!-- Attendance Section -->
-                            <li class="mega-menu-title">G.Présences</li>
+                            <li class="mega-menu-title pl-3">G.Présences</li>
                             <li><a href="<?= BASE_URL ?>/presence">Feuille de Présence</a></li>
                             <li><a href="<?= BASE_URL ?>/presence/add_presence">Enregistrer Présence</a></li>
                             
                             <!-- Tasks Section -->
-                            <li class="mega-menu-title">G.Tâches</li>
+                            <li class="mega-menu-title pl-3">G.Tâches</li>
                             <li><a href="<?= BASE_URL ?>/tache">Liste des Tâches</a></li>
                             <li><a href="<?= BASE_URL ?>/tache/create">Créer une Tâche</a></li>
                             <li><a href="<?= BASE_URL ?>/tache/assign">Assigner des Tâches</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="<?= BASE_URL ?>/simulation/benefice" aria-expanded="false">
-                            <i class="icon-chart menu-icon"></i><span class="nav-text">Simulation</span>
-                        </a>
-                    </li>
-                   
                     <li class="mega-menu mega-menu-sm">
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                             <i class="icon-graph menu-icon"></i><span class="nav-text">Statistique</span>
