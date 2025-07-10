@@ -321,22 +321,22 @@ CREATE TABLE bao_diagnostic (
 
 -- ADDITIONAL TABLES THAT NEKENA ADDED
 -- Table for sow weighing
-CREATE TABLE bao_pesee_truie (
-    id_pesee_truie SERIAL PRIMARY KEY,
-    id_truie INTEGER,
-    date_pesee DATE,
-    poids DECIMAL(10,6), -- Weight of the sow in kg
-    FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
-);
+-- CREATE TABLE bao_pesee_truie (
+--     id_pesee_truie SERIAL PRIMARY KEY,
+--     id_truie INTEGER,
+--     date_pesee DATE,
+--     poids DECIMAL(10,6), -- Weight of the sow in kg
+--     FOREIGN KEY (id_truie) REFERENCES bao_truie(id_truie)
+-- );
 
 -- Table for litter weighing in enclosures
-CREATE TABLE bao_pesee_enclos_portee (
-    id_pesee_enclos_portee SERIAL PRIMARY KEY,
-    id_enclos_portee INTEGER,
-    date_pesee DATE,
-    poids_total DECIMAL(10,6), -- Total weight of the litter in the enclosure in kg
-    FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee)
-);
+-- CREATE TABLE bao_pesee_enclos_portee (
+--     id_pesee_enclos_portee SERIAL PRIMARY KEY,
+--     id_enclos_portee INTEGER,
+--     date_pesee DATE,
+--     poids_total DECIMAL(10,6), -- Total weight of the litter in the enclosure in kg
+--     FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee)
+-- );
 
 -- 12. Simulation Ioty + Raphael's budget
 CREATE TABLE bao_commande (
@@ -445,3 +445,12 @@ SELECT
 FROM bao_view_budget
 GROUP BY annee
 ORDER BY annee;
+
+CREATE TABLE bao_pesee (
+    id_pesee SERIAL PRIMARY KEY,
+    id_enclos INTEGER NOT NULL,
+    poids DECIMAL(10, 2) NOT NULL,
+    date_pesee DATE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_enclos FOREIGN KEY (id_enclos) REFERENCES bao_enclos(id_enclos)
+);
