@@ -150,8 +150,8 @@ INSERT INTO bao_tache (id_employe_poste, nom_tache, description) VALUES
 -- Employee Tasks
 INSERT INTO bao_tache_employe (id_tache, id_employe, date_attribution, date_echeance, statut, precision) VALUES
 (1, 1, '2024-10-01', '2024-10-05', 'en cours', 'Suivi truies #1-#5'),
-(2, 1, '2024-10-02', '2024-10-02', 'terminee', 'Enclos A1-A5'),
-(3, 2, '2024-10-03', '2024-10-04', 'en cours', 'Portée #2 et #3');
+(2, 1, '2024-10-02', '2024-10-02', 'terminé', 'Enclos A1-A5'),
+(3, 2, '2024-10-03', '2024-10-04', 'à faire', 'Portée #2 et #3');
 
 ------------------
 -- 12. HEALTH MANAGEMENT
