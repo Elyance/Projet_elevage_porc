@@ -24,6 +24,9 @@ use app\controllers\SimulationBeneficeController;
 use app\controllers\StatAlimentController;
 use app\controllers\StatVenteController;
 use app\controllers\CongeController;
+use app\controllers\BudgetController;
+use app\controllers\CommandeController;
+use app\controllers\DepenseController;
 
 use flight\Engine;
 use flight\net\Router;
@@ -73,6 +76,11 @@ $santetypeevenementController = new SanteTypeEvenementController();
 $diagnosticController = new DiagnosticController();
 $maladieController = new MaladieController();
 $decesController = new DecesController();
+
+// *--- Budget/Commande
+$CommandeController = new CommandeController();
+$DepenseController = new DepenseController();
+$BudgetController = new BudgetController();
 
 //?======= User Routes
 Flight::route('/', [$usercontroller, 'getFormLogin']);
@@ -131,6 +139,7 @@ $router->post("/naissance/add", [$Naissance_Controller, "add"]);
 $router->get("/employe", [$Employe_Controller, "index"]);
 $router->get("/employe/congedier/@id", [$Employe_Controller, "congedier"]);
 $router->get("/add_employe", [$AddEmploye_Controller, "index"]);
+$router->post("/add_employe", [$AddEmploye_Controller, "add"]);
 //*--- Salaire
 $router->get("/salaire", [$Salaire_Controller, "index"]);
 $router->get("/salaire/payer/@id", [$Salaire_Controller, "payer"]);
@@ -160,6 +169,7 @@ $router->get('/employee/landing', [$Tache_Controller, 'employeeLanding']);
 $router->post('/tache/done', [ $Tache_Controller, 'done']);
 $router->get("/tache_peser", [$Tache_Controller, "peserPorcs"]);
 $router->post("/tache_peser_submit", [$Tache_Controller, "submitPesee"]);
+$router->get("/histo_peser", [$Tache_Controller, "historiquePesee"]);
 
 
 //?======= Simulations-Stats Routes
@@ -224,3 +234,18 @@ $router->get('/deces/edit/@id:\d+', [$decesController, 'formUpdateDeces']);
 $router->post('/deces/edit/@id:\d+', [$decesController, 'UpdateDeces']);
 $router->get('/deces/delete/@id:\d+', [$decesController, 'deleteDeces']);
 
+
+// *--- Commandes
+$router->post('/commande/add', [$CommandeController, 'add']);
+$router->get('/commande/add',[$CommandeController, 'form']);
+$router->get('/commande/recette', [$CommandeController, 'recette']);
+$router->get('/commande/list', [$CommandeController, 'list']);	
+$router->get('/commande/edit-status/@id', [$CommandeController, 'editStatus']);
+$router->post('/commande/edit-status/@id', [$CommandeController, 'updateStatus']);
+
+// *--- Depenses
+$router->get('/depense/list', [$DepenseController, 'list']);
+
+
+// *--- Budget
+$router->get('/budget/index', [$BudgetController, 'index']);

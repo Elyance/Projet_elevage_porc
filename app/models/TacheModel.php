@@ -9,13 +9,15 @@ class TacheModel
     public int $id_enclos;
     public float $poids;
     public string $date_pesee;
+    public string $created_at;
 
-    public function __construct(int $id_pesee, int $id_enclos, float $poids, string $date_pesee)
+    public function __construct(int $id_pesee, int $id_enclos, float $poids, string $date_pesee, string $created_at)
     {
         $this->id_pesee = $id_pesee;
         $this->id_enclos = $id_enclos;
         $this->poids = $poids;
         $this->date_pesee = $date_pesee;
+        $this->created_at = $created_at;
     }
 
     public static function getAll(array $conditions = []) {
@@ -40,8 +42,14 @@ class TacheModel
 
     public static function create(int $id_enclos, float $poids, string $date_pesee): bool {
         $conn = Flight::db();
-        $stmt = $conn->prepare("INSERT INTO bao_pesee (id_enclos, poids, date_pesee) VALUES (:id_enclos, :poids, :date_pesee)");
-        return $stmt->execute([':id_enclos' => $id_enclos, ':poids' => $poids, ':date_pesee' => $date_pesee]);
+        $stmt = $conn->prepare("INSERT INTO bao_pesee (id_enclos, poids, date_pesee, created_at) 
+                                VALUES (:id_enclos, :poids, :date_pesee, :created_at)");
+        return $stmt->execute([
+            ':id_enclos' => $id_enclos,
+            ':poids' => $poids,
+            ':date_pesee' => $date_pesee,
+            ':created_at' => date('Y-m-d H:i:s') // you can also pass it as parameter
+        ]);
     }
 
     public static function fromArray(array $data): TacheModel
@@ -50,10 +58,10 @@ class TacheModel
             $data['id_pesee'] ?? 0,
             $data['id_enclos'] ?? 0,
             $data['poids'] ?? 0.0,
-            $data['date_pesee'] ?? date('Y-m-d')
+            $data['date_pesee'] ?? date('Y-m-d'),
+            $data['created_at'] ?? date('Y-m-d H:i:s') // default to now if not set
         );
     }
-
     // Existing methods remain unchanged, but add methods for task assignments with precision
     public static function assignTache(array $data) {
         $conn = Flight::db();

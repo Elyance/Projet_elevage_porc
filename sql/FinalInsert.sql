@@ -150,8 +150,8 @@ INSERT INTO bao_tache (id_employe_poste, nom_tache, description) VALUES
 -- Employee Tasks
 INSERT INTO bao_tache_employe (id_tache, id_employe, date_attribution, date_echeance, statut, precision) VALUES
 (1, 1, '2024-10-01', '2024-10-05', 'en cours', 'Suivi truies #1-#5'),
-(2, 1, '2024-10-02', '2024-10-02', 'terminee', 'Enclos A1-A5'),
-(3, 2, '2024-10-03', '2024-10-04', 'en cours', 'Portée #2 et #3');
+(2, 1, '2024-10-02', '2024-10-02', 'terminé', 'Enclos A1-A5'),
+(3, 2, '2024-10-03', '2024-10-04', 'à faire', 'Portée #2 et #3');
 
 ------------------
 -- 12. HEALTH MANAGEMENT
@@ -189,20 +189,22 @@ INSERT INTO bao_diagnostic (id_maladie, id_enclos_portee, nombre_males_infectes,
 (1, 1, 2, 3, '2024-08-25', '2024-08-27', 'Antibiotiques 5 jours', 'en traitement', 120000),
 (2, 2, 1, 0, '2024-09-01', '2024-09-02', 'Vaccin d''urgence', 'en quarantaine', 185000);
 
+
+-- NEKENA ADDITIONS
 ------------------
 -- 13. WEIGHING RECORDS
 ------------------
 -- Sow Weighing
-INSERT INTO bao_pesee_truie (id_truie, date_pesee, poids) VALUES
-(1, '2024-07-01', 180.2),
-(1, '2024-08-01', 178.5),
-(2, '2024-07-05', 175.8);
+-- INSERT INTO bao_pesee_truie (id_truie, date_pesee, poids) VALUES
+-- (1, '2024-07-01', 180.2),
+-- (1, '2024-08-01', 178.5),
+-- (2, '2024-07-05', 175.8);
 
 -- Litter Weighing
-INSERT INTO bao_pesee_enclos_portee (id_enclos_portee, date_pesee, poids_total) VALUES
-(1, '2024-08-15', 68.4),
-(1, '2024-09-01', 95.2),
-(2, '2024-08-20', 72.3);
+-- INSERT INTO bao_pesee_enclos_portee (id_enclos_portee, date_pesee, poids_total) VALUES
+-- (1, '2024-08-15', 68.4),
+-- (1, '2024-09-01', 95.2),
+-- (2, '2024-08-20', 72.3);
 
 ------------------
 -- 14. FOOD MANAGEMENT
@@ -218,23 +220,25 @@ INSERT INTO bao_pesee_enclos_portee (id_enclos_portee, date_pesee, poids_total) 
 -- (3, 5, 15.0, NULL);
 
 -- Food Replenishment
-INSERT INTO bao_reapprovisionnement_aliments (id_aliment, quantite_kg, cout_total) VALUES
-(1, 500, 175000),
-(2, 300, 165000),
-(5, 200, 120000);
+-- INSERT INTO bao_reapprovisionnement_aliments (id_aliment, quantite_kg, cout_total) VALUES
+-- (1, 500, 175000),
+-- (2, 300, 165000),
+-- (5, 200, 120000);
 
 ------------------
 -- 15. DEATHS RECORD
 ------------------
-INSERT INTO bao_deces (id_enclos, male_deces, female_deces, date_deces, cause_deces) VALUES
-(1, 0, 1, '2024-08-10', 'Complications post-partum'),
-(4, 2, 1, '2024-09-05', 'Infection respiratoire');
+-- INSERT INTO bao_deces (id_enclos, male_deces, female_deces, date_deces, cause_deces) VALUES
+-- (1, 0, 1, '2024-08-10', 'Complications post-partum'),
+-- (4, 2, 1, '2024-09-05', 'Infection respiratoire');
 
-------------------
--- 16. COMMANDES
-------------------
-INSERT INTO bao_commande (id_commande, id_client, id_enclos_portee, quantite, date_commande, adresse_livraison, date_livraison, statut_livraison) VALUES
-(1, 1, 1, 4, '2025-07-10', 'Lot II A 45', NULL, 'en attente'),
-(2, 2, 2, 2, '2025-07-12', 'Fianarantsoa', NULL, 'en attente'),
-(11, 1, 1, 2, '2025-07-15', 'Lot II A 45', NULL, 'en attente'),
-(12, 2, 2, 3, '2025-07-16', 'Fianarantsoa', NULL, 'en attente');
+-- ===================================================================
+-- 1. INSERT DATA INTO bao_prix_vente_porc (The Price List)
+-- We need to define the selling price for each pig race.
+-- ===================================================================
+
+-- INSERT INTO bao_prix_vente_porc (id_race, prix_unitaire) VALUES
+-- (1, 350000.00), -- Price for 'Large White' (id_race = 1)
+-- (2, 340000.00), -- Price for 'Landrace' (id_race = 2)
+-- (3, 380000.00), -- Price for 'Duroc' (id_race = 3)
+-- (4, 400000.00); -- Price for 'Piétrain' (id_race = 4)

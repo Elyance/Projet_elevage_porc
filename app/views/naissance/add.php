@@ -1,54 +1,87 @@
-```php
-<?php require_once __DIR__ . '/partials/header.php'; ?>
-<div class="card">
-    <h1 style="font-size: 1.5rem; margin-bottom: 1rem;">Ajouter une Naissance</h1>
-    <?php if ($error): ?>
-        <p style="color: var(--accent1);">Erreur : Données invalides.</p>
-    <?php endif; ?>
-    <form method="POST" action="/naissance/add">
-        <input type="hidden" name="cycle_id" value="<?= htmlspecialchars($cycle_id) ?>">
-        <input type="hidden" name="truie_id" value="<?= htmlspecialchars($truie_id) ?>">
-        <div class="form-group">
-            <label>Date Naissance: 
-                <input type="date" name="date_naissance" value="<?= htmlspecialchars($date_naissance ?? date('Y-m-d')) ?>" required>
-            </label>
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <div class="card-title">
+                <h4>Ajouter une Naissance</h4>
+            </div>
+            
+            <?php if ($error): ?>
+                <div class="alert alert-danger">
+                    Erreur : Données invalides.
+                </div>
+            <?php endif; ?>
+            
+            <div class="basic-form">
+                <form method="POST" action="<?= BASE_URL ?>/naissance/add">
+                    <input type="hidden" name="cycle_id" value="<?= ($cycle_id) ?>">
+                    <input type="hidden" name="truie_id" value="<?= ($truie_id) ?>">
+                    
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Date Naissance:</label>
+                        <div class="col-sm-6">
+                            <input type="date" name="date_naissance" class="form-control" 
+                                   value="<?= ($date_naissance ?? date('Y-m-d')) ?>" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Race:</label>
+                        <div class="col-sm-6">
+                            <select name="id_race" class="form-control" required>
+                                <?php foreach ($races as $race): ?>
+                                    <option value="<?= ($race->id_race) ?>">
+                                        <?= ($race->nom_race) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Enclos:</label>
+                        <div class="col-sm-6">
+                            <select name="enclos_id" class="form-control" required>
+                                <?php foreach ($enclos as $e): ?>
+                                    <option value="<?= ($e->id_enclos) ?>">
+                                        Enclos <?= ($e->id_enclos) ?> (<?= ($e->surface) ?> m²)
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Nombre de Femelles Nées:</label>
+                        <div class="col-sm-6">
+                            <input type="number" name="femelle_nait" class="form-control" required min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Nombre de Mâles Nés:</label>
+                        <div class="col-sm-6">
+                            <input type="number" name="male_nait" class="form-control" required min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Total (Affichage uniquement):</label>
+                        <div class="col-sm-6">
+                            <input type="number" id="total_display" class="form-control" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Race: 
-                <select name="id_race" required>
-                    <?php foreach ($races as $race): ?>
-                        <option value="<?= htmlspecialchars($race->id_race) ?>"><?= htmlspecialchars($race->nom_race) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </label>
-        </div>
-        <div class="form-group">
-            <label>Enclos: 
-                <select name="enclos_id" required>
-                    <?php foreach ($enclos as $e): ?>
-                        <option value="<?= htmlspecialchars($e->id_enclos) ?>">Enclos: <?= htmlspecialchars($e->id_enclos) ?> <?= htmlspecialchars($e->surface) ?> m²</option>
-                    <?php endforeach; ?>
-                </select>
-            </label>
-        </div>
-        <div class="form-group">
-            <label>Nombre de Femelles Nées: 
-                <input type="number" name="femelle_nait" required min="0">
-            </label>
-        </div>
-        <div class="form-group">
-            <label>Nombre de Mâles Nés: 
-                <input type="number" name="male_nait" required min="0">
-            </label>
-        </div>
-        <div class="form-group">
-            <label>Total (Affichage uniquement): 
-                <input type="number" id="total_display" readonly>
-            </label>
-        </div>
-        <button type="submit">Ajouter</button>
-    </form>
+    </div>
 </div>
+
 <script>
     const femelleInput = document.querySelector('input[name="femelle_nait"]');
     const maleInput = document.querySelector('input[name="male_nait"]');
@@ -69,4 +102,3 @@
         totalDisplay.value = femelle + male;
     });
 </script>
-<?php require_once __DIR__ . '/partials/footer.php'; ?>

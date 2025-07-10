@@ -15,62 +15,71 @@ class MaladieController
 {
     public function home()
     {
+        SessionMiddleware::startSession();
         $maladie = new Maladie(Flight::db());
         $symptome = new MaladieSymptome(Flight::db());
-        $data = [
+        $content = Flight::view()->fetch('maladie/listMaladie', [
             'maladies' => $maladie->findAll(),
             'symptomes' => $symptome->findAll()
-        ];
-        Flight::render('maladie/listMaladie', $data);
+        ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function formAddMaladie() {
+        SessionMiddleware::startSession();
         $symptome = new Symptome(Flight::db());
-        Flight::render('maladie/createMaladie', ['symptomes' => $symptome->findAll()]);
+        $content = Flight::view()->fetch('maladie/createMaladie', [
+            'symptomes' => $symptome->findAll()
+        ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function addMaladie() {
+        SessionMiddleware::startSession();
         $data = Flight::request()->data;
         $maladie = new Maladie(Flight::db());
         try {
             $maladie->ajouterMaladie($data);
-            Flight::redirect('/maladie/add?success=Evenement cree');
+            Flight::redirect(BASE_URL.'/maladie/add?success=Evenement cree');
         } catch (Exception $th) {
-            Flight::redirect('/maladie/add?error='.''.$th);
+            Flight::redirect(BASE_URL.'/maladie/add?error='.''.$th);
         }
     }
 
     public function formUpdateMaladie($id) {
-    $maladie = new Maladie(Flight::db());
-    $symptome = new Symptome(Flight::db());
-    $maladiesymptome = new MaladieSymptome(Flight::db());
+        SessionMiddleware::startSession();
+        $maladie = new Maladie(Flight::db());
+        $symptome = new Symptome(Flight::db());
+        $maladiesymptome = new MaladieSymptome(Flight::db());
 
-    Flight::render('maladie/updateMaladie', [
-        'maladie' => $maladie->findById($id),
-        'symptomes' => $symptome->findAll(),
-        'symptomes_maladie' => $maladiesymptome->findByIdMaladie($id)
-    ]);
-}
-
+        $content = Flight::view()->fetch('maladie/updateMaladie', [
+            'maladie' => $maladie->findById($id),
+            'symptomes' => $symptome->findAll(),
+            'symptomes_maladie' => $maladiesymptome->findByIdMaladie($id)
+        ]);
+        Flight::render('template-quixlab', ['content' => $content]);
+    }
 
     public function updateMaladie($id) {
+        SessionMiddleware::startSession();
         $data = Flight::request()->data;
         $maladie = new Maladie(Flight::db());
         try {
             $maladie->updateMaladie($id,$data);
-            Flight::redirect('/maladie?success=Maladie modifie');
+            Flight::redirect(BASE_URL.'/maladie?success=Maladie modifie');
         } catch (Exception $th) {
-            Flight::redirect('/maladie?error=Erreur lors de la modification de la maladie');
+            Flight::redirect(BASE_URL.'/maladie?error=Erreur lors de la modification de la maladie');
         }
     }
 
     public function deleteMaladie($id) {
-        $maladie =new Maladie(Flight::db());
+        SessionMiddleware::startSession();
+        $maladie = new Maladie(Flight::db());
         try {
             $maladie->deleteMaladie($id);
-            Flight::redirect('/maladie?success=Maladie supprime');
+            Flight::redirect(BASE_URL.'/maladie?success=Maladie supprime');
         } catch (\Throwable $th) {
-            Flight::redirect('/maladie?error=Erreur lors de la suppression de la maladie');
+            Flight::redirect(BASE_URL.'/maladie?error=Erreur lors de la suppression de la maladie');
         }
     }
 }

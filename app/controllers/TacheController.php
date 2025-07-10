@@ -6,7 +6,7 @@ use app\models\Tache;
 use DateTime;
 use Flight;
 use SessionMiddleware;
-
+use Exception;
 
 require_once __DIR__ . '/../models/Tache.php';
 
@@ -140,7 +140,9 @@ class TacheController {
 
     public function peserPorcs() {
         // Afficher la page pour enregistrer une nouvelle pesée
-        Flight::render('tache/tache_peser');
+        SessionMiddleware::startSession();
+        $content = Flight::view()->fetch('tache/tache_peser');
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function submitPesee() {
@@ -160,10 +162,10 @@ class TacheController {
 
             if ($enclos_id && $weight !== false && $date) {
                 if ($weight >= 1 && $weight <= 200) {
-                    if (TacheModel::create($enclos_id, $weight, $date)) {
-                        Flight::redirect('/tache_peser?message=Pesée enregistrée avec succès');
+                    if (TacheModel::create($enclos_id, $weight, $date, date('Y-m-d H:i:s'))) {
+                        Flight::redirect(BASE_URL.'/tache_peser?message=Pesée enregistrée avec succès');
                     } else {
-                        Flight::redirect('/tache_peser?error=Erreur lors de l\'enregistrement');
+                        Flight::redirect(BASE_URL.'/tache_peser?error=Erreur lors de l\'enregistrement');
                     }
                 } else {
                     Flight::redirect('/tache_peser?error=Le poids doit être entre 1 et 200 kg');
@@ -177,9 +179,27 @@ class TacheController {
     }
 
     public function historiquePesee() {
-        // Afficher l'historique des pesées
-        $pesees = TacheModel::getAll(); // Récupère toutes les pesées
-        Flight::render('tache/historique_pesee', ['pesees' => $pesees]);
+        SessionMiddleware::startSession();
+        $pesees = TacheModel::getAll();
+        
+        // Transform to array with formatted dates
+        $formattedPesees = array_map(function($pesee) {
+            return [
+                'id' => $pesee->id_pesee,
+                'id_enclos' => $pesee->id_enclos,
+                'poids' => $pesee->poids,
+                'date_pesee' => $pesee->date_pesee,
+                'created_at' => $pesee->created_at ?? null,
+                'created_at_formatted' => $pesee->created_at 
+                    ? (new DateTime($pesee->created_at))->format('d/m/Y H:i') 
+                    : 'N/A'
+            ];
+        }, $pesees);
+
+        $content = Flight::view()->fetch('tache/historique_pesee', [
+            'pesees' => $formattedPesees
+        ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     // Liste des tâches assignées à un employé (côté employé)
