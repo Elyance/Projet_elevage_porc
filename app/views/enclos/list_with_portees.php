@@ -1,187 +1,106 @@
 <!-- views/enclos/list_with_portees.php -->
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <!-- Boutons en haut -->
-    <div class="mb-4 text-end">
-        <a href="<?= BASE_URL ?>/enclos/move" class="btn btn-warning me-2">Déplacer une portée</a>
-        <a href="<?= BASE_URL ?>/enclos/convert-females" class="btn btn-success">Convertir truie</a>
+    <!-- Boutons en haut (conservés de la version originale) -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Liste des Enclos et de leurs Portées</h1>
+        <div>
+            <a href="<?= BASE_URL ?>/enclos/move" class="btn btn-warning btn-icon-split btn-sm me-2">
+                <span class="icon text-white-50"><i class="fas fa-random"></i></span>
+                <span class="text">Déplacer une portée</span>
+            </a>
+            <a href="<?= BASE_URL ?>/enclos/convert-females" class="btn btn-success btn-icon-split btn-sm">
+                <span class="icon text-white-50"><i class="fas fa-sync-alt"></i></span>
+                <span class="text">Convertir truie</span>
+            </a>
+        </div>
     </div>
 
-    <h1 class="mb-4">Liste des Enclos (Visualisation Graphique)</h1>
+    <div class="card shadow-sm">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Vue d'ensemble des enclos</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Enclos ID</th>
+                            <th>Type d'enclos</th>
+                            <th>Surface (m²)</th>
+                            <th>ID Portée</th>
+                            <th>Date Naissance</th>
+                            <th>Âge (jours)</th>
+                            <th>Composition (M / F)</th>
+                            <th>Poids Est. (kg)</th>
+                            <th>Statut Vente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($enclosData)): ?>
+                            <tr>
+                                <td colspan="9" class="text-center">Aucun enclos trouvé.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($enclosData as $enclos): ?>
+                                <?php
+                                    // Calculer le nombre de portées pour le rowspan
+                                    $porteeCount = count($enclos['portees']);
+                                    $rowspan = ($porteeCount > 0) ? $porteeCount : 1;
+                                ?>
+                                <tr>
+                                    <td rowspan="<?= $rowspan ?>" style="vertical-align: middle; text-align: center; font-weight: bold;">
+                                        <?= htmlspecialchars($enclos['id_enclos']) ?>
+                                    </td>
+                                    <td rowspan="<?= $rowspan ?>" style="vertical-align: middle;">
+                                        <?= htmlspecialchars($enclos['nom_type']) ?>
+                                    </td>
+                                    <td rowspan="<?= $rowspan ?>" style="vertical-align: middle; text-align: center;">
+                                        <?= htmlspecialchars($enclos['surface']) ?>
+                                    </td>
 
-    <div class="row" id="enclos-canvas-zone">
-        <?php foreach ($enclosData as $index => $enclos): ?>
-            <div class="col-md-6 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        Enclos ID: <?= htmlspecialchars($enclos['id_enclos']) ?> - <?= htmlspecialchars($enclos['nom_type']) ?> (<?= htmlspecialchars($enclos['surface']) ?> m²)
-                    </div>
-                    <div class="card-body p-2">
-                        <canvas 
-                            class="enclos-canvas" 
-                            width="500" 
-                            height="350"
-                            data-portees='<?= htmlspecialchars(json_encode($enclos['portees']), ENT_QUOTES, 'UTF-8') ?>'>
-                        </canvas>
-                    </div>
-                </div>
+                                    <?php if ($porteeCount > 0): ?>
+                                        <?php // Afficher les détails de la première portée sur la même ligne ?>
+                                        <?php $portee = $enclos['portees'][0]; ?>
+                                        <td><?= htmlspecialchars($portee['id_portee']) ?></td>
+                                        <td><?= htmlspecialchars($portee['date_naissance']) ?></td>
+                                        <td><?= htmlspecialchars($portee['nombre_jour_ecoule']) ?></td>
+                                        <td><?= htmlspecialchars($portee['nombre_males']) ?> M / <?= htmlspecialchars($portee['nombre_femelles']) ?> F</td>
+                                        <td><?= htmlspecialchars(number_format($portee['poids_estimation'], 2)) ?></td>
+                                        <td>
+                                            <span class="badge badge-info"><?= htmlspecialchars($portee['statut_vente']) ?></span>
+                                        </td>
+                                    <?php else: ?>
+                                        <?php // Si l'enclos est vide, afficher un message sur les colonnes restantes ?>
+                                        <td colspan="6" class="text-center text-muted"><em>Enclos Vide</em></td>
+                                    <?php endif; ?>
+                                </tr>
+
+                                <?php // Afficher les autres portées (à partir de la deuxième) sur de nouvelles lignes ?>
+                                <?php if ($porteeCount > 1): ?>
+                                    <?php for ($i = 1; $i < $porteeCount; $i++): ?>
+                                        <?php $portee = $enclos['portees'][$i]; ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($portee['id_portee']) ?></td>
+                                            <td><?= htmlspecialchars($portee['date_naissance']) ?></td>
+                                            <td><?= htmlspecialchars($portee['nombre_jour_ecoule']) ?></td>
+                                            <td><?= htmlspecialchars($portee['nombre_males']) ?> M / <?= htmlspecialchars($portee['nombre_femelles']) ?> F</td>
+                                            <td><?= htmlspecialchars(number_format($portee['poids_estimation'], 2)) ?></td>
+                                            <td>
+                                                <span class="badge badge-info"><?= htmlspecialchars($portee['statut_vente']) ?></span>
+                                            </td>
+                                        </tr>
+                                    <?php endfor; ?>
+                                <?php endif; ?>
+
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
-        <?php endforeach; ?>
+        </div>
     </div>
 </div>
 
-<style>
-    /* Optionnel: Ajoute un curseur "pointer" pour indiquer que les icônes sont interactives */
-    .enclos-canvas {
-        cursor: default;
-    }
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const canvases = document.querySelectorAll('.enclos-canvas');
-
-    canvases.forEach(canvas => {
-        const ctx = canvas.getContext('2d');
-        const portees = JSON.parse(canvas.dataset.portees);
-
-        // --- Paramètres de dessin ---
-        const enclosPadding = 15;
-        const enclosRect = {
-            x: enclosPadding,
-            y: enclosPadding,
-            width: canvas.width - enclosPadding * 2,
-            height: canvas.height - enclosPadding * 2
-        };
-
-        const iconSize = 32; // Taille de l'icône en pixels
-        const iconPadding = 15; // Espace entre les icônes
-        const iconFont = `${iconSize}px Arial`;
-        const iconChar = '🐖'; // Emoji de cochon comme icône
-
-        let positions = []; // Pour stocker les coordonnées de chaque icône
-        let hoveredPortee = null; // Pour savoir quelle portée est survolée
-
-        // --- 1. Calculer les positions des icônes ---
-        function calculatePositions() {
-            positions = [];
-            const iconsPerRow = Math.floor(enclosRect.width / (iconSize + iconPadding));
-            
-            portees.forEach((portee, index) => {
-                const col = index % iconsPerRow;
-                const row = Math.floor(index / iconsPerRow);
-
-                const posX = enclosRect.x + iconPadding + col * (iconSize + iconPadding);
-                const posY = enclosRect.y + iconPadding + row * (iconSize + iconPadding) + iconSize; // +iconSize pour aligner le bas de l'emoji
-
-                positions.push({ x: posX, y: posY, portee: portee });
-            });
-        }
-
-        // --- 2. Fonction principale de dessin ---
-        function draw() {
-            // Effacer tout le canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Dessiner le grand rectangle de l'enclos
-            ctx.fillStyle = '#f9f9f9';
-            ctx.strokeStyle = '#a0a0a0';
-            ctx.lineWidth = 2;
-            ctx.fillRect(enclosRect.x, enclosRect.y, enclosRect.width, enclosRect.height);
-            ctx.strokeRect(enclosRect.x, enclosRect.y, enclosRect.width, enclosRect.height);
-
-            // Gérer le cas où l'enclos est vide
-            if (portees.length === 0) {
-                ctx.fillStyle = 'gray';
-                ctx.font = '18px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText("Enclos Vide", canvas.width / 2, canvas.height / 2);
-                return;
-            }
-
-            // Dessiner chaque icône de portée
-            ctx.font = iconFont;
-            ctx.textAlign = 'left';
-            positions.forEach(pos => {
-                ctx.fillText(iconChar, pos.x, pos.y);
-            });
-
-            // Dessiner l'info-bulle si une portée est survolée
-            if (hoveredPortee) {
-                drawTooltip(hoveredPortee);
-            }
-        }
-        
-        // --- 3. Dessiner l'info-bulle (Tooltip) ---
-        function drawTooltip(pos) {
-            const portee = pos.portee;
-            const textLines = [
-                `Portée ID: ${portee.id_portee ?? 'N/A'}`,
-                `Truie: ${portee.id_truie ?? 'N/A'} | Race: ${portee.id_race ?? 'N/A'}`,
-                `Naissance: ${portee.date_naissance ?? 'N/A'}`,
-                `Jours écoulés: ${portee.nombre_jour_ecoule ?? 'N/A'}`
-            ];
-
-            const tooltipWidth = 250;
-            const tooltipHeight = 90;
-            const tooltipX = pos.x + iconSize / 2;
-            const tooltipY = pos.y - iconSize - tooltipHeight;
-            
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
-            ctx.strokeStyle = 'white';
-            ctx.lineWidth = 1;
-            ctx.fillRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight);
-            ctx.strokeRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight);
-
-            ctx.fillStyle = 'white';
-            ctx.font = '14px Arial';
-            textLines.forEach((line, i) => {
-                ctx.fillText(line, tooltipX + 10, tooltipY + 20 + i * 20);
-            });
-        }
-
-        // --- 4. Gérer les événements de la souris ---
-        canvas.addEventListener('mousemove', function(event) {
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = event.clientX - rect.left;
-            const mouseY = event.clientY - rect.top;
-
-            let isHovering = false;
-            for (const pos of positions) {
-                // Zone de "hit" de l'icône
-                if (mouseX > pos.x && mouseX < pos.x + iconSize && 
-                    mouseY > pos.y - iconSize && mouseY < pos.y) {
-                    
-                    if (hoveredPortee !== pos) {
-                        hoveredPortee = pos;
-                        draw(); // Redessiner pour afficher le tooltip
-                    }
-                    isHovering = true;
-                    canvas.style.cursor = 'pointer'; // Change le curseur
-                    break;
-                }
-            }
-            
-            if (!isHovering) {
-                if (hoveredPortee !== null) {
-                    hoveredPortee = null;
-                    draw(); // Redessiner pour enlever le tooltip
-                }
-                canvas.style.cursor = 'default'; // Remet le curseur par défaut
-            }
-        });
-        
-        canvas.addEventListener('mouseleave', function() {
-             if (hoveredPortee !== null) {
-                hoveredPortee = null;
-                draw(); // Redessiner pour enlever le tooltip
-            }
-            canvas.style.cursor = 'default';
-        });
-
-        // --- Lancement initial ---
-        calculatePositions();
-        draw();
-    });
-});
-</script>
+<!-- Le style et le script de la version canvas ne sont plus nécessaires et ont été retirés. -->
+<!-- Vous pouvez ajouter des scripts pour la pagination ou la recherche de la table ici si besoin. -->
