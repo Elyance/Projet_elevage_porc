@@ -110,7 +110,7 @@ class CommandeController
             'date_fin' => $date_fin ?? '',
             'statut' => $statut ?? ''
         ];
-        $content = Flight::View('commande/liste', $data);
+        $content = Flight::view()->fetch('commande/liste', $data);
         Flight::render('template-quixlab', ['content' => $content]);
     }
 
@@ -119,14 +119,14 @@ class CommandeController
         SessionMiddleware::startSession();
         $clients = Flight::db()->query('SELECT * FROM bao_client')->fetchAll();
         $enclos_portees = Flight::db()->query('SELECT * FROM bao_enclos_portee')->fetchAll();
-        $races = Flight::db()->query('SELECT * FROM races_porcs')->fetchAll();
+        $races = Flight::db()->query('SELECT * FROM bao_races_porcs')->fetchAll();
 
         $data = [
             'clients' => $clients,
             'enclos_portees' => $enclos_portees,
             'races' => $races
         ];
-        $content = Flight::View('commande/commande', $data);
+        $content = Flight::view()->fetch('commande/commande', $data);
         Flight::render('template-quixlab', ['content' => $content]);
     }
 
@@ -140,7 +140,7 @@ class CommandeController
         $data = [
             'command' => $command
         ];
-        $content = Flight::View('commande/edit_status', $data);
+        $content = Flight::view()->fetch('commande/edit_status', $data);
         Flight::render('template-quixlab', ['content' => $content]);
     }
 
@@ -202,7 +202,7 @@ class CommandeController
             'date_fin' => Flight::request()->query['date_fin'] ?? '',
             'total_recette' => $total_recette
         ];
-        $content = Flight::View('commande/recette', $data);
+        $content = Flight::view()->fetch('commande/recette', $data);
         Flight::render('template-quixlab', ['content' => $content]);
     }
 }

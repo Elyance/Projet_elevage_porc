@@ -10,8 +10,15 @@
                     <form method="post" action="<?= BASE_URL?>/commande/add">
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Client</label>
-                            <div class="col-sm-10">
+                            <!-- <div class="col-sm-10">
                                 <input type="text" class="form-control" name="nomClient" placeholder="Entrez le nom du client" required>
+                            </div> -->
+                            <div class="col-sm-10">
+                                <select name="id_client" id="id_client" class="form-control" required>
+                                    <?php foreach ($clients as $client): ?>
+                                        <option value="<?= $client['id_client'] ?>"><?= $client['nom_client'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                         </div>
 
