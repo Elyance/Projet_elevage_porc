@@ -160,7 +160,7 @@
                             <i class="icon-wallet menu-icon"></i><span class="nav-text">Budget</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a href="<?= BASE_URL ?>/budget/index ">Budget</a></li>
+                            <li><a href="<?= BASE_URL ?>/budget/index ">Voir Budget</a></li>
                             <li><a href="<?= BASE_URL ?>/commande/recette">Recettes</a></li>
                             <li><a href="<?= BASE_URL ?>/depense/list">Depenses</a></li>
                         </ul>
