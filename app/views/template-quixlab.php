@@ -101,14 +101,17 @@
                     </li>
 
                     <!-- <li class="nav-label">Modules</li> -->
-                    <li>
-                        <a href="<?= BASE_URL ?>/reproduction" aria-expanded="false">
-                            <i class="icon-heart menu-icon"></i><span class="nav-text">Reproduction</span>
-                        </a>
-                    </li>
+                    
                     <li>
                         <a href="<?= BASE_URL ?>/enclos" aria-expanded="false">
                             <i class="icon-home menu-icon"></i><span class="nav-text">Enclos</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="<?= BASE_URL ?>/commande/list" aria-expanded="false">
+                            <i class="icon-basket-loaded menu-icon"></i><span class="nav-text">Commandes</span>
                         </a>
                     </li>
                     <li>
@@ -117,8 +120,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="<?= BASE_URL ?>/commande/list" aria-expanded="false">
-                            <i class="icon-basket-loaded menu-icon"></i><span class="nav-text">Commandes</span>
+                        <a href="<?= BASE_URL ?>/budget/index" aria-expanded="false">
+                            <i class="icon-wallet menu-icon"></i><span class="nav-text">Budget</span>
                         </a>
                     </li>
                     <li>
@@ -126,7 +129,7 @@
                             <i class="icon-chart menu-icon"></i><span class="nav-text">Simulation</span>
                         </a>
                     </li>
-                
+                    
                     <li class="mega-menu mega-menu-sm">
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                             <i class="icon-graph menu-icon"></i><span class="nav-text">Statistique</span>
@@ -136,7 +139,11 @@
                             <li><a href="<?= BASE_URL ?>/statistiques/ventes">Statistiques Ventes</a></li>
                         </ul>
                     </li>
-                    
+                    <li>
+                        <a href="<?= BASE_URL ?>/reproduction" aria-expanded="false">
+                            <i class="icon-heart menu-icon"></i><span class="nav-text">Reproduction</span>
+                        </a>
+                    </li>
                     <li class="mega-menu mega-menu-sm">
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                             <i class="icon-plus menu-icon"></i><span class="nav-text">Santé</span>
