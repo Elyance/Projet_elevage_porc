@@ -189,6 +189,8 @@ INSERT INTO bao_diagnostic (id_maladie, id_enclos_portee, nombre_males_infectes,
 (1, 1, 2, 3, '2024-08-25', '2024-08-27', 'Antibiotiques 5 jours', 'en traitement', 120000),
 (2, 2, 1, 0, '2024-09-01', '2024-09-02', 'Vaccin d''urgence', 'en quarantaine', 185000);
 
+
+-- NEKENA ADDITIONS
 ------------------
 -- 13. WEIGHING RECORDS
 ------------------
@@ -218,10 +220,10 @@ INSERT INTO bao_diagnostic (id_maladie, id_enclos_portee, nombre_males_infectes,
 -- (3, 5, 15.0, NULL);
 
 -- Food Replenishment
-INSERT INTO bao_reapprovisionnement_aliments (id_aliment, quantite_kg, cout_total) VALUES
-(1, 500, 175000),
-(2, 300, 165000),
-(5, 200, 120000);
+-- INSERT INTO bao_reapprovisionnement_aliments (id_aliment, quantite_kg, cout_total) VALUES
+-- (1, 500, 175000),
+-- (2, 300, 165000),
+-- (5, 200, 120000);
 
 ------------------
 -- 15. DEATHS RECORD
@@ -235,8 +237,8 @@ INSERT INTO bao_reapprovisionnement_aliments (id_aliment, quantite_kg, cout_tota
 -- We need to define the selling price for each pig race.
 -- ===================================================================
 
-INSERT INTO bao_prix_vente_porc (id_race, prix_unitaire) VALUES
-(1, 350000.00), -- Price for 'Large White' (id_race = 1)
-(2, 340000.00), -- Price for 'Landrace' (id_race = 2)
-(3, 380000.00), -- Price for 'Duroc' (id_race = 3)
-(4, 400000.00); -- Price for 'Piétrain' (id_race = 4)
+-- INSERT INTO bao_prix_vente_porc (id_race, prix_unitaire) VALUES
+-- (1, 350000.00), -- Price for 'Large White' (id_race = 1)
+-- (2, 340000.00), -- Price for 'Landrace' (id_race = 2)
+-- (3, 380000.00), -- Price for 'Duroc' (id_race = 3)
+-- (4, 400000.00); -- Price for 'Piétrain' (id_race = 4)
