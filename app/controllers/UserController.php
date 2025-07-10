@@ -11,8 +11,7 @@ class UserController {
         SessionMiddleware::startSession();
         if (SessionMiddleware::isLoggedIn()) {
             if($_SESSION['user_role_id'] == 1) {
-                $content = Flight::view()->fetch('home');
-                Flight::render('template-quixlab', ['content' => $content]);
+                Flight::redirect(BASE_URL.'/enclos');
             } else {
                 Flight::redirect(BASE_URL.'/employee/landing');
             }
@@ -36,8 +35,7 @@ class UserController {
             $_SESSION['user_id'] = $user->getIdUser() - 1; // Keep -1 if intentional
             $_SESSION['user_role_id'] = $user->getRole();
             if ($_SESSION['user_role_id'] == 1) {
-                $content = Flight::view()->fetch('home');
-                Flight::render('template-quixlab', ['content' => $content]);
+                Flight::redirect(BASE_URL.'/enclos');
             } else {
                 Flight::redirect(BASE_URL.'/employee/landing');
             }

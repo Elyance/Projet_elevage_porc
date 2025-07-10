@@ -13,49 +13,58 @@ class SanteTypeEvenementController
 {
     public function home()
     {
-        $santetypeevenement = new SanteTypeEvenement(Flight::db());
-        Flight::render('evenement/listTypeEvenement', ['typeevenements' => $santetypeevenement->findAll()]);
+        SessionMiddleware::startSession();
+        $santetypevenement = new SanteTypeEvenement(Flight::db());
+        $content = Flight::view()->fetch('evenement/listTypeEvenement', [
+            'typeevenements' => $santetypevenement->findAll()
+        ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function formAddTypeEvenement() {
-        Flight::render('evenement/createTypeEvenement');
+        SessionMiddleware::startSession();
+        $content = Flight::view()->fetch('evenement/createTypeEvenement');
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function addTypeEvenement() {
         $data = Flight::request()->data;
-        $santetypeevenement = new SanteTypeEvenement(Flight::db());
+        $santetypevenement = new SanteTypeEvenement(Flight::db());
         try {
-            $santetypeevenement->addTypeEvenement($data);
-            Flight::redirect('/typeevenement/add?success=Evenement cree');
+            $santetypevenement->addTypeEvenement($data);
+            Flight::redirect(BASE_URL.'/typeevenement/add?success=Evenement cree');
         } catch (Exception $th) {
-            Flight::redirect('/typeevenement/add?error=Erreur lors de la creation de l'.'evenement');
+            Flight::redirect(BASE_URL.'/typeevenement/add?error=Erreur lors de la creation de l'.'evenement');
         }
     }
 
     public function formUpdateTypeEvenement($id) {
-        $santetypeevenement = new SanteTypeEvenement(Flight::db());
-        Flight::render('evenement/updateTypeEvenement', ['typeevenement' => $santetypeevenement->findById($id)]);
+        SessionMiddleware::startSession();
+        $santetypevenement = new SanteTypeEvenement(Flight::db());
+        $content = Flight::view()->fetch('evenement/updateTypeEvenement', [
+            'typeevenement' => $santetypevenement->findById($id)
+        ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function updateTypeEvenement($id) {
         $data = Flight::request()->data;
-        $santetypeevenement = new SanteTypeEvenement(Flight::db());
+        $santetypevenement = new SanteTypeEvenement(Flight::db());
         try {
-            $santetypeevenement->updateTypeEvenement($id,$data);
-            Flight::redirect('/typeevenement?success=Evenement modifie');
+            $santetypevenement->updateTypeEvenement($id,$data);
+            Flight::redirect(BASE_URL.'/typeevenement?success=Evenement modifie');
         } catch (Exception $th) {
-            Flight::redirect('/typeevenement?error=Erreur lors de la modification de l'.'evenement');
+            Flight::redirect(BASE_URL.'/typeevenement?error=Erreur lors de la modification de l'.'evenement');
         }
     }
 
     public function deleteTypeEvenement($id) {
-        $typevenement =new SanteTypeEvenement(Flight::db());
+        $typevenement = new SanteTypeEvenement(Flight::db());
         try {
             $typevenement->deleteTypeEvenement($id);
-            Flight::redirect('/typeevenement?success=typevenement supprime');
+            Flight::redirect(BASE_URL.'/typeevenement?success=typevenement supprime');
         } catch (\Throwable $th) {
-            Flight::redirect('/typeevenement?error=Erreur lors de la suppression de la typevenement');
+            Flight::redirect(BASE_URL.'/typeevenement?error=Erreur lors de la suppression de la typevenement');
         }
     }
-
 }
