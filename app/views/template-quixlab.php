@@ -92,10 +92,14 @@
             <div class="nk-nav-scroll">
                 <ul class="metismenu" id="menu">
                     <!-- <li class="nav-label">Modules</li> -->
-                    <li>
-                        <a href="<?= BASE_URL ?>/simulation/benefice" aria-expanded="false">
-                            <i class="icon-chart menu-icon"></i><span class="nav-text">Simulation</span>
+                    <li class="mega-menu mega-menu-sm">
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-home menu-icon"></i><span class="nav-text">Enclos</span>
                         </a>
+                        <ul aria-expanded="false">
+                            <li><a href="<?= BASE_URL ?>/enclos">Infos Enclos</a></li>
+                            <li><a href="<?= BASE_URL ?>/histo_peser">Historique pesée</a></li>
+                        </ul>
                     </li>
                     <li class="mega-menu mega-menu-sm">
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
@@ -107,14 +111,10 @@
                             <li><a href="<?= BASE_URL ?>/aliments">Consulter l'historique de circulation</a></li>
                         </ul>
                     </li>
-                    <li class="mega-menu mega-menu-sm">
-                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                            <i class="icon-home menu-icon"></i><span class="nav-text">Enclos</span>
+                    <li>
+                        <a href="<?= BASE_URL ?>/simulation/benefice" aria-expanded="false">
+                            <i class="icon-chart menu-icon"></i><span class="nav-text">Simulation</span>
                         </a>
-                        <ul aria-expanded="false">
-                            <li><a href="<?= BASE_URL ?>/enclos">Infos Enclos</a></li>
-                            <li><a href="<?= BASE_URL ?>/histo_peser">Historique pesée</a></li>
-                        </ul>
                     </li>
                     <li class="mega-menu mega-menu-sm">
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
