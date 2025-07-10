@@ -229,12 +229,3 @@ INSERT INTO bao_reapprovisionnement_aliments (id_aliment, quantite_kg, cout_tota
 INSERT INTO bao_deces (id_enclos, male_deces, female_deces, date_deces, cause_deces) VALUES
 (1, 0, 1, '2024-08-10', 'Complications post-partum'),
 (4, 2, 1, '2024-09-05', 'Infection respiratoire');
-
-------------------
--- 16. COMMANDES
-------------------
-INSERT INTO bao_commande (id_commande, id_client, id_enclos_portee, quantite, date_commande, adresse_livraison, date_livraison, statut_livraison) VALUES
-(1, 1, 1, 4, '2025-07-10', 'Lot II A 45', NULL, 'en attente'),
-(2, 2, 2, 2, '2025-07-12', 'Fianarantsoa', NULL, 'en attente'),
-(11, 1, 1, 2, '2025-07-15', 'Lot II A 45', NULL, 'en attente'),
-(12, 2, 2, 3, '2025-07-16', 'Fianarantsoa', NULL, 'en attente');
