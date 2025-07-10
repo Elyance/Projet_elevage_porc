@@ -1,70 +1,122 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php require_once __DIR__ . '/partials/header.php'; ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creation d'un diagnostic</title>
-</head>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title">
+                    <h4>Création d'un Diagnostic</h4>
+                </div>
+                <div class="basic-form">
+                    <form method="post">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Maladie</label>
+                            <div class="col-sm-10">
+                                <select name="id_maladie" id="id_maladie" class="form-control" required>
+                                    <?php if(!empty($maladies)): ?>
+                                        <?php foreach($maladies as $maladie): ?>
+                                            <option value="<?= htmlspecialchars($maladie['id_maladie']) ?>">
+                                                <?= htmlspecialchars($maladie['nom_maladie']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                        </div>
 
-<body>
-    <form method="post">
-        <label for="id_maladie">Maladie : </label>
-        <select name="id_maladie" id="id_maladie">
-            <?php if(!empty($maladies)) {
-                foreach($maladies as $maladie) {?>
-                    <option value="<?= htmlspecialchars($maladie['id_maladie']) ?>"><?= htmlspecialchars($maladie['nom_maladie']) ?></option>
-            <?php }
-            }?>
-        </select>
-        <br>
-        <label for="id_enclos_portee">Enclos Portée : </label>
-        <select name="id_enclos_portee" id="id_enclos_portee">
-            <?php if(!empty($enclos_portee)) {
-                foreach($enclos_portee as $enclo) {?>
-                    <option value="<?= htmlspecialchars($enclo['id_enclos_portee']) ?>"><?= htmlspecialchars($enclo['id_enclos_portee']) ?> (Enclos: <?= $enclo['id_enclos'] ?>)</option>
-            <?php }
-            }?>
-        </select>
-        <br>
-        <label for="id_enclos_portee_original">Enclos Portée Original : </label>
-        <select name="id_enclos_portee_original" id="id_enclos_portee_original">
-            <?php if(!empty($enclos_portee)) {
-                foreach($enclos_portee as $enclo) {?>
-                    <option value="<?= htmlspecialchars($enclo['id_enclos_portee']) ?>"><?= htmlspecialchars($enclo['id_enclos_portee']) ?> (Enclos: <?= $enclo['id_enclos'] ?>)</option>
-            <?php }
-            }?>
-        </select>
-        <br>
-        <label for="nombre_males_infectes">Nombre de mâles infectés : </label>
-        <input type="number" name="nombre_males_infectes" id="nombre_males_infectes" min="0" required>
-        <br>
-        <label for="nombre_femelles_infectes">Nombre de femelles infectées : </label>
-        <input type="number" name="nombre_femelles_infectes" id="nombre_femelles_infectes" min="0" required>
-        <br>
-        <label for="date_apparition">Date d'apparition: </label>
-        <input type="date" name="date_apparition" id="date_apparition" required>
-        <br>
-        <label for="date_diagnostic">Date de diagnostic : </label>
-        <input type="date" name="date_diagnostic" id="date_diagnostic" required>
-        <br>
-        <label for="desc_traitement">Description : </label>
-        <input type="text" name="desc_traitement" id="desc_traitement">
-        <br>
-        <label for="statut">Statut : </label>
-        <select name="statut" id="statut">
-            <option value="signale">Signalé</option>
-            <option value="en quarantaine">En quarantaine</option>
-            <option value="en traitement">En traitement</option>
-            <option value="reussi">Reussi</option>
-            <option value="echec">Echec</option>
-        </select>
-        <br>
-        <label for="prix_traitement">Prix : </label>
-        <input type="number" name="prix_traitement" id="prix_traitement" step="0.01" min="0">
-        <br><br>
-        <button type="submit">Créer l'évènement</button>
-    </form>
-</body>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Enclos Portée</label>
+                            <div class="col-sm-10">
+                                <select name="id_enclos_portee" id="id_enclos_portee" class="form-control" required>
+                                    <?php if(!empty($enclos_portee)): ?>
+                                        <?php foreach($enclos_portee as $enclo): ?>
+                                            <option value="<?= htmlspecialchars($enclo['id_enclos_portee']) ?>">
+                                                <?= htmlspecialchars($enclo['id_enclos_portee']) ?> (Enclos: <?= htmlspecialchars($enclo['id_enclos']) ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                        </div>
 
-</html>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Enclos Portée Original</label>
+                            <div class="col-sm-10">
+                                <select name="id_enclos_portee_original" id="id_enclos_portee_original" class="form-control" required>
+                                    <?php if(!empty($enclos_portee)): ?>
+                                        <?php foreach($enclos_portee as $enclo): ?>
+                                            <option value="<?= htmlspecialchars($enclo['id_enclos_portee']) ?>">
+                                                <?= htmlspecialchars($enclo['id_enclos_portee']) ?> (Enclos: <?= htmlspecialchars($enclo['id_enclos']) ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Mâles infectés</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="nombre_males_infectes" id="nombre_males_infectes" min="0" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Femelles infectées</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="nombre_femelles_infectes" id="nombre_femelles_infectes" min="0" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Date d'apparition</label>
+                            <div class="col-sm-10">
+                                <input type="date" class="form-control" name="date_apparition" id="date_apparition" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Date de diagnostic</label>
+                            <div class="col-sm-10">
+                                <input type="date" class="form-control" name="date_diagnostic" id="date_diagnostic" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Description</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="desc_traitement" id="desc_traitement">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Statut</label>
+                            <div class="col-sm-10">
+                                <select name="statut" id="statut" class="form-control" required>
+                                    <option value="signale">Signalé</option>
+                                    <option value="en quarantaine">En quarantaine</option>
+                                    <option value="en traitement">En traitement</option>
+                                    <option value="reussi">Réussi</option>
+                                    <option value="echec">Échec</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Prix</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="prix_traitement" id="prix_traitement" step="0.01" min="0">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary">Créer le diagnostic</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -150,8 +150,8 @@ INSERT INTO bao_tache (id_employe_poste, nom_tache, description) VALUES
 -- Employee Tasks
 INSERT INTO bao_tache_employe (id_tache, id_employe, date_attribution, date_echeance, statut, precision) VALUES
 (1, 1, '2024-10-01', '2024-10-05', 'en cours', 'Suivi truies #1-#5'),
-(2, 1, '2024-10-02', '2024-10-02', 'terminee', 'Enclos A1-A5'),
-(3, 2, '2024-10-03', '2024-10-04', 'en cours', 'Portée #2 et #3');
+(2, 1, '2024-10-02', '2024-10-02', 'terminé', 'Enclos A1-A5'),
+(3, 2, '2024-10-03', '2024-10-04', 'à faire', 'Portée #2 et #3');
 
 ------------------
 -- 12. HEALTH MANAGEMENT
@@ -229,12 +229,3 @@ INSERT INTO bao_reapprovisionnement_aliments (id_aliment, quantite_kg, cout_tota
 INSERT INTO bao_deces (id_enclos, male_deces, female_deces, date_deces, cause_deces) VALUES
 (1, 0, 1, '2024-08-10', 'Complications post-partum'),
 (4, 2, 1, '2024-09-05', 'Infection respiratoire');
-
-------------------
--- 16. COMMANDES
-------------------
-INSERT INTO bao_commande (id_commande, id_client, id_enclos_portee, quantite, date_commande, adresse_livraison, date_livraison, statut_livraison) VALUES
-(1, 1, 1, 4, '2025-07-10', 'Lot II A 45', NULL, 'en attente'),
-(2, 2, 2, 2, '2025-07-12', 'Fianarantsoa', NULL, 'en attente'),
-(11, 1, 1, 2, '2025-07-15', 'Lot II A 45', NULL, 'en attente'),
-(12, 2, 2, 3, '2025-07-16', 'Fianarantsoa', NULL, 'en attente');

@@ -1,0 +1,26 @@
+<?php
+
+namespace app\controllers;
+
+use Flight;
+use app\models\Budget;
+use SessionMiddleware;
+
+
+class BudgetController
+{
+    public function index()
+    {
+        SessionMiddleware::startSession();
+        $annee = Flight::request()->query['annee'] ?? date('Y');
+        $budgetParMois = Budget::getBudgetParMois($annee);
+        $budgetParAn = Budget::getBudgetParAn();
+        $data = [
+            'budgetParMois' => $budgetParMois,
+            'budgetParAn' => $budgetParAn,
+            'annee' => $annee,
+            'page' => 'budget/index'
+        ];
+        Flight::render('budget/index', $data);
+    }
+}

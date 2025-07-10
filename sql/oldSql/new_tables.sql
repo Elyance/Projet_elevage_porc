@@ -1,4 +1,35 @@
-SELECT client.* , categorie_client.nom_categorie FROM client JOIN categorie_client ON categorie_client.id_categorie = client.id_categorie;
+
+CREATE TABLE bao_commande (
+    id_commande SERIAL PRIMARY KEY,
+    id_client INTEGER,
+    id_enclos_portee INTEGER, -- enclos d'origine des porcs
+    quantite INTEGER, -- nombre de porcs commandés
+    date_commande DATE, -- date de la commande
+    adresse_livraison VARCHAR(100),
+    date_livraison DATE, -- peut être NULL au début
+    statut_livraison VARCHAR(20) CHECK (statut_livraison IN ('en attente', 'en cours', 'livre', 'annule')), -- statut de livraison
+    nomClient VARCHAR(60), -- nom du client (stocké en plus de l'id_client)
+    id_race INTEGER, -- race des porcs commandés
+
+    -- Clés étrangères
+    FOREIGN KEY (id_client) REFERENCES bao_client(id_client),
+    FOREIGN KEY (id_enclos_portee) REFERENCES bao_enclos_portee(id_enclos_portee),
+    FOREIGN KEY (id_race) REFERENCES races_porcs(id_race)
+);
+
+
+
+CREATE TABLE bao_prix_vente_porc (
+    id SERIAL PRIMARY KEY,
+    id_race INTEGER,
+    prix_unitaire DECIMAL(10,2),
+
+    -- Clé étrangère vers races_porcs
+    FOREIGN KEY (id_race) REFERENCES races_porcs(id_race)
+);
+
+
+
 
 
 CREATE OR REPLACE VIEW bao_view_recette AS
@@ -92,3 +123,13 @@ SELECT
 FROM bao_view_budget
 GROUP BY annee
 ORDER BY annee;
+
+------------------
+-- 16. COMMANDES
+------------------
+-- INSERT INTO bao_commande (id_commande, id_client, id_enclos_portee, quantite, date_commande, adresse_livraison, date_livraison, statut_livraison) VALUES
+-- (1, 1, 1, 4, '2025-07-10', 'Lot II A 45', NULL, 'en attente'),
+-- (2, 2, 2, 2, '2025-07-12', 'Fianarantsoa', NULL, 'en attente'),
+-- (11, 1, 1, 2, '2025-07-15', 'Lot II A 45', NULL, 'en attente'),
+-- (12, 2, 2, 3, '2025-07-16', 'Fianarantsoa', NULL, 'en attente');
+
