@@ -190,7 +190,7 @@
     ***********************************-->
     <div class="footer">
         <div class="copyright">
-            <p>ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx ETU00xxxx</a></p>
+            <p>&copy; 2025 E-Porc</p>
         </div>
     </div>
     <!--**********************************
