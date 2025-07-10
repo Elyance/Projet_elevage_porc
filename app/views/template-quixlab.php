@@ -34,10 +34,10 @@
         <div class="nav-header">
             <div class="brand-logo">
                 <a href="#">
-                    <b class="logo-abbr"><img src="<?= STATIC_URL ?>/assets/images/logo.png" alt=""> </b>
-                    <span class="logo-compact"><img src="<?= STATIC_URL ?>/assets/images/logo-compact.png" alt=""></span>
+                    <b class="logo-abbr"><img src="<?= STATIC_URL ?>/assets/images/logo.png" alt="" style="display: block; margin: 0 auto;"></b>
+                    <span class="logo-compact"><img src="<?= STATIC_URL ?>/assets/images/logo-compact.png" alt="" style="display: block; margin: 0 auto;"></span>
                     <span class="brand-title">
-                        <img src="<?= STATIC_URL ?>/assets/images/logo-text.png" alt="">
+                        <img src="<?= STATIC_URL ?>/assets/images/logo-text.png" alt="" style="display: block; margin: 0 auto;">
                     </span>
                 </a>
             </div>
@@ -137,6 +137,7 @@
                             <i class="icon-plus menu-icon"></i><span class="nav-text">Santé</span>
                         </a>
                         <ul aria-expanded="false">
+                            <li><a href="<?= BASE_URL ?>/sante">Calendrier</a></li>
                             <li><a href="<?= BASE_URL ?>/sante/listDiagnostic">Diagnostics</a></li>
                             <li><a href="<?= BASE_URL ?>/sante/listSignale">Cas Signalés</a></li>
                             <li><a href="<?= BASE_URL ?>/sante/listQuarantine">Cas en Quarantaine</a></li>
