@@ -108,7 +108,7 @@
                         </a>
                         <ul aria-expanded="false">
                             <li><a href="<?= BASE_URL ?>/enclos">Enclos</a></li>
-                            <li><a href="<?= BASE_URL ?>/tache_peser">Peser porc</a></li>
+                            <li><a href="<?= BASE_URL ?>/histo_peser">Historique pesée</a></li>
                         </ul>
                     </li>
                     <li>

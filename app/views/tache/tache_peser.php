@@ -54,8 +54,8 @@
                                 
                                 <div class="form-group row">
                                     <div class="col-sm-10">
+                                        <a href="<?= BASE_URL ?>/histo_peser" class="btn btn-primary">Voir l'historique</a>
                                         <button type="submit" class="btn btn-primary">Enregistrer</button>
-                                        <a href="<?= BASE_URL ?>/tache" class="btn btn-light">Retour</a>
                                     </div>
                                 </div>
                             </form>

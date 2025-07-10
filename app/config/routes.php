@@ -169,6 +169,7 @@ $router->get('/employee/landing', [$Tache_Controller, 'employeeLanding']);
 $router->post('/tache/done', [ $Tache_Controller, 'done']);
 $router->get("/tache_peser", [$Tache_Controller, "peserPorcs"]);
 $router->post("/tache_peser_submit", [$Tache_Controller, "submitPesee"]);
+$router->get("/histo_peser", [$Tache_Controller, "historiquePesee"]);
 
 
 //?======= Simulations-Stats Routes
