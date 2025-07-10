@@ -100,7 +100,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-label">Modules</li>
+                    <!-- <li class="nav-label">Modules</li> -->
                     <li>
                         <a href="<?= BASE_URL ?>/reproduction" aria-expanded="false">
                             <i class="icon-heart menu-icon"></i><span class="nav-text">Reproduction</span>
@@ -117,7 +117,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="<?= BASE_URL ?>/commande/liste" aria-expanded="false">
+                        <a href="<?= BASE_URL ?>/commande/list" aria-expanded="false">
                             <i class="icon-basket-loaded menu-icon"></i><span class="nav-text">Commandes</span>
                         </a>
                     </li>
@@ -148,7 +148,7 @@
                             <li><a href="<?= BASE_URL ?>/sante/listTreatment">Cas en Traitement</a></li>
                             <li><a href="<?= BASE_URL ?>/maladie">Maladies</a></li>
                             <li><a href="<?= BASE_URL ?>/deces">Décès</a></li>
-                            <li><a href="<?= BASE_URL ?>/evenement">Événements</a></li>
+                            <li><a href="<?= BASE_URL ?>/typeevenement">Liste Type Événements</a></li>
                         </ul>
                     </li>
                 </ul>
