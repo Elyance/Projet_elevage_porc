@@ -140,7 +140,9 @@ class TacheController {
 
     public function peserPorcs() {
         // Afficher la page pour enregistrer une nouvelle pesée
-        Flight::render('tache/tache_peser');
+        SessionMiddleware::startSession();
+        $content = Flight::view()->fetch('tache/tache_peser');
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function submitPesee() {

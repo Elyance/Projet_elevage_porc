@@ -13,6 +13,7 @@ class NaissanceController
 {
     public function add()
     {
+        SessionMiddleware::startSession();
         $truies = TruieModel::getAll();
         $cycles = CycleModel::getAll();
         $enclos = EnclosModel::getAll();
@@ -39,10 +40,10 @@ class NaissanceController
 
             NaissanceModel::create((int)$cycle_id, (int)$truie_id, $date_naissance, $femelle_nait, $male_nait, (int)$enclos_id, $id_race);
 
-            Flight::redirect('/cycle');
+            Flight::redirect(BASE_URL.'/cycle');
         }
 
-        Flight::render('naissance/add', [
+        $content = Flight::view()->fetch('naissance/add', [
             'truies' => $truies,
             'cycles' => $cycles,
             'enclos' => $enclos,
@@ -51,5 +52,6 @@ class NaissanceController
             'truie_id' => $truie_id,
             'error' => $_GET['error'] ?? null
         ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 }

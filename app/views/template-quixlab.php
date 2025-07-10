@@ -102,10 +102,14 @@
                         </ul>
                     </li>
                     <!-- <li class="nav-label">Modules</li> -->
-                    <li>
-                        <a href="<?= BASE_URL ?>/enclos" aria-expanded="false">
-                            <i class="icon-home menu-icon"></i><span class="nav-text">Enclos</span>
+                    <li class="mega-menu mega-menu-sm">
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-home menu-icon"></i><span class="nav-text">Statistique</span>
                         </a>
+                        <ul aria-expanded="false">
+                            <li><a href="<?= BASE_URL ?>/enclos">Enclos</a></li>
+                            <li><a href="<?= BASE_URL ?>/tache_peser">Peser porc</a></li>
+                        </ul>
                     </li>
                     <li>
                         <a href="<?= BASE_URL ?>/employe" aria-expanded="false">
@@ -127,10 +131,17 @@
                             <li><a href="<?= BASE_URL ?>/statistiques/ventes">Statistiques Ventes</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="<?= BASE_URL ?>/reproduction" aria-expanded="false">
+                    <li class="mega-menu mega-menu-sm">
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                             <i class="icon-heart menu-icon"></i><span class="nav-text">Reproduction</span>
                         </a>
+                        <ul aria-expanded="false">
+                            <li><a href="<?= BASE_URL ?>/reproduction">Historique des Inséminations</a></li>
+                            <li><a href="<?= BASE_URL ?>/reproduction/inseminate">Ajouter Insémination</a></li>
+                            <li><a href="<?= BASE_URL ?>/cycle">Cycles en Cours</a></li>
+                            <li><a href="<?= BASE_URL ?>/cycle/add">Ajouter un Cycle</a></li>
+                            <li><a href="<?= BASE_URL ?>/naissance/add">Enregistrer une Naissance</a></li>
+                        </ul>
                     </li>
                     <li class="mega-menu mega-menu-sm">
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
