@@ -33,7 +33,7 @@
         ***********************************-->
         <div class="nav-header">
             <div class="brand-logo">
-                <a href="#">
+                <a href="<?= BASE_URL ?>/">
                     <b class="logo-abbr"><img src="<?= STATIC_URL ?>/assets/images/logo.png" alt="" style="display: block; margin: 0 auto;"></b>
                     <span class="logo-compact"><img src="<?= STATIC_URL ?>/assets/images/logo-compact.png" alt="" style="display: block; margin: 0 auto;"></span>
                     <span class="brand-title">
@@ -111,10 +111,32 @@
                             <li><a href="<?= BASE_URL ?>/histo_peser">Historique pesée</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="<?= BASE_URL ?>/employe" aria-expanded="false">
-                            <i class="icon-people menu-icon"></i><span class="nav-text">Employés</span>
+                    <li class="mega-menu mega-menu-sm">
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-people menu-icon"></i><span class="nav-text">Outils de gestions</span>
                         </a>
+                        <ul aria-expanded="false">
+                            <!-- Employee Management -->
+                            <li class="mega-menu-title">G.Employés</li>
+                            <li><a href="<?= BASE_URL ?>/employe">Liste des Employés</a></li>
+                            <li><a href="<?= BASE_URL ?>/add_employe">Ajouter un Employé</a></li>
+                            
+                            <!-- Salary Section -->
+                            <li class="mega-menu-title">G.Salaires</li>
+                            <li><a href="<?= BASE_URL ?>/salaire">Salaires</a></li>
+                            <li><a href="<?= BASE_URL ?>/salaire/historique_paie">Historique des Paiements</a></li>
+                            
+                            <!-- Attendance Section -->
+                            <li class="mega-menu-title">G.Présences</li>
+                            <li><a href="<?= BASE_URL ?>/presence">Feuille de Présence</a></li>
+                            <li><a href="<?= BASE_URL ?>/presence/add_presence">Enregistrer Présence</a></li>
+                            
+                            <!-- Tasks Section -->
+                            <li class="mega-menu-title">G.Tâches</li>
+                            <li><a href="<?= BASE_URL ?>/tache">Liste des Tâches</a></li>
+                            <li><a href="<?= BASE_URL ?>/tache/create">Créer une Tâche</a></li>
+                            <li><a href="<?= BASE_URL ?>/tache/assign">Assigner des Tâches</a></li>
+                        </ul>
                     </li>
                     <li>
                         <a href="<?= BASE_URL ?>/simulation/benefice" aria-expanded="false">

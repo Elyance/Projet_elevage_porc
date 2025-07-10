@@ -66,6 +66,7 @@ class SalaireController
 
     public function historiquePaie()
     {
+        SessionMiddleware::startSession();
         $employe_id = $_GET["employe"] ?? null;
         $year = $_GET["annee"] ?? date("Y");
         $conditions = $employe_id ? ["id_employe" => $employe_id] : [];
@@ -75,7 +76,7 @@ class SalaireController
         $data = [];
         foreach ($salaires as $salaire) {
             $month = date("m", strtotime($salaire->date_salaire));
-            $emp = array_filter($employes, fn($e) => $e->id_employe == $salaire->id_employe)[0];
+            // $emp = array_filter($employes, fn($e) => $e->id_employe == $salaire->id_employe)[0];
             $presences = PresenceModel::getDaysPresentByEmployeeAndMonth($salaire->id_employe, "$year-$month-01", "$year-$month-" . cal_days_in_month(CAL_GREGORIAN, $month, $year));
             $nb_jours_present = count(array_filter($presences, fn($p) => $p->statut === "present"));
             $taux = $nb_jours_present / cal_days_in_month(CAL_GREGORIAN, $month, $year);
@@ -87,12 +88,13 @@ class SalaireController
             ];
         }
 
-        Flight::render("salaire/historique_paie", [
+        $content = Flight::view()->fetch('salaire/historique_paie', [
             "employes" => $employes,
             "selected_employe" => $employe_id,
             "year" => $year,
             "years" => range(date("Y") - 5, date("Y")),
             "data" => $data
         ]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 }
