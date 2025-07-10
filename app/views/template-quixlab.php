@@ -117,24 +117,39 @@
                         </a>
                     </li>
                     <li>
+                        <a href="<?= BASE_URL ?>/commande/liste" aria-expanded="false">
+                            <i class="icon-basket-loaded menu-icon"></i><span class="nav-text">Commandes</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="<?= BASE_URL ?>/simulation/benefice" aria-expanded="false">
                             <i class="icon-chart menu-icon"></i><span class="nav-text">Simulation</span>
                         </a>
                     </li>
-                   
+                
                     <li class="mega-menu mega-menu-sm">
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                            <i class="icon-basket menu-icon"></i><span class="nav-text">Statistique</span>
+                            <i class="icon-graph menu-icon"></i><span class="nav-text">Statistique</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a href="<?= BASE_URL ?>/statistiques/aliments">statistiques Aliments</a></li>
-                            <li><a href="<?= BASE_URL ?>/statistiques/ventes">statistiques Ventes </a></li>
+                            <li><a href="<?= BASE_URL ?>/statistiques/aliments">Statistiques Aliments</a></li>
+                            <li><a href="<?= BASE_URL ?>/statistiques/ventes">Statistiques Ventes</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="<?= BASE_URL ?>/sante" aria-expanded="false">
+                    
+                    <li class="mega-menu mega-menu-sm">
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                             <i class="icon-plus menu-icon"></i><span class="nav-text">Santé</span>
                         </a>
+                        <ul aria-expanded="false">
+                            <li><a href="<?= BASE_URL ?>/sante/listDiagnostic">Diagnostics</a></li>
+                            <li><a href="<?= BASE_URL ?>/sante/listSignale">Cas Signalés</a></li>
+                            <li><a href="<?= BASE_URL ?>/sante/listQuarantine">Cas en Quarantaine</a></li>
+                            <li><a href="<?= BASE_URL ?>/sante/listTreatment">Cas en Traitement</a></li>
+                            <li><a href="<?= BASE_URL ?>/maladie">Maladies</a></li>
+                            <li><a href="<?= BASE_URL ?>/deces">Décès</a></li>
+                            <li><a href="<?= BASE_URL ?>/evenement">Événements</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>

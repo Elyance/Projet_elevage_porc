@@ -35,6 +35,7 @@ class DecesController
 
     public function addDeces()
     {
+        SessionMiddleware::startSession();
         $data = Flight::request()->data;
         $decesModel = new Deces(Flight::db());
         try {
@@ -59,6 +60,7 @@ class DecesController
 
     public function updateDeces($id)
     {
+        SessionMiddleware::startSession();
         $data = Flight::request()->data;
         $decesModel = new Deces(Flight::db());
         try {
@@ -71,6 +73,7 @@ class DecesController
 
     public function deleteDeces($id)
     {
+        SessionMiddleware::startSession();
         $decesModel = new Deces(Flight::db());
         try {
             $decesModel->deleteDeces($id);

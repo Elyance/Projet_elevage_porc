@@ -35,6 +35,7 @@ class MaladieController
     }
 
     public function addMaladie() {
+        SessionMiddleware::startSession();
         $data = Flight::request()->data;
         $maladie = new Maladie(Flight::db());
         try {
@@ -60,6 +61,7 @@ class MaladieController
     }
 
     public function updateMaladie($id) {
+        SessionMiddleware::startSession();
         $data = Flight::request()->data;
         $maladie = new Maladie(Flight::db());
         try {
@@ -71,6 +73,7 @@ class MaladieController
     }
 
     public function deleteMaladie($id) {
+        SessionMiddleware::startSession();
         $maladie = new Maladie(Flight::db());
         try {
             $maladie->deleteMaladie($id);

@@ -43,6 +43,7 @@ class DiagnosticController
     }
 
     public function addDiagnostic() {
+        SessionMiddleware::startSession();
         $data = Flight::request()->data;
         $diagnostic = new Diagnostic(Flight::db());
         try {
@@ -55,6 +56,7 @@ class DiagnosticController
 
     public function listDiagnostic()
     {
+        SessionMiddleware::startSession();
         $diagnostic = new Diagnostic(Flight::db());
         $diagnostics = $diagnostic->findByStatus('signale'); // Changed to use findByStatus
         $content = Flight::view()->fetch('maladie/listDiagnostic', ['diagnostics' => $diagnostics]);
@@ -63,13 +65,16 @@ class DiagnosticController
 
     public function listSignale()
     {
+        SessionMiddleware::startSession();
         $diagnostic = new Diagnostic(Flight::db());
         $diagnostics = $diagnostic->findByStatus('signale');
         $content = Flight::view()->fetch('maladie/listSignale', ['diagnostics' => $diagnostics]);
+        Flight::render('template-quixlab', ['content' => $content]);
     }
 
     public function formMoveToQuarantine($id_diagnostic)
     {
+        SessionMiddleware::startSession();
         $diagnostic = new Diagnostic(Flight::db());
         $moveData = $diagnostic->moveToQuarantine($id_diagnostic);
         $conn = Flight::db();
@@ -92,6 +97,7 @@ class DiagnosticController
 
     public function moveToQuarantine($id_diagnostic)
     {
+        SessionMiddleware::startSession();
         if (Flight::request()->method == 'POST') {
             $diagnostic = new Diagnostic(Flight::db());
             $moveData = $diagnostic->moveToQuarantine($id_diagnostic);
@@ -128,6 +134,7 @@ class DiagnosticController
 
     public function listQuarantine()
     {
+        SessionMiddleware::startSession();
         $diagnostic = new Diagnostic(Flight::db());
         $diagnostics = $diagnostic->findByStatus('en quarantaine');
         $content = Flight::view()->fetch('maladie/listQuarantine', ['diagnostics' => $diagnostics]);
@@ -136,6 +143,7 @@ class DiagnosticController
 
     public function startTreatment($id_diagnostic)
     {
+        SessionMiddleware::startSession();
         $diagnostic = new Diagnostic(Flight::db());
         try {
             $diagnostic->startTreatment($id_diagnostic);
@@ -147,6 +155,7 @@ class DiagnosticController
 
     public function listTreatment()
     {
+        SessionMiddleware::startSession();
         $diagnostic = new Diagnostic(Flight::db());
         $diagnostics = $diagnostic->findByStatuses(['en traitement', 'echec']);
         $content = Flight::view()->fetch('maladie/listTreatment', ['diagnostics' => $diagnostics]);
@@ -155,6 +164,7 @@ class DiagnosticController
 
     public function markSuccess($id_diagnostic)
     {
+        SessionMiddleware::startSession();
         $diagnostic = new Diagnostic(Flight::db());
         if (Flight::request()->method == 'POST') {
             $id_enclos_destination = Flight::request()->data->id_enclos_destination;
@@ -181,6 +191,7 @@ class DiagnosticController
 
     public function markFailure($id_diagnostic)
     {
+        SessionMiddleware::startSession();
         $diagnostic = new Diagnostic(Flight::db());
         try {
             $diagnostic->markFailure($id_diagnostic);
@@ -192,6 +203,7 @@ class DiagnosticController
 
     public function recordDeath($id_diagnostic)
     {
+        SessionMiddleware::startSession();
         $data = Flight::request()->data;
         $male_deces = (int)($data['male_deces'] ?? 0);
         $female_deces = (int)($data['female_deces'] ?? 0);

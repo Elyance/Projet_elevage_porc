@@ -3,11 +3,13 @@ namespace app\controllers;
 
 use Flight;
 use app\models\Commande;
+use SessionMiddleware;
 
 class CommandeController
 {
     public function add()
     {
+        SessionMiddleware::startSession();
         $conn = Flight::db();
         try {
             // Récupérer les données de la requête
@@ -95,6 +97,7 @@ class CommandeController
 
     public function list()
     {
+        SessionMiddleware::startSession();
         $date_debut = Flight::request()->query['date_debut'] ?? null;
         $date_fin = Flight::request()->query['date_fin'] ?? null;
         $statut = Flight::request()->query['statut'] ?? null;
@@ -113,6 +116,7 @@ class CommandeController
 
     public function form()
     {
+        SessionMiddleware::startSession();
         $clients = Flight::db()->query('SELECT * FROM bao_client')->fetchAll();
         $enclos_portees = Flight::db()->query('SELECT * FROM bao_enclos_portee')->fetchAll();
         $races = Flight::db()->query('SELECT * FROM races_porcs')->fetchAll();
@@ -128,6 +132,7 @@ class CommandeController
 
     public function editStatus($id)
     {
+        SessionMiddleware::startSession();
         $command = Commande::findById($id);
         if (!$command) {
             Flight::halt(404, 'Commande non trouvée');
@@ -141,6 +146,7 @@ class CommandeController
 
     public function updateStatus($id)
     {
+        SessionMiddleware::startSession();
         try {
             $command = Commande::findById($id);
             if (!$command) {
@@ -165,6 +171,7 @@ class CommandeController
 
     public function recette()
     {
+        SessionMiddleware::startSession();
         $conn = Flight::db();
         $sql = 'SELECT * FROM bao_view_recette WHERE 1=1';
         $sql_total = 'SELECT SUM(prix_total) as total FROM bao_view_recette WHERE 1=1';
