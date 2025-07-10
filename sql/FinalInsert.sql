@@ -226,6 +226,40 @@ INSERT INTO bao_reapprovisionnement_aliments (id_aliment, quantite_kg, cout_tota
 ------------------
 -- 15. DEATHS RECORD
 ------------------
-INSERT INTO bao_deces (id_enclos, male_deces, female_deces, date_deces, cause_deces) VALUES
-(1, 0, 1, '2024-08-10', 'Complications post-partum'),
-(4, 2, 1, '2024-09-05', 'Infection respiratoire');
+-- INSERT INTO bao_deces (id_enclos, male_deces, female_deces, date_deces, cause_deces) VALUES
+-- (1, 0, 1, '2024-08-10', 'Complications post-partum'),
+-- (4, 2, 1, '2024-09-05', 'Infection respiratoire');
+
+-- ===================================================================
+-- 1. INSERT DATA INTO bao_prix_vente_porc (The Price List)
+-- We need to define the selling price for each pig race.
+-- ===================================================================
+
+INSERT INTO bao_prix_vente_porc (id_race, prix_unitaire) VALUES
+(1, 350000.00), -- Price for 'Large White' (id_race = 1)
+(2, 340000.00), -- Price for 'Landrace' (id_race = 2)
+(3, 380000.00), -- Price for 'Duroc' (id_race = 3)
+(4, 400000.00); -- Price for 'Piétrain' (id_race = 4)
+
+
+-- ===================================================================
+-- 2. INSERT DATA INTO bao_commande (The Sales Records)
+-- We create several orders. Only those with 'statut_livraison' = 'livre'
+-- will be counted as revenue in the budget views.
+-- ===================================================================
+
+-- Sale 1: A completed sale in August 2024
+INSERT INTO bao_commande (nomclient, id_enclos_portee, id_race, quantite, date_commande, adresse_livraison, date_livraison, statut_livraison) VALUES
+('AgriCorp', 3, 1, 5, '2024-08-10', 'Tamatave', '2024-08-20', 'livre');
+
+-- Sale 2: A completed sale in September 2024
+INSERT INTO bao_commande (nomclient, id_enclos_portee, id_race, quantite, date_commande, adresse_livraison, date_livraison, statut_livraison) VALUES
+('Rabe', 2, 2, 8, '2024-09-05', 'Fianarantsoa', '2024-09-15', 'livre');
+
+-- Sale 3: Another completed sale in September 2024 (different race)
+INSERT INTO bao_commande (nomclient, id_enclos_portee, id_race, quantite, date_commande, adresse_livraison, date_livraison, statut_livraison) VALUES
+('AgriCorp', 1, 3, 4, '2024-09-18', 'Tamatave', '2024-09-25', 'livre');
+
+-- Sale 4: A pending order in October 2024. THIS WILL NOT BE COUNTED AS REVENUE.
+INSERT INTO bao_commande (nomclient, id_enclos_portee, id_race, quantite, date_commande, adresse_livraison, date_livraison, statut_livraison) VALUES
+('Rabe', 3, 4, 10, '2024-10-02', 'Fianarantsoa', NULL, 'en attente');
