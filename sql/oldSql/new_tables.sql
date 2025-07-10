@@ -124,3 +124,12 @@ FROM bao_view_budget
 GROUP BY annee
 ORDER BY annee;
 
+------------------
+-- 16. COMMANDES
+------------------
+-- INSERT INTO bao_commande (id_commande, id_client, id_enclos_portee, quantite, date_commande, adresse_livraison, date_livraison, statut_livraison) VALUES
+-- (1, 1, 1, 4, '2025-07-10', 'Lot II A 45', NULL, 'en attente'),
+-- (2, 2, 2, 2, '2025-07-12', 'Fianarantsoa', NULL, 'en attente'),
+-- (11, 1, 1, 2, '2025-07-15', 'Lot II A 45', NULL, 'en attente'),
+-- (12, 2, 2, 3, '2025-07-16', 'Fianarantsoa', NULL, 'en attente');
+
