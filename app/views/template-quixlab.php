@@ -101,29 +101,15 @@
                             <li><a href="<?= BASE_URL ?>/aliments">Consulter l'historique de circulation</a></li>
                         </ul>
                     </li>
-
                     <!-- <li class="nav-label">Modules</li> -->
-                    
                     <li>
                         <a href="<?= BASE_URL ?>/enclos" aria-expanded="false">
                             <i class="icon-home menu-icon"></i><span class="nav-text">Enclos</span>
                         </a>
                     </li>
-                    
-                    
-                    <li>
-                        <a href="<?= BASE_URL ?>/commande/list" aria-expanded="false">
-                            <i class="icon-basket-loaded menu-icon"></i><span class="nav-text">Commandes</span>
-                        </a>
-                    </li>
                     <li>
                         <a href="<?= BASE_URL ?>/employe" aria-expanded="false">
                             <i class="icon-people menu-icon"></i><span class="nav-text">Employés</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?= BASE_URL ?>/budget/index" aria-expanded="false">
-                            <i class="icon-wallet menu-icon"></i><span class="nav-text">Budget</span>
                         </a>
                     </li>
                     <li>
@@ -174,9 +160,9 @@
                             <i class="icon-wallet menu-icon"></i><span class="nav-text">Budget</span>
                         </a>
                         <ul aria-expanded="false">
+                            <li><a href="<?= BASE_URL ?>/budget/index ">Budget</a></li>
                             <li><a href="<?= BASE_URL ?>/commande/recette">Recettes</a></li>
                             <li><a href="<?= BASE_URL ?>/depense/list">Depenses</a></li>
-                            <li><a href="<?= BASE_URL ?>/budget/index ">Budget</a></li>
                         </ul>
                     </li>
                 </ul>

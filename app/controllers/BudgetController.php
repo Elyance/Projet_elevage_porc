@@ -4,11 +4,14 @@ namespace app\controllers;
 
 use Flight;
 use app\models\Budget;
+use SessionMiddleware;
+
 
 class BudgetController
 {
     public function index()
     {
+        SessionMiddleware::startSession();
         $annee = Flight::request()->query['annee'] ?? date('Y');
         $budgetParMois = Budget::getBudgetParMois($annee);
         $budgetParAn = Budget::getBudgetParAn();
