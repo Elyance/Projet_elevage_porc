@@ -22,7 +22,7 @@ $moisNoms = [
         <input type="number" name="annee" id="annee" value="<?= htmlspecialchars($annee) ?>" min="2000" max="<?= date('Y') ?>">
     </div>
     <button type="submit">Filtrer</button>
-    <a href="/budget/index">Réinitialiser</a>
+    <a href="<?= BASE_URL?>/budget/index">Réinitialiser</a>
 </form>
 
 <h3>Budget Mensuel</h3>
@@ -53,8 +53,8 @@ $moisNoms = [
             <tr>
                 <td><?= htmlspecialchars($budget['annee']) ?></td>
                 <td><?= htmlspecialchars($moisNom) ?></td>
-                <td><?= number_format($budget['total_recette'], 2) ?> <a href="<?= htmlspecialchars($recette_url) ?>">(Détails)</a></td>
-                <td><?= number_format($budget['total_depense'], 2) ?><a href="<?= htmlspecialchars($depense_url) ?>"> (Détails)</a></td>
+                <td><?= number_format($budget['total_recette'], 2) ?> <a href="<?= BASE_URL?><?= htmlspecialchars($recette_url) ?>">(Détails)</a></td>
+                <td><?= number_format($budget['total_depense'], 2) ?><a href="<?= BASE_URL?><?= htmlspecialchars($depense_url) ?>"> (Détails)</a></td>
                 <td><?= number_format($budget['budget'], 2) ?></td>
             </tr>
         <?php endforeach; ?>
@@ -84,8 +84,8 @@ $moisNoms = [
             ?>
             <tr>
                 <td><?= htmlspecialchars($budget['annee']) ?></td>
-                <td><?= number_format($budget['total_recette'], 2) ?><a href="<?= htmlspecialchars($recette_url) ?>"> Détails</a></td>
-                <td><?= number_format($budget['total_depense'], 2) ?><a href="<?= htmlspecialchars($depense_url) ?>"> Détails</a></td>
+                <td><?= number_format($budget['total_recette'], 2) ?><a href="<?= BASE_URL?><?= htmlspecialchars($recette_url) ?>"> Détails</a></td>
+                <td><?= number_format($budget['total_depense'], 2) ?><a href="<?= BASE_URL?><?= htmlspecialchars($depense_url) ?>"> Détails</a></td>
                 <td><?= number_format($budget['budget'], 2) ?></td>
             </tr>
         <?php endforeach; ?>

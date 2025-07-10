@@ -20,7 +20,7 @@
         </select>
     </div>
     <button type="submit">Filtrer</button>
-    <a href="/commande/list">Réinitialiser</a>
+    <a href="<?= BASE_URL?>/commande/list">Réinitialiser</a>
 </form>
 
 <table border="1">
@@ -57,9 +57,9 @@
                 echo htmlspecialchars($statut_map[$command->statut_livraison] ?? $command->statut_livraison);
                 ?>
             </td>
-            <td><a href="/commande/edit-status/<?= $command->id_commande ?>"><button>Modifier statut</button></a></td>
+            <td><a href="<?= BASE_URL?>/commande/edit-status/<?= $command->id_commande ?>"><button>Modifier statut</button></a></td>
         </tr>
     <?php endforeach; ?>
 </table>
-<a href="/commande/add">Ajouter une nouvelle commande</a>
-<a href="/budget/index">Voir le budget</a>
+<a href="<?= BASE_URL?>/commande/add">Ajouter une nouvelle commande</a>
+<a href="<?= BASE_URL?>/budget/index">Voir le budget</a>

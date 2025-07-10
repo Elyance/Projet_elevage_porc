@@ -9,10 +9,10 @@
         <input type="date" name="date_fin" id="date_fin" value="<?= htmlspecialchars($date_fin) ?>">
     </div>
     <button type="submit">Filtrer</button>
-    <a href="/depense/list">Réinitialiser</a>
+    <a href="<?= BASE_URL?>/depense/list">Réinitialiser</a>
 </form>
 <table border="1">
-<a href="/budget/index">Voir le budget</a>
+<a href="<?= BASE_URL?>/budget/index">Voir le budget</a>
 
 <p><strong>Dépense totale : </strong><?= number_format($total_depense, 2) ?> Ar</p>
 

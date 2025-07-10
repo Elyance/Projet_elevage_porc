@@ -19,4 +19,4 @@
     <br>
     <button type="submit">Mettre à jour</button>
 </form>
-<a href="/commande/list">Retour à la liste</a>
+<a href="<?= BASE_URL?>/commande/list">Retour à la liste</a>

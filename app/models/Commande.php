@@ -47,7 +47,7 @@ class Commande
         $conn = Flight::db();
         $sql = 'SELECT c.*, r.nom_race 
                 FROM bao_commande c 
-                LEFT JOIN races_porcs r ON c.id_race = r.id_race 
+                LEFT JOIN bao_races_porcs r ON c.id_race = r.id_race 
                 WHERE 1=1';
         $params = [];
 
@@ -75,7 +75,7 @@ class Commande
         $conn = Flight::db();
         $sql = 'SELECT c.*, r.nom_race 
                 FROM bao_commande c 
-                LEFT JOIN races_porcs r ON c.id_race = r.id_race 
+                LEFT JOIN bao_races_porcs r ON c.id_race = r.id_race 
                 WHERE id_commande = :id';
         $stmt = $conn->prepare($sql);
         $stmt->execute([':id' => $id]);

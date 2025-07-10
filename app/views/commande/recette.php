@@ -9,10 +9,10 @@
         <input type="date" name="date_fin" id="date_fin" value="<?= htmlspecialchars($date_fin) ?>">
     </div>
     <button type="submit">Filtrer</button>
-    <a href="/commande/recette">Réinitialiser</a>
+    <a href="<?= BASE_URL?>/commande/recette">Réinitialiser</a>
 </form>
 <table border="1">
-<a href="/budget/index">Voir le budget</a>
+<a href="<?= BASE_URL?>/budget/index">Voir le budget</a>
 
 <p><strong>Recette totale : </strong><?= number_format($total_recette, 2) ?> Ar</p>
 
@@ -41,4 +41,4 @@
             <?php endforeach; ?>
         <?php endif; ?>
 </table>
-<a href="/commande/add">Ajouter une nouvelle commande</a>
+<a href="<?= BASE_URL?>/commande/add">Ajouter une nouvelle commande</a>
